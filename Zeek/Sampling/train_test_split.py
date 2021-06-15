@@ -18,6 +18,7 @@ TRAIN_RATIO = 0.8
 MINIMUM_ROWS = 1000
 RS = 0
 
+
 def store_df(dataset, protocol, output_path):
     """
     Store file.
@@ -35,9 +36,10 @@ def store_df(dataset, protocol, output_path):
     dataset.to_csv(output_path + protocol + ".csv", index=False)
     statistics_dataset(dataset, output_path, protocol)
 
+
 def train_test_split_ml(experiment, version, protocols):
     """
-    Train test split
+    Train test split.
 
     Parameters
     ----------
@@ -50,12 +52,13 @@ def train_test_split_ml(experiment, version, protocols):
     output_path = go_or_create_folder(data_path, 'Train-Test ' + str(RS))
 
     for protocol in protocols:
-        for file_path in glob.glob(data_path + "/" + protocol + ".csv", recursive=True):
+        for file_path in glob.glob(data_path + "/" + protocol + ".csv",
+                                   recursive=True):
             print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")
             dataset = read_preprocessed(file_path)
 
-            dataset = dataset.loc[:, (dataset != 0).any(axis=0)] 
-            
+            dataset = dataset.loc[:, (dataset != 0).any(axis=0)]
+
             single_attacks = dataset["Label"].drop_duplicates(keep=False).tolist()
             dataset = dataset[~dataset["Label"].isin(single_attacks)]
 
@@ -74,4 +77,3 @@ if __name__ == "__main__":
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
             train_test_split_ml(exp, vers, APP.selected_values["Files"])
-        

@@ -16,6 +16,7 @@ import pandas as pd
 from project_paths import get_data_folder, get_labelling_scheme
 from Zeek.Preprocessing.utils import bro_reader
 
+
 def identify_attack(log_file, attack, vise_versa=False):
     """
     Searches for instances in the df which confirm the meta data of the attack.
@@ -55,6 +56,7 @@ def identify_attack(log_file, attack, vise_versa=False):
     log_file.loc[cond, 'Label'] = attack["Label"]
     return log_file
 
+
 def apply_labeling_scheme(log_file, experiment_name):
     """
     Labelling a BRO log file.
@@ -84,6 +86,7 @@ def apply_labeling_scheme(log_file, experiment_name):
         log_file = identify_attack(log_file, row, True)
     return log_file
 
+
 def label_experiment_conn_log(experiment_name):
     """
     This function starts the labelling procedure on all conn.log files for
@@ -105,6 +108,7 @@ def label_experiment_conn_log(experiment_name):
     df_uid_label = pd.concat(pd_list, axis=0)
     file_name = data_path.replace("1_Raw/", "labelling.csv")
     df_uid_label.to_csv(file_name, sep=";", index=False)
+
 
 if __name__ == "__main__":
     #label_experiment_conn_log("CIC-IDS-2017")
