@@ -1,3 +1,5 @@
+# Raw Pcap to json log files with Zeek
+
 First download the following pcaps from the URLS:
 ISCX-IDS-2012: http://205.174.165.80/CICDataset/ISCX-IDS-2012/Dataset/
 CIC-IDS-2017: http://205.174.165.80/CICDataset/CIC-IDS-2017/Dataset/PCAPs/
@@ -6,16 +8,19 @@ UNSW-NB15: https://cloudstor.aarnet.edu.au/plus/index.php/s/2DhnLGDdEECo4ys?path
 
 Note that in the CIC-IDS-2018 there are some issues:
 - Some files have spaces in their name: replace those spaces with a dash ("-")
-- there is a shortcut in 2-3-2018. You must remove this one.
+- There is a shortcut in 2-3-2018. You must remove this one.
 - The files do not have a pcap type. This could cause a problem but not necessarily. 
 
+## Windows
 Steps to get Zeek working on a ubuntu LTS in a Windows 10 machine. 
 
-1) Install ubuntu 20.04 LTS
+0.1) Install ubuntu 20.04 LTS
 First, we need to perform the following steps in order to install ubuntu on our Windows machine:
 https://docs.microsoft.com/nl-nl/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package
 
-2) Install Zeek
+# Linux
+
+Install Zeek
 Perform the following steps of code:
 
 ```shell
@@ -45,14 +50,18 @@ $ source ~/.bashrc
 It might happen that these steps are not permanent. Therefore you can see that zeek does not work when you command zeek. Therefore, reuse these steps to get it working.
 
 To make bash files work (could happen it breaks) install dos2unix
+```shell
 $ sudo apt-get install dos2unix
 $ dos2unix <bashfile>.sh
 $ dos2unix log-reduction.zeek
+```
 
 We need also a packet fixer when packets are broken, you can turn this on or off in the script.bash
 
 We also need a package to fix the pcaps if packets are broken
+```
 $ sudo apt-get install pcapfix
+```
 
 To make the zeek script work as I did in my research, you should have the following structure in your folders:
 
