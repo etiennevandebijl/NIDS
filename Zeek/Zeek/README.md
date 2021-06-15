@@ -17,28 +17,31 @@ https://docs.microsoft.com/nl-nl/windows/wsl/install-win10#step-4---download-the
 
 2) Install Zeek
 Perform the following steps of code:
-'''shell
+
+```shell
 $ sudo apt-get update -y
 $ sudo apt-get upgrade -y
-'''
+```
 
 Install dependencies of Zeek (or check the website https://docs.zeek.org/en/current/install.html)
-'''shell
+```shell
 $ sudo apt-get install cmake make gcc g++ flex bison libpcap-dev libssl-dev python3 python3-dev swig zlib1g-dev -y
-'''
+```
 
 Install zeek (https://software.opensuse.org/download.html?project=security%3Azeek&package=zeek-lts) do steps in this order and all of them.
 
-'''shell
+```shell
 $ echo 'deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/security:zeek.list
 $ curl -fsSL https://download.opensuse.org/repositories/security:zeek/xUbuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/security_zeek.gpg > /dev/null
 $ sudo apt update
 $ sudo apt install zeek-lts
-'''
+```
 
 Zeek won't work before adding zeek to the PATH environment variable:
+```shell
 $ export PATH="$PATH:/opt/zeek/bin"
 $ source ~/.bashrc
+```
 It might happen that these steps are not permanent. Therefore you can see that zeek does not work when you command zeek. Therefore, reuse these steps to get it working.
 
 To make bash files work (could happen it breaks) install dos2unix
