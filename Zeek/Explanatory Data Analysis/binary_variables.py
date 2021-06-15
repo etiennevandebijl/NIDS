@@ -50,6 +50,7 @@ def plot_bar(dataset, protocol, title, output_path):
     plt.savefig(output_path_p + protocol + "-benign-" +title + ".png")
     plt.close()
 
+
 def bin_plot(experiments, version, protocols):
     """
     Plot binary features.

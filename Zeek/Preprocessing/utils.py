@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 """
 This module preprocesses all log files in the 2_Preprocessed folder.
@@ -12,6 +12,7 @@ import datetime
 import pandas as pd
 
 from brothon import bro_log_reader
+
 
 def bro_reader(path):
     """
@@ -68,6 +69,7 @@ def merge_bro_log_files(experiment_path, file_name):
     if len(pd_list) > 0:
         log_file = pd.concat(pd_list, axis=0)
     return log_file
+
 
 def common_used_practice(log_file, feature, signatures):
     """
