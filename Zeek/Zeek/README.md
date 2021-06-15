@@ -11,12 +11,13 @@ Still, approximately the same steps can be applied for MAC, so it might be later
 I considered the following four datasets usefull for now. ISCX-IDS-2012, CIC-IDS-2017
 UNSW-NB15 and the CIC-IDS-2018.
 
-| Dataset  | URL | 
-| ISCX-IDS-2012 | http://205.174.165.80/CICDataset/ISCX-IDS-2012/Dataset/ |
-| CIC-IDS-2017 | http://205.174.165.80/CICDataset/CIC-IDS-2017/Dataset/PCAPs/ |
-| UNSW-NB15 | https://cloudstor.aarnet.edu.au/plus/index.php/s/2DhnLGDdEECo4ys?path=%2FUNSW-NB15%20-%20pcap%20files |
-| CIC-IDS-2018 | https://www.unb.ca/cic/datasets/ids-2018.html |
-
+```
+| Dataset       | URL                                                                                                   | 
+| ISCX-IDS-2012 | http://205.174.165.80/CICDataset/ISCX-IDS-2012/Dataset/                                               |
+| CIC-IDS-2017  | http://205.174.165.80/CICDataset/CIC-IDS-2017/Dataset/PCAPs/                                          |
+| UNSW-NB15     | https://cloudstor.aarnet.edu.au/plus/index.php/s/2DhnLGDdEECo4ys?path=%2FUNSW-NB15%20-%20pcap%20files |
+| CIC-IDS-2018  | https://www.unb.ca/cic/datasets/ids-2018.html                                                         |
+```
 For the first three datasets the pcaps can simply be downloaded (with wget or something).
 You can also do it manually. Note that in the CIC-IDS-2018 there are some remarks:
 - You have to use AWS to gather the data. It takes a lot of time as it is alomst 500 GB.
