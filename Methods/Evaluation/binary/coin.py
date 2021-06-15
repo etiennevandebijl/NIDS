@@ -27,4 +27,4 @@ def coin_expectations(theta, P, n):
     return [rc, pr, f1]
 
 def coin_optimal_expectations(P,n):
-    return [1.0, P/n,  2 * (P / (P + n))], 1.0 
+    return [1.0, P/n,  2 * (P / (P + n))], 1.0
