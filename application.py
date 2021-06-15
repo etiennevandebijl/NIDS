@@ -3,26 +3,28 @@ This module can be used to pick datasets and internet protocols to be used in
 other modules in a Tkinter interface.
 """
 
-#Author: Etienne van de Bijl 2020
+# Author: Etienne van de Bijl 2020
 
 import os
 import glob
-
-if os.environ.get('DISPLAY','') == '':
-    print('no display found. Using :0.0')
-    os.environ.__setitem__('DISPLAY', ':0.0')
-    
 import tkinter as tk
 from tkinter import messagebox
 from pathlib import Path
 
 from project_paths import NID_PATH, get_data_folder
 
+
+if os.environ.get('DISPLAY', '') == '':
+    print('no display found. Using :0.0')
+    os.environ.__setitem__('DISPLAY', ':0.0')
+
+
 class Application(tk.Frame):
     """
     This class starts the Tkinter interface to select datasets which can be
     found in the NID_PATH.
     """
+
     def __init__(self, master=None, v_setting=0):
         super().__init__(master)
         self.master = master
@@ -44,7 +46,8 @@ class Application(tk.Frame):
             f_format = "*/*.log"
             settings["Version"] = ["1_Raw"]
         elif v_setting == 1:
-            settings["Version"] = ["2_Preprocessed", "2_Preprocessed_DDoS", "3_Downsampled"]
+            settings["Version"] = ["2_Preprocessed", "2_Preprocessed_DDoS", 
+                                   "3_Downsampled"]
         elif v_setting == 2:
             settings["Version"] = ["4_Feature_Reduction"]
         elif v_setting == 3:
@@ -54,7 +57,7 @@ class Application(tk.Frame):
         elif v_setting == 5:
             settings["Version"] = ["2_Preprocessed", "3_Downsampled"]
         elif v_setting == 6:
-            settings["Version"] = ["4_Feature_Reduction"]            
+            settings["Version"] = ["4_Feature_Reduction"]
         else:
             settings["Version"] = [v_setting]
 
@@ -119,6 +122,7 @@ class Application(tk.Frame):
             answer = messagebox.askquestion(title="Confirmation", message="Do you confirm?")
             if answer == "yes":
                 self.master.destroy()
+
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
