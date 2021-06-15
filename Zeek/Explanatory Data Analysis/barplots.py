@@ -20,6 +20,7 @@ sns.set(font_scale=1.2)
 TAGS = ["local_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
         "qclass_", "qtype_", "last_alert_", "next_protocol_", "service_"]
 
+
 def plot_bar(dataset, protocol, title, output_path):
     """
     Plots the barplot of the binary features.
@@ -47,7 +48,7 @@ def plot_bar(dataset, protocol, title, output_path):
     plt.xticks(rotation=80)
     plt.ylabel("Percentage")
     plt.tight_layout()
-    plt.savefig(output_path_p + protocol + "-benign-" +title + ".png")
+    plt.savefig(output_path_p + protocol + "-benign-" + title + ".png")
     plt.close()
 
 
@@ -78,8 +79,8 @@ def bin_plot(experiments, version, protocols):
                 print("---" + exp + "---" + protocol + "---")
                 path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
                 dataset = read_preprocessed(path)
-                dataset = dataset[dataset["Label"] == "Benign"] #Only normal
-                dataset = dataset.select_dtypes(include=['bool']) #Only bool
+                dataset = dataset[dataset["Label"] == "Benign"]
+                dataset = dataset.select_dtypes(include=['bool'])
                 stats[exp] = dataset.mean()
             except FileNotFoundError:
                 print("File-Not-Found")
@@ -96,8 +97,10 @@ def bin_plot(experiments, version, protocols):
             if dataset.shape[0] > 0:
                 plot_bar(dataset, protocol, "other", output_path)
 
+
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
     APP.mainloop()
     for vers in APP.selected_values["Version"]:
-        bin_plot(APP.selected_values["Experiments"], vers, APP.selected_values["Files"])
+        bin_plot(APP.selected_values["Experiments"], vers,
+                 APP.selected_values["Files"])

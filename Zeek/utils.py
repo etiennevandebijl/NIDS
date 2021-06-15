@@ -6,6 +6,7 @@ import pandas as pd
 IGNORE_COLS = ["uid", "ts", "ts_", "id.orig_h", "id.resp_h", "id.resp_p",
                "id.orig_p", "local_orig", "local_resp"]
 
+
 def format_ML(df, binary=False):
     df = df.drop([c for c in IGNORE_COLS if c in df.columns], 1)
 
@@ -25,15 +26,17 @@ def format_ML(df, binary=False):
         labels = [False, True]
     return X, y, feature_names, labels
 
+
 def fix_col_order(df):
     pref = ["uid", "ts", "ts_", "id.orig_h", "id.orig_p", "id.resp_h",
             "id.resp_p", "local_orig", "local_resp", "duration"]
     pref = [c for c in pref if c in df.columns]
-    order = pref + [c for c in df.columns if (not c in pref and c != "Label")]
+    order = pref + [c for c in df.columns if (c not in pref and c != "Label")]
     if "Label" in df.columns:
         order = order + ["Label"]
     df = df[order]
     return df
+
 
 def statistics_dataset(df, output_path, protocol):
     shape = df.shape
@@ -52,6 +55,7 @@ def statistics_dataset(df, output_path, protocol):
     file.write("Label stats: \n")
     file.write("%s\r\n" % str(label_counts))
     file.close()
+
 
 def read_preprocessed(path):
     df = pd.read_csv(path)

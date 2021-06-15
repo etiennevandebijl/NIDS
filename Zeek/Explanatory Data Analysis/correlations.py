@@ -18,6 +18,7 @@ from application import Application, tk
 
 sns.set(font_scale=1.5)
 
+
 def cor_plot(experiment, version, protocols):
     """
     Create correlation plot of the numeric features.
@@ -27,7 +28,7 @@ def cor_plot(experiment, version, protocols):
     experiment : string
     version : string
     protocols : list of strings
-    
+
     Returns
     -------
     None.
@@ -54,10 +55,11 @@ def cor_plot(experiment, version, protocols):
                 plt.figure(figsize=(20, 15))
                 sns.heatmap(corr)
 
-                plt.title(experiment+" "+protocol.upper()+" "+method+" correlation")
+                plt.title(experiment + " " + protocol.upper() + " " + method + " correlation")
                 plt.tight_layout()
                 plt.savefig(output_path + protocol + "-correlation.png")
                 plt.close()
+
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
@@ -65,4 +67,3 @@ if __name__ == "__main__":
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
             cor_plot(exp, vers, APP.selected_values["Files"])
-            

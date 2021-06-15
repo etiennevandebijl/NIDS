@@ -51,7 +51,7 @@ def num_plot(experiments, version, protocols):
                 print("---" + exp + "---" + protocol + "---")
                 path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
                 dataset = read_preprocessed(path)
-                dataset = dataset[dataset["Label"] == "Benign"] #Only normal
+                dataset = dataset[dataset["Label"] == "Benign"]
                 dataset = dataset.select_dtypes(exclude=['bool'])
 
                 x_data, _, feature_names, _ = format_ML(dataset)
@@ -64,9 +64,10 @@ def num_plot(experiments, version, protocols):
         df_new = df_new.loc[:, (df_new != 0).any(axis=0)]
         plot_box(df_new, protocol, output_path)
 
+
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
     APP.mainloop()
     for vers in APP.selected_values["Version"]:
-        num_plot(APP.selected_values["Experiments"], vers, APP.selected_values["Files"])
-        
+        num_plot(APP.selected_values["Experiments"], vers,
+                 APP.selected_values["Files"])

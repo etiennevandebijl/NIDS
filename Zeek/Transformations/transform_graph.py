@@ -18,6 +18,7 @@ COLS = ["Source", "Target", "ts", "Weight", "Label"] + MODELS
 #Parameters
 FREQ = "10min"
 
+
 def time_iterator(dataset):
     """
     Function iterates over time.
@@ -53,6 +54,7 @@ def time_iterator(dataset):
                 results.append(info)
     return pd.DataFrame(results, columns=COLS)
 
+
 def connection_to_graph(experiment, protocols):
     """
     Anomaly scores to graph data.
@@ -79,7 +81,8 @@ def connection_to_graph(experiment, protocols):
             for _, group in dataset.groupby([dataset["ts"].dt.date]):
                 df_day = time_iterator(group)
                 pd_list.append(df_day)
-            pd.concat(pd_list).to_csv(output_path + protocol + "-edges-"+ FREQ +".csv", index=False)
+            pd.concat(pd_list).to_csv(output_path + protocol + "-edges-" + FREQ + ".csv", index=False)
+
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting="4_Feature_Reduction")
