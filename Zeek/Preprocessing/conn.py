@@ -15,6 +15,7 @@ COMMON_SERVICE_TCP = ["http", "krb_tcp", "dce_rpc", "ssl", "ftp-data", "ftp",
                       "ssh", "pop3", "smtp", "imap", "irc", "rfb"]
 COMMON_SERVICE_UDP = ["dns", "krb", "dhcp"]
 
+
 def preprocessing_conn(conn_log):
     """
     This function starts the preprocessing of the conn.log file.
@@ -41,6 +42,7 @@ def preprocessing_conn(conn_log):
 # Cleaning
 # =============================================================================
 
+
 def _cleaning_conn(conn_log):
     """
     Here the first steps on the cleaning conn.log are done. This consists of
@@ -61,7 +63,7 @@ def _cleaning_conn(conn_log):
 
     for col in ["resp_bytes", "orig_bytes", "orig_pkts", "resp_pkts"]:
         if conn_log[col].dtype != "int64":
-            conn_log[col] = conn_log[col].replace({'-':"0"})
+            conn_log[col] = conn_log[col].replace({'-': "0"})
         conn_log[col] = conn_log[col].astype(float)
 
     conn_log["ts_"] = conn_log["ts"] + conn_log["duration"]
@@ -78,6 +80,8 @@ def _cleaning_conn(conn_log):
 # =============================================================================
 # UDP Connections
 # =============================================================================
+
+
 def _udp_connections(conn_log):
     """
     Udp connections are processed here. State and history are not relevant
@@ -203,6 +207,6 @@ def _tcp_state_features(tcp_log):
     tcp_log.drop(["f", "F", "r", "R"], 1, inplace=True)
     return tcp_log
 
-#from project_paths import NID_PATH; from BRO.Preprocessing.utils import bro_reader
+#from project_paths import NID_PATH; from Zeek.Preprocessing.utils import bro_reader
 #bro_df = bro_reader(NID_PATH + "CIC-IDS-2017/BRO/1_Raw/Tuesday-WorkingHours/conn.log")
 #df_TCP, df_UDP = preprocessing_conn(bro_df)

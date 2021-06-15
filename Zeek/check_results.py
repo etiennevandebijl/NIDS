@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from project_paths import get_data_folder, get_results_folder
 from ML.Transfer.experimental_setup import powerset, create_foldername
 
-#%% Functions
+# %% Functions
 
 def analyse_check_files(files, source_path, target_path, exp, version, protocol):
     fname = pathlib.Path(source_path)
@@ -54,7 +54,7 @@ def files_graph():
         files.append("Curves/"+dist+"scores-per-threshold.png")
         files.append("Distances/"+dist+".png")
     return files
-    
+
     
 exists_list = []
 missing_list = []
@@ -84,8 +84,8 @@ plt.show()
 
 def files_unsupervised(source_dataset_path):
     files_ = ["boxplot-anomaly-score-per-label.png","class_comparison.csv",
-         "clf.joblib","max-F1-malicious-labelled-per-label.png",
-         "P-malicious-labelled-per-label.png",'scores-per-threshold.png']
+              "clf.joblib","max-F1-malicious-labelled-per-label.png",
+              "P-malicious-labelled-per-label.png",'scores-per-threshold.png']
     
     subfolders = []
     labels = determine_labels(source_dataset_path)
@@ -101,7 +101,7 @@ def files_unsupervised(source_dataset_path):
         files.append(sf + "labels_info.json")
         files.append(sf + "model_comparison.csv")
 
-        for model in ["IForest_5","IForest_10","PCA_0.1","PCA_0.5","PCA_0.9"]:
+        for model in ["IForest_5", "IForest_10", "PCA_0.1", "PCA_0.5", "PCA_0.9"]:
             for f in files_:
                 files.append(sf + model + "/" + f)
     return files

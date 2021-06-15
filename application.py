@@ -83,7 +83,8 @@ class Application(tk.Frame):
         max_row = 0
         self.variables = {}
         for title, list_opt in self.settings.items():
-            tk.Label(self, text=title, font='Helvetica 10 bold').grid(row=0, column=col)
+            tk.Label(self, text=title,
+                     font='Helvetica 10 bold').grid(row=0, column=col)
 
             box = {}
             for index, opt in enumerate(list_opt):
