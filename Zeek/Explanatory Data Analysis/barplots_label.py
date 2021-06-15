@@ -8,8 +8,8 @@ This module makes figures of the class-distribution of the labels.
 # License: BSD 3 clause
 
 import glob
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 from project_paths import get_data_folder, get_results_folder
 from Zeek.utils import read_preprocessed
@@ -41,7 +41,8 @@ def class_count_plot(dataset, output_folder, protocol):
     figure_sns = sns.barplot(x="index", y="Percentage", data=pvt_table)
 
     for _, row in pvt_table.iterrows():
-        figure_sns.text(row.name, row["Percentage"], row["Label"], color='black', ha="center")
+        figure_sns.text(row.name, row["Percentage"], row["Label"],
+                        color='black', ha="center")
 
     plt.title(protocol.upper() + " Number of Instances per Label")
     plt.xlabel("Label")
@@ -49,6 +50,7 @@ def class_count_plot(dataset, output_folder, protocol):
     plt.tight_layout()
     plt.savefig(output_folder + protocol + "-class-distribution.png")
     plt.close()
+
 
 def class_count(experiment, version, protocols):
     """
@@ -72,10 +74,10 @@ def class_count(experiment, version, protocols):
             dataset = read_preprocessed(file_path)
             class_count_plot(dataset, output_folder, protocol)
 
+
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
     APP.mainloop()
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
             class_count(exp, vers, APP.selected_values["Files"])
-        
