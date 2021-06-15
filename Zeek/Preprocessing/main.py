@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-"""
-This module preprocesses all log files in the 2_Preprocessed folder.
-zeek version 3.2.0-dev.738
-"""
+"""Main program to preprocess log files constructed by Zeek."""
 
 # Author: Etienne van de Bijl
 # License: BSD 3 clause
@@ -28,9 +25,10 @@ from application import Application, tk
 
 warnings.filterwarnings("ignore")
 
-FUNCTIONS = {"dns":preprocessing_dns, "ftp":preprocessing_ftp,
-             "http":preprocessing_http, "ssh":preprocessing_ssh,
-             "ssl":preprocessing_ssl}
+FUNCTIONS = {"dns": preprocessing_dns, "ftp": preprocessing_ftp,
+             "http": preprocessing_http, "ssh": preprocessing_ssh,
+             "ssl": preprocessing_ssl}
+
 
 def finish_dataset(log_file, df_uid_label, experiment, output_path, protocol):
     """
@@ -63,11 +61,13 @@ def finish_dataset(log_file, df_uid_label, experiment, output_path, protocol):
     log_file.to_csv(output_path + protocol + ".csv", index=False)
     print("-----Saving statistics----------  " + str(datetime.datetime.now()))
     statistics_dataset(log_file, output_path, protocol)
-    print("-----"+ experiment + "-" + protocol.upper() + "-Completed-  " +
+    print("-----" + experiment + "-" + protocol.upper() + "-Completed-  " +
           str(datetime.datetime.now()) + "\n")
 
+
 def main(experiment, protocols_list):
-    """
+    """Iterate log files.
+
     Parameters
     ----------
     experiment : string
@@ -79,7 +79,8 @@ def main(experiment, protocols_list):
 
     data_path = get_data_folder(experiment, "BRO", "1_Raw")
     output_path = get_data_folder(experiment, "BRO", "2_Preprocessed")
-    uid_label = pd.read_csv(data_path.replace("1_Raw/", "labelling.csv"), sep=";")
+    uid_label = pd.read_csv(data_path.replace("1_Raw/", "labelling.csv"),
+                            sep=";")
 
     for protocol in protocols_list:
         log_file = merge_bro_log_files(data_path, protocol)
@@ -93,7 +94,8 @@ def main(experiment, protocols_list):
             finish_dataset(udp_log, uid_label, experiment, output_path, "udp")
         else:
             log_file = FUNCTIONS[protocol](log_file)
-            finish_dataset(log_file, uid_label, experiment, output_path, protocol)
+            finish_dataset(log_file, uid_label, experiment,
+                           output_path, protocol)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-"""
-This module is used to proprocess dns.log
-"""
+"""Script to proprocess dns.log."""
 
 # Author: Etienne van de Bijl
 # License: BSD 3 clause
@@ -16,12 +14,13 @@ COMMON_RCODES = list(range(6))
 COMMON_QCLASS = [0, 1, 3, 4, 254, 255]
 COMMON_QTYPE = [1, 2, 5, 6, 12, 15, 16, 20, 28]
 
-#https://www.ietf.org/rfc/rfc1035.txt
-#https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml
-#http://dns-record-viewer.online-domain-tools.com/
+# https://www.ietf.org/rfc/rfc1035.txt
+# https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml
+# http://dns-record-viewer.online-domain-tools.com/
 
 IGNORED_VARS = ["rcode_name", "qclass_name", "qtype_name",
                 "trans_id", "answers", "query"]
+
 
 def preprocessing_dns(dns_log):
     """
@@ -58,6 +57,7 @@ def preprocessing_dns(dns_log):
     dns_log = dns_log.drop(["TTLs"], 1)
     return dns_log
 
+
 def _aggregate_connection_dns(dns_log):
     """
     Worth noding: this still does not mean that the connections are unique.
@@ -80,6 +80,7 @@ def _aggregate_connection_dns(dns_log):
     dns_log["duration"] = (dns_log["ts_"] - dns_log["ts"])
     return dns_log
 
+
 def _ttls_fun_dns(ttls):
     """
     Parameters
@@ -101,6 +102,6 @@ def _ttls_fun_dns(ttls):
         value = [float(ttls)]
     return value
 
-#from project_paths import NID_PATH; from BRO.Preprocessing.utils import bro_reader
+#from project_paths import NID_PATH; from Zeek.Preprocessing.utils import bro_reader
 #bro_df = bro_reader(NID_PATH + "CIC-IDS-2017/BRO/1_Raw/Friday-WorkingHours/dns.log")
 #dns_log_new = preprocessing_dns(bro_df)

@@ -62,7 +62,8 @@ def merge_bro_log_files(experiment_path, file_name):
 
     """
     pd_list = []
-    for path in glob.glob(experiment_path + "**/" + file_name + ".log", recursive=True):
+    for path in glob.glob(experiment_path + "**/" + file_name + ".log",
+                          recursive=True):
         data = bro_reader(path)
         pd_list.append(data)
     log_file = pd.DataFrame()
