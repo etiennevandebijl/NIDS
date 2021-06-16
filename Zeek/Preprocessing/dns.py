@@ -74,9 +74,11 @@ def _aggregate_connection_dns(dns_log):
 
     """
     cols = [x for x in dns_log.columns if x not in ["ts", "rtt"]]
-    dns_log = dns_log.groupby(cols).agg({'rtt':['min', 'mean', "max"],
-                                         'ts':["count", "min", "max"]}).reset_index()
-    dns_log.columns = cols + ["rtt_min", "rtt_mean", "rtt_max", "count", "ts", "ts_"]
+    dns_log = dns_log.groupby(cols).agg({'rtt': ['min', 'mean', "max"],
+                                         'ts': ["count", "min",
+                                                "max"]}).reset_index()
+    dns_log.columns = cols + ["rtt_min", "rtt_mean", "rtt_max",
+                              "count", "ts", "ts_"]
     dns_log["duration"] = (dns_log["ts_"] - dns_log["ts"])
     return dns_log
 

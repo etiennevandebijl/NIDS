@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-"""
-This module makes figures of the class-distribution of the labels.
-"""
+"""Module makes figures of the class-distribution of the labels."""
 
 __author__ = "Etienne van de Bijl"
 __copyright__ = "Copyright 2021, CWI"
@@ -69,11 +67,14 @@ def class_count(experiment, version, protocols):
 
     """
     data_path = get_data_folder(experiment, "BRO", version)
-    output_folder = get_results_folder(experiment, "BRO", version, "EDA") + "class-distribution/"
+    output_folder = get_results_folder(experiment, "BRO", version, "EDA") + \
+        "class-distribution/"
 
     for protocol in protocols:
-        print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")
-        for file_path in glob.glob(data_path + "/" + protocol + ".csv", recursive=True):
+        print("---" + experiment + "--" + version + "--" + protocol.upper() +
+              "----")
+        for file_path in glob.glob(data_path + "/" + protocol + ".csv",
+                                   recursive=True):
             dataset = read_preprocessed(file_path)
             class_count_plot(dataset, output_folder, protocol)
 

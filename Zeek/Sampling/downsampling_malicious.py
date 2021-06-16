@@ -9,7 +9,6 @@ This module downsamples the data.
 
 import glob
 import numpy as np
-from shutil import copyfile
 import pandas as pd
 
 from project_paths import get_data_folder
@@ -45,7 +44,7 @@ def downsample_malicious(dataset):
     cond = True
     i = 0
     while cond:
-        dataset_m_new = dataset_m.sample(positives_new, random_state = i)
+        dataset_m_new = dataset_m.sample(positives_new, random_state=i)
         cond = len(dataset_m["Label"].unique()) != len(dataset_m_new["Label"].unique())
         i = i + 1
 
@@ -53,10 +52,11 @@ def downsample_malicious(dataset):
     dataset = dataset.sort_values(by=['ts'])
     return dataset
 
+
 def downsampling(experiment, protocols):
     """
     This function downsamples datasets. If the numnber of instances is below 1000,
-    we skip the dataset. When the intrusion ratio is 
+    we skip the dataset. When the intrusion ratio is.
 
     Parameters
     ----------
@@ -88,8 +88,6 @@ def downsampling(experiment, protocols):
                 statistics_dataset(dataset, output_path, protocol)
             else:
                 print("---" + experiment + "--" + protocol.upper() + "---- Ignore")
-                #copyfile(file_path, output_path + protocol + ".csv")
-                #copyfile(file_path.replace(".csv", ".txt"), output_path + protocol + ".txt")
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting="2_Preprocessed")

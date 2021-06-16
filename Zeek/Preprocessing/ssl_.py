@@ -16,6 +16,7 @@ COMMON_NEXT_PROTOCOL = ["http/1.1", "h2"]
 IGNORED_VARS = ["cert_chain_fuids", "client_cert_chain_fuids", "client_subject",
                 "client_issuer", "issuer", "subject", "cipher", "curve"]
 
+
 def preprocessing_ssl(ssl_log):
     """
     Function to process ssl log file.
@@ -23,7 +24,7 @@ def preprocessing_ssl(ssl_log):
     Parameters
     ----------
     ssl_log : pandas dataframe
-        A converted bro file of the ssl.log. 
+        A converted bro file of the ssl.log.
 
     Returns
     -------
@@ -48,8 +49,7 @@ def preprocessing_ssl(ssl_log):
 
     return ssl_log
 
-#from BRO.Preprocessing.utils import merge_bro_log_files
-#from project_paths import get_data_folder
-#df_ssl = merge_bro_log_files(get_data_folder("CIC-IDS-2017", "BRO", "1_Raw"), "ssl")
-#ssl_log_new = preprocessing_ssl(df_ssl)
-
+# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from project_paths import get_data_folder
+# df_ssl = merge_bro_log_files(get_data_folder("CIC-IDS-2017", "BRO", "1_Raw"), "ssl")
+# ssl_log_new = preprocessing_ssl(df_ssl)

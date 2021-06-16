@@ -31,25 +31,7 @@ FUNCTIONS = {"dns": preprocessing_dns, "ftp": preprocessing_ftp,
 
 
 def finish_dataset(log_file, df_uid_label, experiment, output_path, protocol):
-    """
-    Parameters
-    ----------
-    log_file : pandas dataframe
-        log file to finish.
-    df_uid_label : pandas dataframe
-        dataframe with the uids and the corresponding labels.
-    experiment : string
-        Experiment name
-    output_path : string
-        Foldername
-    protocol : string
-        protocol of interest
-
-    Returns
-    -------
-    None.
-
-    """
+    """Preprocess dataset."""
     print("-----Network Transformation-----  " + str(datetime.datetime.now()))
     log_file = network_preprocessing(log_file, experiment)
     print("-----Apply Labelling------------  " + str(datetime.datetime.now()))

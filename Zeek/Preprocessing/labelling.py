@@ -1,24 +1,27 @@
-#!/home/etienne/anaconda3/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module labels the conn.log connections. As all connections can
-be found in this conn.log file, it is wise to first label the conn.log uid and
-afterwards use the obtained labelling scheme for the other log files.
-"""
+"""Label connections conn.log and store uid + label in labelling.csv."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright (C) 2021 Etienne van de Bijl"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import glob
-from tqdm import tqdm
 import pandas as pd
+from tqdm import tqdm
 
 from project_paths import get_data_folder, get_labelling_scheme
 from Zeek.Preprocessing.utils import bro_reader
 
+SELECT_COLS = ["uid", "ts", "id.orig_h", "id.orig_p", "id.resp_h", "id.resp_p"]
+
 
 def identify_attack(log_file, attack, vise_versa=False):
-    """
+    """Identify attacks.
+
     Searches for instances in the df which confirm the meta data of the attack.
     Labels these instances with the corresponding attack.
 
@@ -101,8 +104,7 @@ def label_experiment_conn_log(experiment_name):
 
     pd_list = []
     for file_path in glob.glob(data_path + "**/conn.log", recursive=True):
-        conn_log = bro_reader(file_path)[["uid", "ts", "id.orig_h", "id.orig_p",
-                                          "id.resp_h", "id.resp_p"]]
+        conn_log = bro_reader(file_path)[SELECT_COLS]
         uid_label = apply_labeling_scheme(conn_log, experiment_name)
         pd_list.append(uid_label[["uid", "Label"]])
     df_uid_label = pd.concat(pd_list, axis=0)
@@ -111,7 +113,7 @@ def label_experiment_conn_log(experiment_name):
 
 
 if __name__ == "__main__":
-    # label_experiment_conn_log("CIC-IDS-2017")
+    label_experiment_conn_log("CIC-IDS-2017")
     # label_experiment_conn_log("ISCX-IDS-2012")
     # label_experiment_conn_log("UNSW-NB15")
     # label_experiment_conn_log("CIC-IDS-2018 DDoS")

@@ -11,10 +11,10 @@ import numpy as np
 
 from Zeek.Preprocessing.utils import common_used_practice
 
-#http://www.nsftools.com/tips/RawFTP.htm
-#COMMON_COMMANDS = ["ABOR", "CWD", "DELE", "LIST", "MDTM", "MKD", "NLST", "PASS",
-#                   "PASV", "PORT", "PWD", "QUIT", "RETR", "RMD", "RNFR", "RNTO",
-#                   "SITE", "SIZE", "STOR", "TYPE", "USER"]
+# http://www.nsftools.com/tips/RawFTP.htm
+# COMMON_COMMANDS = ["ABOR", "CWD", "DELE", "LIST", "MDTM", "MKD", "NLST",
+#                     "PASS", "PASV", "PORT", "PWD", "QUIT", "RETR", "RMD",
+#                     "RNFR", "RNTO", "SITE", "SIZE", "STOR", "TYPE", "USER"]
 
 COMMON_COMMANDS = ["APPE", 'PASV', 'STOR', 'RETR', 'DELE', 'PORT', "EPSV", "STOU"]
 
@@ -88,7 +88,7 @@ def _combine_ftp(ftp_log):
     uid_interval.columns = ["uid", "ts", "ts_"]
     uid_interval["duration"] = uid_interval["ts_"] - uid_interval["ts"]
 
-    features = [c for c in ftp_log.columns if not c in UID_TS_ID]
+    features = [c for c in ftp_log.columns if c not in UID_TS_ID]
     uid = [c for c in UID_TS_ID if c != "ts"]
     ftp_compressed_f = ftp_log.groupby(uid)[features].sum().reset_index()
     ftp_log_new = ftp_compressed_f.merge(uid_interval, how="left", on="uid")
