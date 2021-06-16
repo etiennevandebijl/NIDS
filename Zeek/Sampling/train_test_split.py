@@ -1,11 +1,12 @@
-# /usr/bin/env python
+#!/usr/bin/env python
 
-"""
-This module splits data in train/test dataset.
-"""
+"""Module splitting data in train and test sets."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import glob
 from sklearn.model_selection import train_test_split

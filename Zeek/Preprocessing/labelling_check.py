@@ -1,18 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 22 14:56:51 2021
+#!/usr/bin/env python
 
-@author: Etienne van de Bijl
-"""
+"""Module to check labelling dataset."""
+
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import pandas as pd
 from project_paths import get_data_folder
 
 data_path = get_data_folder("CIC-IDS-2017", "BRO", "1_Raw")
 file_name = data_path.replace("1_Raw/", "labelling.csv")
-df = pd.read_csv(file_name, sep =";")
+df = pd.read_csv(file_name, sep=";")
 
-df["Label"].value_counts()
-len(df["uid"].unique())
-df.shape
-
+print(df["Label"].value_counts())
+# Test if uid are unique:
+print(len(df["uid"].unique()) == df.shape[0])

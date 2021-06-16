@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-"""
-This module extracts features to a single anomaly score.
-"""
+"""Module extracts features to a single anomaly score."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
+
 
 import glob
 import numpy as np
@@ -19,17 +21,20 @@ from application import Application, tk
 COLS = ["uid", "ts", "ts_", "id.orig_h", "id.orig_p", "id.resp_h", "id.resp_p",
         "local_orig", "local_resp", "Label"]
 
+
 def main_feature_reduction(experiment, protocols):
+    """Reduce X to only one anomaly score using unsupervised learning alg."""
     data_path = get_data_folder(experiment, "BRO", "2_Preprocessed")
     output_path = get_data_folder(experiment, "BRO", "4_Feature_Reduction")
 
     for protocol in protocols:
         print("---" + experiment + "--2_Preprocessed--" + protocol.upper() + "----")
-        for file_path in glob.glob(data_path + "/" + protocol + ".csv", recursive=True):
+        for file_path in glob.glob(data_path + "/" + protocol + ".csv",
+                                   recursive=True):
             df = read_preprocessed(file_path)
 
             df = df.loc[:, (df != 0).any(axis=0)]
-            df = df.sample(frac=1, random_state = 0).reset_index(drop=True)
+            df = df.sample(frac=1, random_state=0).reset_index(drop=True)
 
             X, _, _, _ = format_ML(df)
 
@@ -45,6 +50,7 @@ def main_feature_reduction(experiment, protocols):
 
         df.to_csv(output_path + protocol + ".csv", index=False)
         statistics_dataset(df, output_path, protocol)
+
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting="2_Preprocessed")

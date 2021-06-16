@@ -8,7 +8,6 @@ __license__ = "GPL"
 __email__ = "evdb@cwi.nl"
 __status__ = "Production"
 
-
 import os
 
 from project_paths import get_data_folder
