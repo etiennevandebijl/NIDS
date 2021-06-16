@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+
+"""Utils for Zeek."""
+
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
+
 import io
 import datetime
 import numpy as np
@@ -8,6 +18,7 @@ IGNORE_COLS = ["uid", "ts", "ts_", "id.orig_h", "id.resp_h", "id.resp_p",
 
 
 def format_ML(df, binary=False):
+    """Convert df to ML ready format."""
     df = df.drop([c for c in IGNORE_COLS if c in df.columns], 1)
 
     if "duration" in df.columns:
@@ -28,6 +39,7 @@ def format_ML(df, binary=False):
 
 
 def fix_col_order(df):
+    """Set columns of csv in preferred order."""
     pref = ["uid", "ts", "ts_", "id.orig_h", "id.orig_p", "id.resp_h",
             "id.resp_p", "local_orig", "local_resp", "duration"]
     pref = [c for c in pref if c in df.columns]
@@ -39,6 +51,7 @@ def fix_col_order(df):
 
 
 def statistics_dataset(df, output_path, protocol):
+    """Gather statistics of dataset and write them to txt."""
     shape = df.shape
     label_counts = df["Label"].value_counts()
     df.loc[df["Label"] != "Benign", "Label"] = "Malicious"
@@ -58,6 +71,7 @@ def statistics_dataset(df, output_path, protocol):
 
 
 def read_preprocessed(path):
+    """Read Zeek csv."""
     df = pd.read_csv(path)
     df["ts"] = pd.to_datetime(df["ts"])
     if "ts_" in df.columns:

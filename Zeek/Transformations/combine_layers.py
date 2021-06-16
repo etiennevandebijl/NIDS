@@ -1,11 +1,13 @@
-# /usr/bin/env python
+#!/usr/bin/env python
 
-"""
-This module combines the different protocols on the uid.
-"""
+"""Script to merge transport layer with application layer protocols."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
+
 
 import os
 
@@ -17,6 +19,7 @@ ON_COLS = ["uid", "id.orig_h", "id.orig_p", "id.resp_h", "id.resp_p",
 
 
 def process_merge(df_n, df_a, protocol_name, output_path):
+    """Merge two layers."""
     df_merge = df_a.merge(df_n, how="left", on=ON_COLS)
     df_merge = fix_col_order(df_merge)
     df_merge = df_merge.dropna()
@@ -25,6 +28,7 @@ def process_merge(df_n, df_a, protocol_name, output_path):
 
 
 def combine_layers(experiment):
+    """Iterate through protocols to combine layers."""
     input_path = get_data_folder(experiment, 'BRO', "2_Preprocessed")
     output_path = get_data_folder(experiment, 'BRO', "2_Preprocessed")
 
@@ -45,12 +49,13 @@ def combine_layers(experiment):
                 if os.path.exists(file_path_a):
                     df_a = read_preprocessed(file_path_a)
 
-                    process_merge(df_n, df_a, app_proto + "-" + network_protocol,
-                                  output_path)
+                    process_merge(df_n, df_a, app_proto + "-" /
+                                  + network_protocol, output_path)
 
 
 if __name__ == "__main__":
-#   combine_layers("UNSW-NB15")
-#   combine_layers("ISCX-IDS-2012")
-#   combine_layers("CIC-IDS-2017")
-    combine_layers("CIC-IDS-2018")
+    # combine_layers("UNSW-NB15")
+    # combine_layers("ISCX-IDS-2012")
+    # combine_layers("CIC-IDS-2017")
+    # combine_layers("CIC-IDS-2018")
+    print("Done")
