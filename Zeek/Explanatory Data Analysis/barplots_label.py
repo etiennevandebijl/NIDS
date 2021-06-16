@@ -4,7 +4,7 @@
 This module makes figures of the class-distribution of the labels.
 """
 
-#Author: Etienne van de Bijl 2020
+# Author: Etienne van de Bijl 2020
 # License: BSD 3 clause
 
 import glob

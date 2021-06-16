@@ -1,18 +1,19 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module makes figures of binary features.
-"""
+"""Barplots features of benign traffic."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 from application import Application, tk
-
 from project_paths import PROJECT_PATH, go_or_create_folder, get_data_folder
 from Zeek.utils import read_preprocessed
 sns.set(font_scale=1.2)
@@ -22,25 +23,7 @@ TAGS = ["local_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
 
 
 def plot_bar(dataset, protocol, title, output_path):
-    """
-    Plots the barplot of the binary features.
-
-    Parameters
-    ----------
-    dataset : pandas dataframe
-        Dataset to plot.
-    protocol : string
-        Protocol of interest.
-    title : string
-        File name of the file.
-    output_path : string
-        Obvious..
-
-    Returns
-    -------
-    None.
-
-    """
+    """Make plot of feature."""
     output_path_p = go_or_create_folder(output_path, protocol)
     dataset.plot(kind="bar", figsize=(10, 7))
     plt.title(protocol.upper() + " binary features")

@@ -25,6 +25,7 @@ event zeek_init()
     Log::disable_stream(X509::LOG);
     Log::disable_stream(Weird::LOG);
 
+# The following script can be used to filter some information 
 #   Log::remove_default_filter(SSH::LOG);
 #   Log::add_filter(SSH::LOG, [$name="ssh-filter", $exclude=set("client", "server", "direction", 
 #			                                        "cipher_alg", "mac_alg", "kex_alg",
