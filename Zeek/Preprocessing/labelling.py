@@ -55,13 +55,15 @@ def identify_attack(log_file, attack, vise_versa=False):
     if not pd.isnull(attack["Source_Port"]):
         cond = (cond & (log_file["id."+src+"_p"] == attack["Source_Port"]))
     if not pd.isnull(attack["Destination_Port"]):
-        cond = (cond & (log_file["id."+dst+"_p"] == attack["Destination_Port"]))
+        cond = (cond &
+                (log_file["id."+dst+"_p"] == attack["Destination_Port"]))
     log_file.loc[cond, 'Label'] = attack["Label"]
     return log_file
 
 
 def apply_labeling_scheme(log_file, experiment_name):
     """
+
     Labelling a BRO log file.
 
     Parameters
@@ -90,7 +92,7 @@ def apply_labeling_scheme(log_file, experiment_name):
     return log_file
 
 
-def label_experiment_conn_log(experiment_name):
+def label_conn_log(experiment_name):
     """Label conn.log.
 
     This function starts the labelling procedure on all conn.log files for
@@ -114,8 +116,8 @@ def label_experiment_conn_log(experiment_name):
 
 
 if __name__ == "__main__":
-    # label_experiment_conn_log("CIC-IDS-2017")
-    # label_experiment_conn_log("ISCX-IDS-2012")
-    # label_experiment_conn_log("UNSW-NB15")
-    # label_experiment_conn_log("CIC-IDS-2018")
+    label_conn_log("CIC-IDS-2017")
+    # label_conn_log("ISCX-IDS-2012")
+    # label_conn_log("UNSW-NB15")
+    # label_conn_log("CIC-IDS-2018")
     print("Done")
