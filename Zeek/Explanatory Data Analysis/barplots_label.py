@@ -4,8 +4,11 @@
 This module makes figures of the class-distribution of the labels.
 """
 
-# Author: Etienne van de Bijl 2020
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import glob
 import seaborn as sns

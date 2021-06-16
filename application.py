@@ -1,9 +1,12 @@
-"""
-This module can be used to pick datasets and internet protocols to be used in
-other modules in a Tkinter interface.
-"""
+#!/usr/bin/env python
 
-# Author: Etienne van de Bijl 2020
+"""Application to select Experiments/ Versions / Protocols."""
+
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import os
 import glob
@@ -11,7 +14,7 @@ import tkinter as tk
 from tkinter import messagebox
 from pathlib import Path
 
-from project_paths import NID_PATH, get_data_folder
+from project_paths import DATA_PATH, get_data_folder
 
 
 if os.environ.get('DISPLAY', '') == '':
@@ -36,17 +39,15 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def options_list(self, v_setting=0):
-        """
-        This function creates the different options to choose from.
-        """
-        settings = {"Experiments": os.listdir(NID_PATH)}
+        """This function creates the different options to choose from."""
+        settings = {"Experiments": os.listdir(DATA_PATH)}
         f_format = "*.csv"
 
         if v_setting == 0:
             f_format = "*/*.log"
             settings["Version"] = ["1_Raw"]
         elif v_setting == 1:
-            settings["Version"] = ["2_Preprocessed", "2_Preprocessed_DDoS", 
+            settings["Version"] = ["2_Preprocessed", "2_Preprocessed_DDoS",
                                    "3_Downsampled"]
         elif v_setting == 2:
             settings["Version"] = ["4_Feature_Reduction"]
@@ -62,18 +63,17 @@ class Application(tk.Frame):
             settings["Version"] = [v_setting]
 
         files = []
-        for exp in os.listdir(NID_PATH):
+        for exp in os.listdir(DATA_PATH):
             for vers in settings["Version"]:
                 path = get_data_folder(exp, "BRO", vers)
                 for file_path in glob.glob(path + f_format, recursive=False):
                     base = Path(file_path).stem
                     files.append(base)
         settings["Files"] = sorted(list(set(files)), key=len)
-        
         if v_setting == 6:
             settings["Version"] = ["5_Graph"]
-            
         return settings
+
 
     def create_widgets(self):
         """
@@ -96,7 +96,7 @@ class Application(tk.Frame):
             self.variables[title] = box
             col += 1
 
-        #Buttons
+        # Buttons
         tk.Button(self, text="ACCEPT", fg="blue",
                   command=self.process_input).grid(row=max_row + 1, column=0)
         tk.Button(self, text="QUIT", fg="red",

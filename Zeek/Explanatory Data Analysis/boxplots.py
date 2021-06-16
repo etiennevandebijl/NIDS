@@ -3,6 +3,11 @@
 """
 This module plots the numerical data in boxplots.
 """
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import matplotlib.pyplot as plt
 import pandas as pd

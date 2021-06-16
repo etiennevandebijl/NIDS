@@ -23,7 +23,7 @@ TAGS = ["local_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
 
 
 def plot_bar(dataset, protocol, title, output_path):
-    """Make plot of feature."""
+    """Make barplot of feature."""
     output_path_p = go_or_create_folder(output_path, protocol)
     dataset.plot(kind="bar", figsize=(10, 7))
     plt.title(protocol.upper() + " binary features")
@@ -58,9 +58,9 @@ def bin_plot(experiments, version, protocols):
     for protocol in protocols:
         stats = {}
         for exp in experiments:
+            print("---" + exp + "---" + protocol + "---")
+            path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
             try:
-                print("---" + exp + "---" + protocol + "---")
-                path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
                 dataset = read_preprocessed(path)
                 dataset = dataset[dataset["Label"] == "Benign"]
                 dataset = dataset.select_dtypes(include=['bool'])
