@@ -91,7 +91,8 @@ def apply_labeling_scheme(log_file, experiment_name):
 
 
 def label_experiment_conn_log(experiment_name):
-    """
+    """Label conn.log.
+
     This function starts the labelling procedure on all conn.log files for
     the corresponding experiment_name.
 
@@ -113,9 +114,8 @@ def label_experiment_conn_log(experiment_name):
 
 
 if __name__ == "__main__":
-    label_experiment_conn_log("CIC-IDS-2017")
+    # label_experiment_conn_log("CIC-IDS-2017")
     # label_experiment_conn_log("ISCX-IDS-2012")
     # label_experiment_conn_log("UNSW-NB15")
-    # label_experiment_conn_log("CIC-IDS-2018 DDoS")
     # label_experiment_conn_log("CIC-IDS-2018")
     print("Done")

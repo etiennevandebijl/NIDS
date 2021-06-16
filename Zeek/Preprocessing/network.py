@@ -10,10 +10,12 @@ identify whether host belong to the local network.
 
 import pandas as pd
 
-from project_paths import NID_PATH
+from project_paths import DATA_PATH
+
 
 def local_ip_addresses(network_info):
-    """
+    """Retrieve local IP adresses.
+
     Converts dataframe with info to the local IP addresses.
 
     Parameters
@@ -31,28 +33,17 @@ def local_ip_addresses(network_info):
     local_ip = lcl_network[["IPv4_private", "IPv4_public", "IPv6"]].values.ravel()
     return [ip for ip in local_ip if not pd.isnull(ip)]
 
+
 def convert_ipv4(network_info):
-    """
-    Conversion of public IPv4 to private IPv4.
-
-    Parameters
-    ----------
-    network_info : pandas dataframe
-        Info regarding the network of concern..
-
-    Returns
-    -------
-    ipv4_dict : TYPE
-        Conversion dictionary.
-
-    """
+    """Create dict to convert public to private IPv4."""
     ipv4_data = network_info[["IPv4_private", "IPv4_public"]].dropna()
     ipv4_dict = ipv4_data.set_index('IPv4_private')['IPv4_public'].to_dict()
     return ipv4_dict
 
+
 def network_preprocessing(log_file, experiment_name):
     """
-    Processing of network info.
+    Processing of network info. We exclude IPv6 connections.
 
     Parameters
     ----------
@@ -69,7 +60,7 @@ def network_preprocessing(log_file, experiment_name):
 
     """
     try:
-        network_info = pd.read_csv(NID_PATH + experiment_name +
+        network_info = pd.read_csv(DATA_PATH + experiment_name +
                                    "/Experiment setup/Network_info_scheme.csv",
                                    sep=";")
     except FileNotFoundError:
@@ -82,13 +73,14 @@ def network_preprocessing(log_file, experiment_name):
     for endpoint in ["orig", "resp"]:
         feature = "id." + endpoint + "_h"
 
-        log_file = log_file[~log_file[feature].str.contains(":")] #Exclude ipv6
+        log_file = log_file[~log_file[feature].str.contains(":")]
         log_file["local_"+endpoint] = log_file[feature].isin(local_ip)
 
         for private_ip, public_ip in ipv4_dict.items():
             log_file.loc[log_file[feature] == public_ip, feature] = private_ip
     return log_file
 
-#from BRO.Preprocessing.utils import merge_bro_log_files; from project_paths import get_data_folder
-#conn_log = merge_bro_log_files(get_data_folder("CIC-IDS-2017", "BRO", "1_Raw"), "conn")
-#conn_log = network_preprocessing(conn_log, "CIC-IDS-2017")
+# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from project_paths import get_data_folder
+# conn_log = merge_bro_log_files(get_data_folder("CIC-IDS-2017", "BRO", "1_Raw"), "conn")
+# conn_log = network_preprocessing(conn_log, "CIC-IDS-2017")
