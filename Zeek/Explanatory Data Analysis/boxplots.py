@@ -1,8 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module plots the numerical data in boxplots.
-"""
+"""Module plots the numerical data in boxplots."""
 __author__ = "Etienne van de Bijl"
 __copyright__ = "Copyright 2021, CWI"
 __license__ = "GPL"
@@ -14,28 +13,30 @@ import pandas as pd
 import seaborn as sns
 
 from project_paths import PROJECT_PATH, go_or_create_folder, get_data_folder
-from Zeek.utils import read_preprocessed, format_ML
+from Zeek.utils import read_preprocessed, format_ML, print_progress
 from application import Application, tk
 
 sns.set(font_scale=1.2)
 
+
 def plot_box(dataset, protocol, output_path):
-    """
-    This function plots the boxplots for each feature.
-    """
+    """Plot the boxplots for each feature."""
     output_path_p = go_or_create_folder(output_path, protocol)
     for feature in dataset.columns:
         if feature != "Dataset":
             plt.figure(figsize=(10, 6))
             sns.boxplot(x="Dataset", y=feature, data=dataset)
-            plt.title("Benign comparison "+ feature + " vs datasets")
+            plt.title("Benign comparison " + feature + " vs datasets")
             plt.xticks(rotation=60)
             plt.tight_layout()
-            plt.savefig(output_path_p + protocol + "-benign-" + feature + ".png")
+            plt.savefig(output_path_p + protocol + "-benign-"
+                        + feature + ".png")
             plt.close()
 
-def num_plot(experiments, version, protocols):
-    """
+
+def boxplots(experiments, version, protocols):
+    """Create boxplots of numerical data.
+
     This function plots the numerical data in boxplots.
 
     Parameters
@@ -53,7 +54,7 @@ def num_plot(experiments, version, protocols):
         pd_list = []
         for exp in experiments:
             try:
-                print("---" + exp + "---" + protocol + "---")
+                print_progress(exp, version, protocol.upper())
                 path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
                 dataset = read_preprocessed(path)
                 dataset = dataset[dataset["Label"] == "Benign"]
@@ -74,5 +75,5 @@ if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
     APP.mainloop()
     for vers in APP.selected_values["Version"]:
-        num_plot(APP.selected_values["Experiments"], vers,
+        boxplots(APP.selected_values["Experiments"], vers,
                  APP.selected_values["Files"])

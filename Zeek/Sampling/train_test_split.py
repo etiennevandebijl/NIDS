@@ -12,7 +12,7 @@ import glob
 from sklearn.model_selection import train_test_split
 
 from project_paths import get_data_folder, go_or_create_folder
-from Zeek.utils import read_preprocessed, statistics_dataset
+from Zeek.utils import read_preprocessed, statistics_dataset, print_progress
 from application import Application, tk
 
 TRAIN_RATIO = 0.8
@@ -39,7 +39,8 @@ def store_df(dataset, protocol, output_path):
 
 
 def train_test_split_ml(experiment, version, protocols):
-    """
+    """Split data in train and test.
+
     Train test split.
 
     Parameters
@@ -55,21 +56,22 @@ def train_test_split_ml(experiment, version, protocols):
     for protocol in protocols:
         for file_path in glob.glob(data_path + "/" + protocol + ".csv",
                                    recursive=True):
-            print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")
-            dataset = read_preprocessed(file_path)
+            print_progress(experiment, version, protocol.upper())
+            data = read_preprocessed(file_path)
 
-            dataset = dataset.loc[:, (dataset != 0).any(axis=0)]
+            data = data.loc[:, (data != 0).any(axis=0)]
 
-            single_attacks = dataset["Label"].drop_duplicates(keep=False).tolist()
-            dataset = dataset[~dataset["Label"].isin(single_attacks)]
+            single_attacks = data["Label"].drop_duplicates(keep=False).tolist()
+            data = data[~data["Label"].isin(single_attacks)]
 
-            if (dataset.shape[0] > MINIMUM_ROWS and len(dataset["Label"].unique()) > 1):
-                df_train, df_test, _, _ = train_test_split(dataset, dataset["Label"],
-                                                           stratify=dataset["Label"],
-                                                           train_size=TRAIN_RATIO,
-                                                           random_state=RS)
-                store_df(df_train, protocol + "_train", output_path)
-                store_df(df_test, protocol + "_test", output_path)
+            if (data.shape[0] > MINIMUM_ROWS and
+                    len(data["Label"].unique()) > 1):
+                train, test, _, _ = train_test_split(data, data["Label"],
+                                                     stratify=data["Label"],
+                                                     train_size=TRAIN_RATIO,
+                                                     random_state=RS)
+                store_df(train, protocol + "_train", output_path)
+                store_df(test, protocol + "_test", output_path)
 
 
 if __name__ == "__main__":

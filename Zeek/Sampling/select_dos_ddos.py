@@ -1,22 +1,25 @@
-# /usr/bin/env python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-In this function we only select DDoS Attacks.
-"""
+"""Module to select only DDoS/DoS attacks."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import glob
 import pandas as pd
 
 from project_paths import get_data_folder
-from Zeek.utils import read_preprocessed, statistics_dataset
+from Zeek.utils import read_preprocessed, statistics_dataset, print_progress
 from application import Application, tk
 
+
 def equalize_ddos(dataset, ddos):
-    """
-    
+    """Equalizing the DDoS/DoS Samples.
+
     This function downsamples DoS/DDoS attacks.
 
     Parameters
@@ -34,17 +37,19 @@ def equalize_ddos(dataset, ddos):
     """
     dataset_b = dataset[dataset["Label"] == "Benign"]
     dataset_m = dataset[dataset["Label"] != "Benign"]
-    least_instances = dataset_m["Label"].value_counts().min()
+    lower_b = dataset_m["Label"].value_counts().min()
 
     pd_list = [dataset_b]
     for attack in ddos:
-        df_attack = dataset_m[dataset_m["Label"] == attack].sample(least_instances)
+        df_attack = dataset_m[dataset_m["Label"] == attack].sample(lower_b)
         pd_list.append(df_attack)
     dataset = pd.concat(pd_list)
     return dataset
 
+
 def select_ddos(experiment, version, protocols, equalize=True):
-    """
+    """Select only DDoS/DoS malicious traffic + Benign.
+
     In this function we only select DDoS attacks.
 
     Parameters
@@ -64,21 +69,25 @@ def select_ddos(experiment, version, protocols, equalize=True):
     output_path = get_data_folder(experiment, "BRO", "2_Preprocessed_DDoS")
 
     for protocol in protocols:
-        for file_path in glob.glob(data_path + "/" + protocol + ".csv", recursive=True):
-            print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")
+        for file_path in glob.glob(data_path + "/" + protocol + ".csv",
+                                   recursive=True):
+            print_progress(experiment, version, protocol.upper())
             dataset = read_preprocessed(file_path)
 
-            ddos = [a for a in dataset["Label"].unique() if ("DoS" in a or "DDoS" in a or "Bot" in a)]
+            ddos = [a for a in dataset["Label"].unique() if ("DoS" in a or
+                                                             "DDoS" in a or
+                                                             "Bot" in a)]
             if len(ddos) == 0:
                 continue
             dataset = dataset[dataset["Label"].isin(ddos + ["Benign"])]
 
-            #Is this necessary?
+            # Is this necessary?
             if equalize:
                 dataset = equalize_ddos(dataset, ddos)
 
             dataset.to_csv(output_path + protocol + ".csv", index=False)
             statistics_dataset(dataset, output_path, protocol)
+
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=4)

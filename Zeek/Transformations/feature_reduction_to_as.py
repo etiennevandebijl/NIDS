@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Module extracts features to a single anomaly score."""
 
@@ -11,11 +12,11 @@ __status__ = "Production"
 
 import glob
 import numpy as np
-from tqdm import tqdm
 
 from project_paths import get_data_folder
 from ML.Unsupervised.models import models
-from Zeek.utils import read_preprocessed, format_ML, statistics_dataset
+from Zeek.utils import read_preprocessed, format_ML, \
+    statistics_dataset, print_progress
 from application import Application, tk
 
 COLS = ["uid", "ts", "ts_", "id.orig_h", "id.orig_p", "id.resp_h", "id.resp_p",
@@ -28,7 +29,7 @@ def main_feature_reduction(experiment, protocols):
     output_path = get_data_folder(experiment, "BRO", "4_Feature_Reduction")
 
     for protocol in protocols:
-        print("---" + experiment + "--2_Preprocessed--" + protocol.upper() + "----")
+        print_progress(experiment, "2_Preprocessed", protocol.upper())
         for file_path in glob.glob(data_path + "/" + protocol + ".csv",
                                    recursive=True):
             df = read_preprocessed(file_path)
@@ -40,7 +41,7 @@ def main_feature_reduction(experiment, protocols):
 
             df = df[[c for c in df.columns if c in COLS]]
 
-            for model, clf in tqdm(models.items()):
+            for model, clf in models.items():
                 clf.fit(X)
                 y_pred_score = clf.decision_function(X)
                 if "IForest" in model:

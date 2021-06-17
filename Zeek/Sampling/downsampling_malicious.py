@@ -1,18 +1,21 @@
-# /usr/bin/env python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module downsamples the data.
-"""
+"""Module to downsample malicious activities to make it more realistic."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
+
 
 import glob
 import numpy as np
 import pandas as pd
 
 from project_paths import get_data_folder
-from Zeek.utils import read_preprocessed, statistics_dataset
+from Zeek.utils import read_preprocessed, statistics_dataset, print_progress
 from application import Application, tk
 
 MINIMUM_ROWS = 1000
@@ -39,6 +42,7 @@ def downsample_malicious(dataset):
     """
     dataset_b = dataset[dataset["Label"] == "Benign"]
     dataset_m = dataset[dataset["Label"] != "Benign"]
+    samples = len(dataset_m["Label"].unique())
 
     scaler = PREF_INTRUSION_RATIO / (1 - PREF_INTRUSION_RATIO)
     positives_new = int(scaler * dataset_b.shape[0])
@@ -47,7 +51,7 @@ def downsample_malicious(dataset):
     i = 0
     while cond:
         dataset_m_new = dataset_m.sample(positives_new, random_state=i)
-        cond = len(dataset_m["Label"].unique()) != len(dataset_m_new["Label"].unique())
+        cond = samples != len(dataset_m_new["Label"].unique())
         i = i + 1
 
     dataset = pd.concat([dataset_b, dataset_m_new])
@@ -56,9 +60,10 @@ def downsample_malicious(dataset):
 
 
 def downsampling(experiment, protocols):
-    """
-    This function downsamples datasets. If the numnber of instances is below 1000,
-    we skip the dataset. When the intrusion ratio is.
+    """Downsampling malicious instances.
+
+    This function downsamples datasets. If the numnber of instances is
+    below 1000, we skip the dataset. When the intrusion ratio is.
 
     Parameters
     ----------
@@ -75,21 +80,24 @@ def downsampling(experiment, protocols):
     output_path = get_data_folder(experiment, "BRO", "3_Downsampled")
 
     for protocol in protocols:
-        print("---" + experiment + "--" + protocol.upper() + "----")
-        for file_path in glob.glob(data_path + "/" + protocol + ".csv", recursive=True):
+        print_progress(experiment, "2_Preprocessed", protocol.upper())
+        for file_path in glob.glob(data_path + "/" + protocol + ".csv",
+                                   recursive=True):
             dataset = read_preprocessed(file_path)
 
             if dataset.shape[0] < MINIMUM_ROWS:
                 continue
 
-            intrusion_ratio = np.sum(dataset["Label"] != "Benign") / dataset.shape[0]
+            intrusion_ratio = np.sum(dataset["Label"] != "Benign") / \
+                dataset.shape[0]
 
             if intrusion_ratio > BOUND_INTRUSION_RATIO:
                 dataset = downsample_malicious(dataset)
                 dataset.to_csv(output_path + protocol + ".csv", index=False)
                 statistics_dataset(dataset, output_path, protocol)
             else:
-                print("---" + experiment + "--" + protocol.upper() + "- Ignore")
+                print("---" + experiment + "--" + protocol.upper() +
+                      "---- Ignore")
 
 
 if __name__ == "__main__":

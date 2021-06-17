@@ -1,19 +1,22 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module creates correlation plots
-"""
+"""Make correlation plots of the normal traffic."""
 
-# Author: Etienne van de Bijl 2020
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import glob
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from project_paths import get_data_folder, get_results_folder, go_or_create_folder
-from Zeek.utils import format_ML, read_preprocessed
+from project_paths import get_data_folder, get_results_folder, \
+    go_or_create_folder
+from Zeek.utils import format_ML, read_preprocessed, print_progress
 from application import Application, tk
 
 sns.set(font_scale=1.5)
@@ -35,11 +38,14 @@ def cor_plot(experiment, version, protocols):
 
     """
     data_path = get_data_folder(experiment, "BRO", version)
-    output_folder = get_results_folder(experiment, "BRO", version, "EDA")+"correlations/"
+    output_folder = get_results_folder(experiment, "BRO",
+                                       version, "EDA")+"correlations/"
 
     for protocol in protocols:
-        print("---"+experiment+"--"+version+"--"+protocol.upper()+"----")
-        for file_path in glob.glob(data_path+"/"+protocol+".csv", recursive=True):
+        print_progress(experiment, version, protocol.upper())
+
+        for file_path in glob.glob(data_path+"/"+protocol+".csv",
+                                   recursive=True):
 
             dataset = read_preprocessed(file_path)
 
@@ -50,12 +56,14 @@ def cor_plot(experiment, version, protocols):
 
             for method in ["spearman", "kendall", "pearson"]:
                 output_path = go_or_create_folder(output_folder, method)
-                corr = pd.DataFrame(x_data, columns=feature_names).corr(method=method)
+                corr = pd.DataFrame(x_data,
+                                    columns=feature_names).corr(method=method)
 
                 plt.figure(figsize=(20, 15))
                 sns.heatmap(corr)
 
-                plt.title(experiment + " " + protocol.upper() + " " + method + " correlation")
+                plt.title(experiment + " " + protocol.upper() + " " +
+                          method + " correlation")
                 plt.tight_layout()
                 plt.savefig(output_path + protocol + "-correlation.png")
                 plt.close()

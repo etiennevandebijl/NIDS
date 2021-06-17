@@ -79,3 +79,14 @@ def read_preprocessed(path):
     if "duration" in df.columns:
         df["duration"] = pd.to_timedelta(df["duration"])
     return df
+
+
+def print_progress(experiment, version, file):
+    """Print progress."""
+    base = "---"
+    loc1 = (15 - len(experiment)) * "-"
+    loc2 = (21 - len(version)) * "-"
+    loc3 = (10 - len(file)) * "-"
+    printable = base + experiment + loc1 + version + loc2 + file + loc3
+    printable = printable + str(datetime.datetime.now())
+    print(printable)

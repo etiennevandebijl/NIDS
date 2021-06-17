@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 from application import Application, tk
 from project_paths import PROJECT_PATH, go_or_create_folder, get_data_folder
-from Zeek.utils import read_preprocessed
+from Zeek.utils import read_preprocessed, print_progress
 sns.set(font_scale=1.2)
 
 TAGS = ["local_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
@@ -58,7 +58,7 @@ def bin_plot(experiments, version, protocols):
     for protocol in protocols:
         stats = {}
         for exp in experiments:
-            print("---" + exp + "---" + protocol + "---")
+            print_progress(exp, version, protocol.upper())
             path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
             try:
                 dataset = read_preprocessed(path)

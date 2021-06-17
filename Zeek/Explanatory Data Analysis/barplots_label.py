@@ -13,27 +13,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from project_paths import get_data_folder, get_results_folder
-from Zeek.utils import read_preprocessed
+from Zeek.utils import read_preprocessed, print_progress
 from application import Application, tk
 
+
 def class_count_plot(dataset, output_folder, protocol):
-    """
-    Parameters
-    ----------
-    dataset : pandas dataframe
-        DESCRIPTION.
-    output_folder : string
-        DESCRIPTION.
-    protocol : string
-        DESCRIPTION.
-
-    Returns
-    -------
-    None.
-
-    """
+    """Do the counting."""
     pvt_table = dataset["Label"].value_counts().reset_index()
-    pvt_table["Percentage"] = pvt_table["Label"] * 100 / pvt_table["Label"].sum()
+    pvt_table["Percentage"] = pvt_table["Label"] * 100 / \
+        pvt_table["Label"].sum()
 
     width = min(max(4 + pvt_table.shape[0] * 0.9, 6), 15)
     plt.figure(figsize=(width, 7))
@@ -54,25 +42,13 @@ def class_count_plot(dataset, output_folder, protocol):
 
 
 def class_count(experiment, version, protocols):
-    """
-    Parameters
-    ----------
-    experiment : string
-    version : string
-    protocols : list of strings
-
-    Returns
-    -------
-    None.
-
-    """
+    """Count frequency of labels."""
     data_path = get_data_folder(experiment, "BRO", version)
     output_folder = get_results_folder(experiment, "BRO", version, "EDA") + \
         "class-distribution/"
 
     for protocol in protocols:
-        print("---" + experiment + "--" + version + "--" + protocol.upper() +
-              "----")
+        print_progress(experiment, version, protocol.upper())
         for file_path in glob.glob(data_path + "/" + protocol + ".csv",
                                    recursive=True):
             dataset = read_preprocessed(file_path)
