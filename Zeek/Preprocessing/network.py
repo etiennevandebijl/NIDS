@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module can be used to translate ip addresses to the according host and to
-identify whether host belong to the local network.
-"""
+"""Module to translate/map known IP adresses of local hosts."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import pandas as pd
 
@@ -30,7 +31,8 @@ def local_ip_addresses(network_info):
 
     """
     lcl_network = network_info[network_info["Label"] == "Network"]
-    local_ip = lcl_network[["IPv4_private", "IPv4_public", "IPv6"]].values.ravel()
+    local_ip = lcl_network[["IPv4_private", "IPv4_public",
+                            "IPv6"]].values.ravel()
     return [ip for ip in local_ip if not pd.isnull(ip)]
 
 
@@ -42,7 +44,8 @@ def convert_ipv4(network_info):
 
 
 def network_preprocessing(log_file, experiment_name):
-    """
+    """Map local IP adresses.
+
     Processing of network info. We exclude IPv6 connections.
 
     Parameters
@@ -82,5 +85,6 @@ def network_preprocessing(log_file, experiment_name):
 
 # from Zeek.Preprocessing.utils import merge_bro_log_files
 # from project_paths import get_data_folder
-# conn_log = merge_bro_log_files(get_data_folder("CIC-IDS-2017", "BRO", "1_Raw"), "conn")
-# conn_log = network_preprocessing(conn_log, "CIC-IDS-2017")
+# zeek_conn_log = merge_bro_log_files(get_data_folder("CIC-IDS-2017",
+#                                                "BRO", "1_Raw"), "conn")
+# zeek_conn_log = network_preprocessing(zeek_conn_log, "CIC-IDS-2017")

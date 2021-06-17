@@ -14,7 +14,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from project_paths import get_data_folder, get_labelling_scheme
-from Zeek.Preprocessing.utils import bro_reader
+from Zeek.Preprocessing.utils import zeek_reader
 
 SELECT_COLS = ["uid", "ts", "id.orig_h", "id.orig_p", "id.resp_h", "id.resp_p"]
 
@@ -107,7 +107,7 @@ def label_conn_log(experiment_name):
 
     pd_list = []
     for file_path in glob.glob(data_path + "**/conn.log", recursive=True):
-        conn_log = bro_reader(file_path)[SELECT_COLS]
+        conn_log = zeek_reader(file_path)[SELECT_COLS]
         uid_label = apply_labeling_scheme(conn_log, experiment_name)
         pd_list.append(uid_label[["uid", "Label"]])
     df_uid_label = pd.concat(pd_list, axis=0)

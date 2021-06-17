@@ -19,8 +19,10 @@ MINIMUM_ROWS = 1000
 PREF_INTRUSION_RATIO = 0.05
 BOUND_INTRUSION_RATIO = 0.1
 
+
 def downsample_malicious(dataset):
-    """
+    """Downsampling malicious instances.
+
     This function downsamples the malicious instances towards an intrusion
     ratio equaling the preferred intrusion ratio.
 
@@ -76,22 +78,22 @@ def downsampling(experiment, protocols):
         print("---" + experiment + "--" + protocol.upper() + "----")
         for file_path in glob.glob(data_path + "/" + protocol + ".csv", recursive=True):
             dataset = read_preprocessed(file_path)
-            
+
             if dataset.shape[0] < MINIMUM_ROWS:
                 continue
-            
+
             intrusion_ratio = np.sum(dataset["Label"] != "Benign") / dataset.shape[0]
-            
+
             if intrusion_ratio > BOUND_INTRUSION_RATIO:
                 dataset = downsample_malicious(dataset)
                 dataset.to_csv(output_path + protocol + ".csv", index=False)
                 statistics_dataset(dataset, output_path, protocol)
             else:
-                print("---" + experiment + "--" + protocol.upper() + "---- Ignore")
+                print("---" + experiment + "--" + protocol.upper() + "- Ignore")
+
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting="2_Preprocessed")
     APP.mainloop()
     for exp in APP.selected_values["Experiments"]:
         downsampling(exp, APP.selected_values["Files"])
-        

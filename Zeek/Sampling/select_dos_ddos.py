@@ -16,7 +16,8 @@ from application import Application, tk
 
 def equalize_ddos(dataset, ddos):
     """
-    This function downsamples the DDoS attacks.
+    
+    This function downsamples DoS/DDoS attacks.
 
     Parameters
     ----------
@@ -49,7 +50,7 @@ def select_ddos(experiment, version, protocols, equalize=True):
     Parameters
     ----------
     experiment : string
-    version : TYPE
+    version : string
     protocols : list of strings
     equalize : boolean
         We can downsampled the DDoS attacks towards the lowest number.

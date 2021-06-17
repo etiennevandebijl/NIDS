@@ -1,17 +1,20 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Main program to preprocess log files constructed by Zeek."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright (C) 2021 Etienne van de Bijl"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
+import warnings
 import datetime
 import pandas as pd
-import warnings
 
 from project_paths import get_data_folder
 from Zeek.utils import fix_col_order, statistics_dataset
-
 from Zeek.Preprocessing.utils import merge_bro_log_files
 from Zeek.Preprocessing.network import network_preprocessing
 from Zeek.Preprocessing.conn import preprocessing_conn
@@ -25,8 +28,10 @@ from application import Application, tk
 
 warnings.filterwarnings("ignore")
 
-FUNCTIONS = {"dns": preprocessing_dns, "ftp": preprocessing_ftp,
-             "http": preprocessing_http, "ssh": preprocessing_ssh,
+FUNCTIONS = {"dns": preprocessing_dns,
+             "ftp": preprocessing_ftp,
+             "http": preprocessing_http,
+             "ssh": preprocessing_ssh,
              "ssl": preprocessing_ssl}
 
 
@@ -50,6 +55,11 @@ def finish_dataset(log_file, df_uid_label, experiment, output_path, protocol):
 def main(experiment, protocols_list):
     """Iterate log files.
 
+    This script calls all protocol preprocessing function to preprocess
+    the Zeek log files. Only TCP and UDP are performed together as they
+    belong in the same conn.log so we cannot seperately preprocess these.
+    It is possible, but not desired for now.
+
     Parameters
     ----------
     experiment : string
@@ -58,7 +68,6 @@ def main(experiment, protocols_list):
     protocols_list: list of strings
         List of the protocols of interest for this job
     """
-
     data_path = get_data_folder(experiment, "BRO", "1_Raw")
     output_path = get_data_folder(experiment, "BRO", "2_Preprocessed")
     uid_label = pd.read_csv(data_path.replace("1_Raw/", "labelling.csv"),

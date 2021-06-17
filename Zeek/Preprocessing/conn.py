@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module contains the proprocessing steps of the conn.log file.
-TCP and UDP are seperated as they have many non-overlapping features.
-"""
+"""Module to preprocess TCP and UDP of the conn.log file of Zeek."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import numpy as np
 from Zeek.Preprocessing.utils import common_used_practice
@@ -17,13 +18,14 @@ COMMON_SERVICE_UDP = ["dns", "krb", "dhcp"]
 
 
 def preprocessing_conn(conn_log):
-    """
+    """Preprocess conn.log.
+
     This function starts the preprocessing of the conn.log file.
 
     Parameters
     ----------
     conn_log : pandas dataframe
-        DESCRIPTION.
+        A log files containing TCP, UDP and ICMP sessions.
 
     Returns
     -------
@@ -44,9 +46,12 @@ def preprocessing_conn(conn_log):
 
 
 def _cleaning_conn(conn_log):
-    """
-    Here the first steps on the cleaning conn.log are done. This consists of
-    taking care of time and packets/bytes.
+    """Clean conn.log file.
+
+    Here the first steps on cleaning conn.log are done. This consists of
+    taking care of time and packets/bytes. We construct for both hosts
+    a bytes per packet statistic and the PCR which is the Production
+    Consumtion Ratio determining the ratio of sending and receiving packets.
 
     Parameters
     ----------
@@ -56,7 +61,7 @@ def _cleaning_conn(conn_log):
     Returns
     -------
     conn_log : pandas dataframe
-        Cleaned file.
+        Cleaned conn.log.
 
     """
     conn_log.drop("tunnel_parents", 1, inplace=True)
@@ -69,12 +74,18 @@ def _cleaning_conn(conn_log):
     conn_log["ts_"] = conn_log["ts"] + conn_log["duration"]
 
     conn_log["orig_bpp"] = np.where(conn_log["orig_pkts"] > 0,
-                                    conn_log["orig_bytes"] / conn_log["orig_pkts"], 0)
+                                    conn_log["orig_bytes"] /
+                                    conn_log["orig_pkts"], 0)
+
     conn_log["resp_bpp"] = np.where(conn_log["resp_pkts"] > 0,
-                                    conn_log["resp_bytes"] / conn_log["resp_pkts"], 0)
-    conn_log["PCR"] = np.where((conn_log["orig_bytes"] + conn_log["resp_bytes"]) > 0,
-                               (conn_log["orig_bytes"] - conn_log["resp_bytes"]) / \
-                               (conn_log["orig_bytes"] + conn_log["resp_bytes"]), 0)
+                                    conn_log["resp_bytes"] /
+                                    conn_log["resp_pkts"], 0)
+    conn_log["PCR"] = np.where((conn_log["orig_bytes"] +
+                                conn_log["resp_bytes"]) > 0,
+                               (conn_log["orig_bytes"] -
+                                conn_log["resp_bytes"]) /
+                               (conn_log["orig_bytes"] +
+                                conn_log["resp_bytes"]), 0)
     return conn_log
 
 # =============================================================================
@@ -83,9 +94,10 @@ def _cleaning_conn(conn_log):
 
 
 def _udp_connections(conn_log):
-    """
-    Udp connections are processed here. State and history are not relevant
-    as udp does not know states.
+    """Preprocess UDP sessions.
+
+    UDP connections are processed here. State and history are not relevant
+    as UDP does not know states.
 
     Parameters
     ----------
@@ -99,20 +111,21 @@ def _udp_connections(conn_log):
 
     """
     udp_log = conn_log[conn_log["proto"] == "udp"]
-    udp_log["orig_active"] = udp_log["conn_state"].isin(["SF", "S0"]) #Active state
-    udp_log["resp_active"] = udp_log["conn_state"].isin(["SF", "SHR"]) #Active state
+    udp_log["orig_active"] = udp_log["conn_state"].isin(["SF", "S0"])
+    udp_log["resp_active"] = udp_log["conn_state"].isin(["SF", "SHR"])
 
-    udp_log.drop(["proto", "conn_state", "missed_bytes", "history"], 1, inplace=True)
+    udp_log.drop(["proto", "conn_state", "missed_bytes", "history"],
+                 1, inplace=True)
 
-    udp_log["IPv6"] = udp_log["id.orig_h"].str.contains(":") #Smart temporal variable
+    udp_log["IPv6"] = udp_log["id.orig_h"].str.contains(":")
     for endp in ["orig", "resp"]:
-        udp_log[endp + "_min_size"] = (udp_log[endp + "_ip_bytes"] - \
+        udp_log[endp + "_min_size"] = (udp_log[endp + "_ip_bytes"] -
                                        udp_log[endp + "_bytes"]) / \
                                        udp_log[endp + "_pkts"]
         udp_log[endp + "_min_size"] = ((udp_log[endp + "_min_size"] == 28) &
                                        (~udp_log["IPv6"])) | \
-                                       ((udp_log[endp + "_min_size"] == 48) &
-                                        (udp_log["IPv6"]))
+            ((udp_log[endp + "_min_size"] == 48) &
+             (udp_log["IPv6"]))
         udp_log.loc[udp_log[endp + "_pkts"] == 0, endp + "_min_size"] = True
 
     udp_log.drop(["orig_ip_bytes", "resp_ip_bytes", "IPv6"], 1, inplace=True)
@@ -124,9 +137,13 @@ def _udp_connections(conn_log):
 # TCP Connections
 # =============================================================================
 
+
 def _tcp_connections(conn_log):
-    """
-    Function to work on the tcp connections of conn log.
+    """Preprocess TCP connections.
+
+    Function to work on the tcp connections of conn log. Here we use history
+    and conn_state but extract initialisation and termination of a session
+    on the flags observed over the session.
 
     Parameters
     ----------
@@ -146,9 +163,12 @@ def _tcp_connections(conn_log):
     tcp_log = common_used_practice(tcp_log, "service", COMMON_SERVICE_TCP)
     return tcp_log
 
+
 def _tcp_state_features(tcp_log):
-    """
-    Function to built TCP state features.
+    """Extract initialization and termination TCP session features.
+
+    Function to built TCP state features. We look at the initialization of
+    a TCP session on the flags observed or not-observed.
 
     Parameters
     ----------
@@ -164,35 +184,39 @@ def _tcp_state_features(tcp_log):
     tcp_log["history"] = tcp_log["history"].str.replace(r'\^', "")
     tcp_log["history"] = tcp_log["history"].str.replace("hS", "Sh")
     tcp_log["history"] = tcp_log["history"].str.replace("Hs", "Sh")
-    tcp_log["history"] = tcp_log["history"].str.replace("SAh", "ShA") #Still there
+    tcp_log["history"] = tcp_log["history"].str.replace("SAh", "ShA")
 
     # Handshake features
     tcp_log["S0"] = ~tcp_log.history.str.contains("S")
-    tcp_log["S1"] = tcp_log["history"] == "S"                                           #S0
-    tcp_log["S2"] = tcp_log["history"] == "Sh"                                          #S1
-    tcp_log["S3"] = tcp_log["history"].str.startswith("ShA") #Complete handshake
+    tcp_log["S1"] = tcp_log["history"] == "S"
+    tcp_log["S2"] = tcp_log["history"] == "Sh"
+    # Correct handshake
+    tcp_log["S3"] = tcp_log["history"].str.startswith("ShA")
 
-    tcp_log["REJ1"] = tcp_log["history"] == "Sr"                                        #REJ
-    tcp_log["REJ2O"] = tcp_log["history"] == "ShR"                                      #RSTO 
+    tcp_log["REJ1"] = tcp_log["history"] == "Sr"
+    tcp_log["REJ2O"] = tcp_log["history"] == "ShR"
     tcp_log["REJ2R"] = tcp_log["history"] == "Shr"
 
     handshake_features = ["S1", "S2", "S3", "REJ1", "REJ2O", "REJ2R"]
     tcp_log["WEIRD"] = ((tcp_log["history"].str.contains("S")) &
                         (~tcp_log[handshake_features].any(axis='columns')))
 
-    #Flags
+    # Flags
     for flag in ["r", "R", "f", "F"]:
-        tcp_log[flag] = tcp_log["history"].str.contains(flag)                           #Check if there are certain flags
+        tcp_log[flag] = tcp_log["history"].str.contains(flag)
 
-    for flag in ['d', 'D',"T", "t","c", "C", "g", "G", "w", "W", "i", "I", "q", "Q"]: 
-        tcp_log[flag] = tcp_log["history"].str.count(flag)     
+    for flag in ['d', 'D', "T", "t", "c", "C", "g",
+                 "G", "w", "W", "i", "I", "q", "Q"]:
+        tcp_log[flag] = tcp_log["history"].str.count(flag)
 
     tcp_log["OPEN"] = (~tcp_log[["r", "R", "f", "F"]].any(axis='columns') &
                        tcp_log[["S3", "WEIRD"]].any(axis='columns'))
 
-    #Termination
-    tcp_log["CLSO"] = (tcp_log["F"] & ~tcp_log[["r", "R", "f"]].any(axis='columns'))
-    tcp_log["CLSR"] = (tcp_log["f"] & ~tcp_log[["r", "R", "F"]].any(axis='columns'))
+    # Termination
+    tcp_log["CLSO"] = (tcp_log["F"] &
+                       ~tcp_log[["r", "R", "f"]].any(axis='columns'))
+    tcp_log["CLSR"] = (tcp_log["f"] &
+                       ~tcp_log[["r", "R", "F"]].any(axis='columns'))
 
     tcp_log["TERM"] = (tcp_log["F"] & tcp_log["f"])
 
@@ -207,6 +231,8 @@ def _tcp_state_features(tcp_log):
     tcp_log.drop(["f", "F", "r", "R"], 1, inplace=True)
     return tcp_log
 
-#from project_paths import NID_PATH; from Zeek.Preprocessing.utils import bro_reader
-#bro_df = bro_reader(NID_PATH + "CIC-IDS-2017/BRO/1_Raw/Tuesday-WorkingHours/conn.log")
-#df_TCP, df_UDP = preprocessing_conn(bro_df)
+# from project_paths import DATA_PATH
+# from Zeek.Preprocessing.utils import zeek_reader
+# zeek_conn_log = zeek_reader(DATA_PATH + "CIC-IDS-2017/BRO/1_Raw" +
+#                             "/Tuesday-WorkingHours/conn.log")
+# df_TCP, df_UDP = preprocessing_conn(zeek_conn_log)

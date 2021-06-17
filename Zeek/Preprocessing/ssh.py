@@ -1,17 +1,21 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module is used to proprocess ssh.log
-"""
+"""Module is used to proprocess ssh.log."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright (C) 2021 Etienne van de Bijl"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 IGNORED_VARS = ["compression_alg", "cipher_alg", "host_key_alg", "kex_alg",
                 "mac_alg", "host_key", "direction", "client", "server"]
 
+
 def preprocessing_ssh(ssh_log):
-    """
+    """Preprocess ssh.log file.
+
     Preprocess ssh log file.
 
     Parameters
@@ -35,7 +39,8 @@ def preprocessing_ssh(ssh_log):
     ssh_log["version"] = ssh_log["version"].astype(int)
     return ssh_log
 
-#from Zeek.Preprocessing.utils import merge_bro_log_files
-#from project_paths import get_data_folder
-#ssh_log = merge_bro_log_files(get_data_folder("ISCX-IDS-2012", "BRO", "1_Raw"), "ssh")
-#ssh_log_new = preprocessing_ssh(ssh_log)
+# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from project_paths import get_data_folder
+# zeek_ssh_log = merge_bro_log_files(get_data_folder("ISCX-IDS-2012", "BRO",
+#                                               "1_Raw"), "ssh")
+# df_SSH = preprocessing_ssh(zeek_ssh_log)

@@ -1,9 +1,13 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""Script to proprocess dns.log."""
+"""Module to preprocess the dns.log file of Zeek."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import numpy as np
 import pandas as pd
@@ -23,7 +27,8 @@ IGNORED_VARS = ["rcode_name", "qclass_name", "qtype_name",
 
 
 def preprocessing_dns(dns_log):
-    """
+    """DNS processing.
+
     Dns log file preprocessing.
 
     Parameters
@@ -51,16 +56,18 @@ def preprocessing_dns(dns_log):
     dns_log = common_used_practice(dns_log, "qtype", COMMON_QTYPE)
 
     dns_log["answers_n"] = dns_log["TTLs"].str.count(",")
-    dns_log["TTLs_mean"] = dns_log["TTLs"].apply(lambda x: np.mean(_ttls_fun_dns(x)))
-    dns_log["TTLs_min"] = dns_log["TTLs"].apply(lambda x: np.min(_ttls_fun_dns(x)))
-    dns_log["TTLs_max"] = dns_log["TTLs"].apply(lambda x: np.max(_ttls_fun_dns(x)))
+    dns_log["TTLs_mean"] = dns_log["TTLs"].apply(lambda x: np.mean(_ttls(x)))
+    dns_log["TTLs_min"] = dns_log["TTLs"].apply(lambda x: np.min(_ttls(x)))
+    dns_log["TTLs_max"] = dns_log["TTLs"].apply(lambda x: np.max(_ttls(x)))
     dns_log = dns_log.drop(["TTLs"], 1)
     return dns_log
 
 
 def _aggregate_connection_dns(dns_log):
-    """
-    Worth noding: this still does not mean that the connections are unique.
+    """Aggregate equivalent DNS requests.
+
+    We aggregated equivalent DNS reqeusts. Worth noding: this still does not
+    mean that the connections are unique.
 
     Parameters
     ----------
@@ -83,19 +90,8 @@ def _aggregate_connection_dns(dns_log):
     return dns_log
 
 
-def _ttls_fun_dns(ttls):
-    """
-    Parameters
-    ----------
-    ttls : string
-        String of lists with ttls times
-
-    Returns
-    -------
-    ttls mean
-        list of the values
-
-    """
+def _ttls(ttls):
+    """Map TTLS values."""
     if ttls == "-":
         value = [-1.0]
     elif "," in ttls:
@@ -104,6 +100,8 @@ def _ttls_fun_dns(ttls):
         value = [float(ttls)]
     return value
 
-#from project_paths import NID_PATH; from Zeek.Preprocessing.utils import bro_reader
-#bro_df = bro_reader(NID_PATH + "CIC-IDS-2017/BRO/1_Raw/Friday-WorkingHours/dns.log")
-#dns_log_new = preprocessing_dns(bro_df)
+# from project_paths import DATA_PATH
+# from Zeek.Preprocessing.utils import zeek_reader
+# zeek_dns_log = zeek_reader(DATA_PATH + "CIC-IDS-2017/BRO/1_Raw" +
+#                            "/Friday-WorkingHours/dns.log")
+# df_DNS = preprocessing_dns(zeek_dns_log)

@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = empty-project-type
-recent_files = ['Zeek/Explanatory Data Analysis/barplots_label.py', 'Zeek/Preprocessing/labelling.py']
+recent_files = ['Zeek/Preprocessing/conn.py', 'Zeek/Preprocessing/dns.py', 'project_paths.py']
 
 [main]
 version = 0.2.0

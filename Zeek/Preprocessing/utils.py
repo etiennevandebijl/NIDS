@@ -1,11 +1,13 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-This module preprocesses all log files in the 2_Preprocessed folder.
-"""
+"""Module with usefull functions for Zeek."""
 
-# Author: Etienne van de Bijl
-# License: BSD 3 clause
+__author__ = "Etienne van de Bijl"
+__copyright__ = "Copyright 2021, CWI"
+__license__ = "GPL"
+__email__ = "evdb@cwi.nl"
+__status__ = "Production"
 
 import glob
 import datetime
@@ -14,10 +16,12 @@ import pandas as pd
 from brothon import bro_log_reader
 
 
-def bro_reader(path):
-    """
-    This function reads a log file of the bro reader. Also adjusts the time-zones
-    of the different datasets. Makes "ts" and "duration" in right format.
+def zeek_reader(path):
+    """Zeek log file reader.
+
+    This function reads a log file of the bro reader. Also adjusts the
+    time-zones of the different datasets. Makes "ts" and "duration" in
+    right format.
 
     Parameters
     ----------
@@ -34,18 +38,23 @@ def bro_reader(path):
     log_file = pd.DataFrame(reader.readrows())
     log_file["ts"] = pd.to_datetime(log_file["ts"])
 
-    if ("CIC-IDS-2017" in path or "ISCX-IDS-2012" in path or "CIC-IDS-2018" in path):
-        log_file["ts"] = log_file["ts"] - datetime.timedelta(hours=5) #Convert for canadian time
+    if ("CIC-IDS-2017" in path or "ISCX-IDS-2012" in path or
+            "CIC-IDS-2018" in path):
+        # Convert for Canadian time
+        log_file["ts"] = log_file["ts"] - datetime.timedelta(hours=5)
 
     if "UNSW-NB15" in path:
-        log_file["ts"] = log_file["ts"] - datetime.timedelta(hours=9) #Convert Australian time
+        # Convert Australian time
+        log_file["ts"] = log_file["ts"] - datetime.timedelta(hours=9)
 
     if "duration" in log_file.columns:
         log_file["duration"] = pd.to_timedelta(log_file["duration"])
     return log_file
 
+
 def merge_bro_log_files(experiment_path, file_name):
-    """
+    """Creater of a single csv for a certain protocol.
+
     This function combines the different log files of a certain file_name.
 
     Parameters
@@ -64,7 +73,7 @@ def merge_bro_log_files(experiment_path, file_name):
     pd_list = []
     for path in glob.glob(experiment_path + "**/" + file_name + ".log",
                           recursive=True):
-        data = bro_reader(path)
+        data = zeek_reader(path)
         pd_list.append(data)
     log_file = pd.DataFrame()
     if len(pd_list) > 0:
@@ -73,8 +82,10 @@ def merge_bro_log_files(experiment_path, file_name):
 
 
 def common_used_practice(log_file, feature, signatures):
-    """
-    This function does a one-hot encoder operation with a given set of signatures.
+    """Features creator indicating whether signature exists in feature.
+
+    This function does a one-hot encoder operation with a given set of
+    signatures.
 
     Parameters
     ----------
