@@ -9,6 +9,7 @@ __email__ = "evdb@cwi.nl"
 __status__ = "Production"
 
 import io
+import hashlib
 import datetime
 import numpy as np
 import pandas as pd
@@ -53,20 +54,52 @@ def fix_col_order(df):
 def statistics_dataset(df, output_path, protocol):
     """Gather statistics of dataset and write them to txt."""
     shape = df.shape
+
     label_counts = df["Label"].value_counts()
     df.loc[df["Label"] != "Benign", "Label"] = "Malicious"
     normal_counts = df["Label"].value_counts()
+
+    iterations = 0
+    copy_lines = []
+    start_copy = False
+
+    try:
+        with open(output_path + protocol + ".txt") as f:
+            for line in f:
+                if "SHA256:" in line:
+                    start_copy = True
+                    continue
+                if start_copy:
+                    copy_lines.append(line)
+                    iterations += 1
+    except FileNotFoundError:
+        pass
+
     file = open(output_path + protocol + ".txt", "w")
+
     file.write("Shape: %s\r\n" % str(shape))
+
     buffer = io.StringIO()
     df.info(buf=buffer)
     s = buffer.getvalue()
     file.write(s)
+
     file.write("\n")
     file.write("Intrusion stats: \n")
-    file.write("%s\r\n" % str(normal_counts))
+    file.write("%s\r\n\n" % str(normal_counts))
+
+    file.write("Intrusion ratio: \n")
+    file.write("%s\r\n\n" % str(normal_counts / normal_counts.sum()))
+
     file.write("Label stats: \n")
-    file.write("%s\r\n" % str(label_counts))
+    file.write("%s\r\n\n" % str(label_counts))
+
+    file.write("SHA256: \n")
+    for line in copy_lines:
+        file.write("%s" % line)
+    file.write("%s " % iterations)
+    file.write("%s\r\n" % hashlib.sha256(df.to_json().encode()).hexdigest())
+
     file.close()
 
 

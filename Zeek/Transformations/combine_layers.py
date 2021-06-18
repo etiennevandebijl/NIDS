@@ -56,8 +56,8 @@ def combine_layers(experiment):
 
 
 if __name__ == "__main__":
-    combine_layers("UNSW-NB15")
+    # combine_layers("UNSW-NB15")
     # combine_layers("ISCX-IDS-2012")
-    # combine_layers("CIC-IDS-2017")
+    combine_layers("CIC-IDS-2017")
     # combine_layers("CIC-IDS-2018")
     print("Done")
