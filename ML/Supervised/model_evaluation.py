@@ -14,8 +14,8 @@ from application import Application, tk
 
 warnings.filterwarnings("ignore")
 
-def compute_and_store_results(df_train, df_test, models, group_labels, select_classes,
-                              output_path, protocol, folder_name):
+def compute_and_store_results(df_train, df_test, models, group_labels,
+                              select_classes, output_path, protocol, folder_name):
     output_path = create_output_path(output_path, protocol, folder_name)
     df_train_ = rename_and_select_labels(df_train, group_labels, select_classes)
     df_test_ = rename_and_select_labels(df_test, group_labels, select_classes)

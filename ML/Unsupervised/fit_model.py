@@ -17,7 +17,8 @@ def fit_model(dataset, models, train_benign=False):
         time.sleep(1)
         y_pred_rs = np.zeros((X.shape[0], L))
         for rs in range(L):
-            y_pred_rs[:, rs] = fit_predict_kfold_all(clf, X, y, rs, train_benign)
+            y_pred_rs[:, rs] = fit_predict_kfold_all(clf, X, y,
+                                                     rs, train_benign)
         y_pred_dict[model] = y_pred_rs.mean(1)
     return y_pred_dict
 
@@ -43,8 +44,9 @@ def fit_predict_kfold_all(clf, X, y, rs, train_benign=False):
 # =============================================================================
 # Example
 # =============================================================================
-#from project_paths import get_data_folder
-#from BRO.utils import read_preprocessed
-#df = read_preprocessed(get_data_folder("UNSW-NB15", "BRO", "2_Preprocessed") + "ftp.csv")
-#from ML.Unsupervised.models import models
-#df_= fit_model(df, models)
+# from project_paths import get_data_folder
+# from BRO.utils import read_preprocessed
+# df = read_preprocessed(get_data_folder("UNSW-NB15", "BRO",
+#   "2_Preprocessed") + "ftp.csv")
+# from ML.Unsupervised.models import models
+# df_= fit_model(df, models)

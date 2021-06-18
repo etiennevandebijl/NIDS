@@ -5,7 +5,9 @@ from sklearn.base import clone
 
 from project_paths import go_or_create_folder
 from ML.Unsupervised.eval import score_curve, curve_moments
-from ML.Unsupervised.vis import interpret_scores, boxplot_scores_label, scatter_plot_ts_scores, score_per_class
+from ML.Unsupervised.vis import interpret_scores, boxplot_scores_label, \
+    scatter_plot_ts_scores, score_per_class
+
 
 def store_as_and_models(dataset, results, models, output_path):
     for model, clf in models.items():
@@ -14,8 +16,10 @@ def store_as_and_models(dataset, results, models, output_path):
         dump(clone(clf), output_path_model + "clf.joblib")
 
     dataset = dataset[["uid", "ts"] + list(models.keys()) + ["Label"]]
-    dataset.to_csv(output_path + "anomaly-scores.csv", sep=";", decimal=",", index=False)
+    dataset.to_csv(output_path + "anomaly-scores.csv",
+                   sep=";", decimal=",", index=False)
     return dataset
+
 
 def create_figures(df, output_path):
     y_true = np.where(df["Label"] != "Benign", 1, 0)
@@ -23,10 +27,10 @@ def create_figures(df, output_path):
     P = int(np.sum(y_true))
 
     score_model = {}
-    for model in  [c for c in df.columns if not c in ["ts", "uid", "Label"]]:
+    for model in [c for c in df.columns if c not in ["ts", "uid", "Label"]]:
         output_path_model = go_or_create_folder(output_path, model)
 
-        #Anomaly Score plots
+        # Anomaly Score plots
         boxplot_scores_label(df, model, output_path_model)
         for date, df_day in df.groupby(df["ts"].dt.date):
             if df_day["Label"].nunique() > 1:
@@ -49,6 +53,7 @@ def create_figures(df, output_path):
 
     df_comp = pd.DataFrame(score_model).T
     df_comp.to_csv(output_path + "model_comparison.csv", sep=";", decimal=",")
+
 
 def predict_threshold(df, model, label_positive, n, path=None, threshold=""):
     y_pred = [1] * label_positive + [0] * (n - label_positive)
