@@ -48,10 +48,11 @@ def main_feature_reduction(experiment, protocols):
                     df[model] = [y + 0.5 for y in y_pred_score]
                 else:
                     df[model] = np.log(y_pred_score)
-
-        df.sort_values(by=['ts', "uid"], inplace=True)
-        df.to_csv(output_path + protocol + ".csv", index=False)
-        statistics_dataset(df, output_path, protocol)
+                # Required otherwise boom
+                df[model] = df[model].round(15)
+            df.sort_values(by=['ts', "uid"], inplace=True)
+            df.to_csv(output_path + protocol + ".csv", index=False)
+            statistics_dataset(df, output_path, protocol)
 
 
 if __name__ == "__main__":
