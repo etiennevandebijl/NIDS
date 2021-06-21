@@ -53,6 +53,7 @@ def fix_col_order(df):
 
 def statistics_dataset(df, output_path, protocol):
     """Gather statistics of dataset and write them to txt."""
+    df = df.reset_index(drop=True)
     shape = df.shape
 
     label_counts = df["Label"].value_counts()
