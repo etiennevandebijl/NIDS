@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = empty-project-type
-recent_files = ['ML/utils.py']
+recent_files = ['ML/utils.py', 'ML/Supervised/eval.py', 'ML/Supervised/fit_model.py', 'ML/Supervised/model_evaluation.py', 'ML/Supervised/models.py', 'ML/Unsupervised/vis.py', 'ML/Unsupervised/output.py', 'ML/Unsupervised/fit_model.py']
 
 [main]
 version = 0.2.0

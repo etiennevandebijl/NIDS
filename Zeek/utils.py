@@ -98,8 +98,9 @@ def statistics_dataset(df, output_path, protocol):
     for line in copy_lines:
         file.write("%s" % line)
     file.write("%s " % iterations)
-    file.write("%s\r\n" % hashlib.sha256(df.to_json().encode()).hexdigest())
-
+    time = datetime.datetime.now()
+    file.write("%s " % hashlib.sha256(df.to_json().encode()).hexdigest())
+    file.write("%s \n" % time)
     file.close()
 
 
