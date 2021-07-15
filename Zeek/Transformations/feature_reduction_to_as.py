@@ -49,7 +49,7 @@ def main_feature_reduction(experiment, protocols):
                 else:
                     df[model] = np.log(y_pred_score)
                 # Required otherwise boom
-                df[model] = df[model].round(15)
+                df[model] = df[model].round(7)
             df.sort_values(by=['ts', "uid"], inplace=True)
             df.to_csv(output_path + protocol + ".csv", index=False)
             statistics_dataset(df, output_path, protocol)
