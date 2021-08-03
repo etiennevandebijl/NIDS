@@ -51,7 +51,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
     ps = list(powerset(attacks))
         
     for train_case in ps:
-        if len(train_case) > 0:
+        if len(train_case) == 1:
             folder_name = create_foldername(train_case)
             print(folder_name)
             output_path_case = go_or_create_folder(output_path, folder_name)
@@ -65,7 +65,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
 def compute_transfer_learning(df_train, df_test, output_path):
     labels = df_test["Label"].unique()
     attacks = [l for l in labels if l != "Benign"]
-    attacks = [l for l in attacks if not "Slow" in l]
+    # attacks = [l for l in attacks if not "Slow" in l]
     
     for attack in attacks:
         print("Attack " + attack)
@@ -74,12 +74,12 @@ def compute_transfer_learning(df_train, df_test, output_path):
                                             ["Benign", "Malicious"], output_path_attack, 
                                             "test_labels_info")
         select_train_labels(df_train, df_test_, "all", output_path_attack)
-    if len(attacks) > 1:
-        output_path_m = go_or_create_folder(output_path, "Malicious")
-        df_test_ = rename_and_select_labels(df_test, {"Malicious": attacks}, 
-                                            ["Benign", "Malicious"], output_path_m, 
-                                            "test_labels_info")
-        select_train_labels(df_train, df_test_, None, output_path_m)
+    # if len(attacks) > 1:
+    #     output_path_m = go_or_create_folder(output_path, "Malicious")
+    #     df_test_ = rename_and_select_labels(df_test, {"Malicious": attacks}, 
+    #                                         ["Benign", "Malicious"], output_path_m, 
+    #                                         "test_labels_info")
+    #     select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test 0/"
