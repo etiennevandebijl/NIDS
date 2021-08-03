@@ -9,9 +9,9 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 #%% 
-DATASET = "CIC-IDS-2018"
+DATASET = "CIC-IDS-2017"
 input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test 0/Paper/http/"
+                                "Supervised") + "Train-Test 0/Paper/http-tcp/"
 
 results = []
 for file in glob.glob(input_path + '**/scores.csv', recursive=True):
@@ -25,7 +25,7 @@ for file in glob.glob(input_path + '**/scores.csv', recursive=True):
 
     df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
     
-    f1 = df.loc["Malicious", "F1 Score"]
+    f1 = df.loc["Malicious", "Recall"]
     n = df[["Benign", "Malicious"]].sum().sum()
     f1_b = df.loc["Malicious", "F1 Baseline"]
     
@@ -63,24 +63,19 @@ for model, group in df_.groupby("Model"):
 
 # %%
 
-
-
-# %%
-
 cmap = plt.get_cmap('YlOrRd')
 pos = None
 for model, group in group_model.items():
     group_ = group[group["F1"] > 0.1] #Only show if its better than the baseline
     plt.figure(figsize = (15,15))
 
-    G = nx.from_pandas_edgelist(group_,source='Train', target='Test',
+    G = nx.from_pandas_edgelist(group_, source='Train', target='Test',
                             edge_attr=True, create_using=nx.DiGraph())
 
-    #if pos == None:
-    pos=nx.spring_layout(G)
+    pos=nx.circular_layout(G)
     colors = [cmap(G[u][v]['F1']) for u,v in G.edges()]
 
-    nx.draw_networkx(G, pos, edge_color=colors, width = 5,
+    nx.draw_networkx(G, pos = pos, edge_color=colors, width = 5,
                      connectionstyle="arc3,rad=0.1")
     plt.title(model)
     plt.savefig(input_path + DATASET + "-" + model + ".png")
