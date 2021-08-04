@@ -94,6 +94,7 @@ def main_clf_sl(experiment, version, protocols):
             output_path_protocol = go_or_create_folder(output_path, protocol)
             compute_transfer_learning(df_train, df_test, output_path_protocol)
 
+
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
     APP.mainloop()

@@ -9,35 +9,39 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 #%% 
-DATASET = "CIC-IDS-2017"
-input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test 1/Paper/http-tcp/"
+DATASET = "CIC-IDS-2018"
 
 results = []
-for file in glob.glob(input_path + '**/scores.csv', recursive=True):
-    tags = file.split(os.sep)
-    model = tags[-2]
-    train_attacks = tags[-3].split(" ")
-    test_attack = tags[-4]
+for rs in [0]:
+    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
 
-    train_attacks = [NAMES_[l] for l in train_attacks]
-    number_of_attacks = len(train_attacks)
 
-    df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
+    for file in glob.glob(input_path + '**/scores.csv', recursive=True):
+        tags = file.split(os.sep)
+        model = tags[-2]
+        train_attacks = tags[-3].split(" ")
+        test_attack = tags[-4]
+
+        train_attacks = [NAMES_[l] for l in train_attacks]
+        number_of_attacks = len(train_attacks)
+
+        df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
+        
+        f1 = df.loc["Malicious", "F1 Score"]
+        n = df[["Benign", "Malicious"]].sum().sum()
+        f1_b = df.loc["Malicious", "F1 Baseline"]
     
-    f1 = df.loc["Malicious", "F1 Score"]
-    n = df[["Benign", "Malicious"]].sum().sum()
-    f1_b = df.loc["Malicious", "F1 Baseline"]
-    
-    results.append([test_attack, len(train_attacks), str(train_attacks),
-                        model, f1, n, round(f1_b,3)])
+        results.append([test_attack, len(train_attacks), str(train_attacks),
+                        model, f1, n, round(f1_b,3), rs] )
 
 df = pd.DataFrame(results, columns = ["Test", "Number of trained D(D)oS attacks",
-                                      "Train", "Model", "F1", 'n', "F1 Baseline"])
-
-# %%
+                                      "Train", "Model", "F1", 'n', "F1 Baseline", 'RS'])
+#%%
 
 df_ = df[df["Number of trained D(D)oS attacks"] == 1]
+df_ = df_.groupby(["Test","Train", "Model"])[["F1","F1 Baseline"]].mean().reset_index()
+
 
 # %%
 
@@ -66,7 +70,7 @@ for model, group in df_.groupby("Model"):
 cmap = plt.get_cmap('YlOrRd')
 pos = None
 for model, group in group_model.items():
-    group_ = group[group["F1"] > 0.1] #Only show if its better than the baseline
+    group_ = group[group["F1"] > 0.5] #Only show if its better than the baseline
     plt.figure(figsize = (15,15))
 
     G = nx.from_pandas_edgelist(group_, source='Train', target='Test',
