@@ -82,9 +82,9 @@ def compute_transfer_learning(df_train, df_test, output_path):
     #     select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
-    data_path = get_data_folder(experiment, "BRO", version) + "Train-Test 0/"
+    data_path = get_data_folder(experiment, "BRO", version) + "Train-Test 2/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
-                                     "Train-Test 0/Paper/"
+                                     "Train-Test 2/Paper/"
     for protocol in protocols:
         for file_path in glob.glob(data_path + protocol + "_train.csv", recursive=True):
             print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")

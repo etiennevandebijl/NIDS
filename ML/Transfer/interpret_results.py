@@ -11,7 +11,7 @@ NAMES_ = {y: x for x, y in NAMES.items()}
 #%% 
 DATASET = "CIC-IDS-2017"
 input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test 0/Paper/http-tcp/"
+                                "Supervised") + "Train-Test 1/Paper/http-tcp/"
 
 results = []
 for file in glob.glob(input_path + '**/scores.csv', recursive=True):
@@ -25,7 +25,7 @@ for file in glob.glob(input_path + '**/scores.csv', recursive=True):
 
     df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
     
-    f1 = df.loc["Malicious", "Recall"]
+    f1 = df.loc["Malicious", "F1 Score"]
     n = df[["Benign", "Malicious"]].sum().sum()
     f1_b = df.loc["Malicious", "F1 Baseline"]
     
