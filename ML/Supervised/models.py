@@ -10,22 +10,22 @@ models = {
     #         "param": {"priors": [None]}
     #         }
     # ,
-    "DT": {"clf": DecisionTreeClassifier(),
-            "param": {"criterion": ["gini"],
-                      "splitter": ["best"],
-                      "class_weight": [None],
-                      "max_features": ["auto"],
-                      "random_state": [0]}
-            }
-    # ,
-    # "RF": {"clf": RandomForestClassifier(),
+    # "DT": {"clf": DecisionTreeClassifier(),
     #         "param": {"criterion": ["gini"],
+    #                   "splitter": ["best"],
     #                   "class_weight": [None],
     #                   "max_features": ["auto"],
-    #                   "n_estimators": [5, 10, 100],
-    #                   "n_jobs": [-1],
     #                   "random_state": [0]}
     #         }
+    # ,
+    "RF": {"clf": RandomForestClassifier(),
+            "param": {"criterion": ["gini"],
+                      "class_weight": [None],
+                      "max_features": ["auto"],
+                      "n_estimators": [5, 10, 100],
+                      "n_jobs": [-1],
+                      "random_state": [0]}
+            }
     # ,
     # "KNN": {"clf": KNeighborsClassifier(),
     #         "param": {"n_neighbors": [1],

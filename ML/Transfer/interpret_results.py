@@ -9,12 +9,12 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 #%% 
-DATASET = "CIC-IDS-2018"
+DATASET = "CIC-IDS-2017_CIC-IDS-2018"
 
 results = []
 for rs in [0]:
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+                                "Supervised") + "/Paper/http-tcp/"
 
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
@@ -70,7 +70,7 @@ for model, group in df_.groupby("Model"):
 cmap = plt.get_cmap('YlOrRd')
 pos = None
 for model, group in group_model.items():
-    group_ = group[group["F1"] > 0.5] #Only show if its better than the baseline
+    group_ = group[group["F1"] > -1] #Only show if its better than the baseline
     plt.figure(figsize = (15,15))
 
     G = nx.from_pandas_edgelist(group_, source='Train', target='Test',
