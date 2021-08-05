@@ -82,9 +82,10 @@ def compute_transfer_learning(df_train, df_test, output_path):
     #     select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
-    data_path = get_data_folder(experiment, "BRO", version) + "Train-Test 2/"
+    RS = 4
+    data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
-                                     "Train-Test 2/Paper/"
+                                     "Train-Test " + str(RS) +"/Paper/"
     for protocol in protocols:
         for file_path in glob.glob(data_path + protocol + "_train.csv", recursive=True):
             print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")
@@ -95,12 +96,12 @@ def main_clf_sl(experiment, version, protocols):
             compute_transfer_learning(df_train, df_test, output_path_protocol)
 
 
-# if __name__ == "__main__":
-#     APP = Application(master=tk.Tk(), v_setting=1)
-#     APP.mainloop()
-#     for exp in APP.selected_values["Experiments"]:
-#         for vers in APP.selected_values["Version"]:
-#             main_clf_sl(exp, vers, APP.selected_values["Files"])
+if __name__ == "__main__":
+    APP = Application(master=tk.Tk(), v_setting=1)
+    APP.mainloop()
+    for exp in APP.selected_values["Experiments"]:
+        for vers in APP.selected_values["Version"]:
+            main_clf_sl(exp, vers, APP.selected_values["Files"])
 
 
 # =============================================================================
@@ -121,8 +122,8 @@ def main_clf_sl_(version, protocols):
         compute_transfer_learning(df_train, df_test, output_path_protocol)
 
 
-if __name__ == "__main__":
-    APP = Application(master=tk.Tk(), v_setting=1)
-    APP.mainloop()
-    for vers in APP.selected_values["Version"]:
-        main_clf_sl_(vers, APP.selected_values["Files"])
+# if __name__ == "__main__":
+#     APP = Application(master=tk.Tk(), v_setting=1)
+#     APP.mainloop()
+#     for vers in APP.selected_values["Version"]:
+#         main_clf_sl_(vers, APP.selected_values["Files"])
