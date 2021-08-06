@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Module is used to proprocess ssh.log."""
+"""Module to feature engineer the ssh.log file."""
 
 __author__ = "Etienne van de Bijl"
 __copyright__ = "Copyright (C) 2021 Etienne van de Bijl"
@@ -14,7 +14,7 @@ IGNORED_VARS = ["compression_alg", "cipher_alg", "host_key_alg", "kex_alg",
 
 
 def preprocessing_ssh(ssh_log):
-    """Preprocess ssh.log file.
+    """Featur enginer ssh.log file.
 
     Preprocess ssh log file.
 

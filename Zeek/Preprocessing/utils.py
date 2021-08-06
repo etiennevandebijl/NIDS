@@ -15,7 +15,6 @@ import pandas as pd
 
 from brothon import bro_log_reader
 
-
 def zeek_reader(path):
     """Zeek log file reader.
 
@@ -39,7 +38,7 @@ def zeek_reader(path):
     log_file["ts"] = pd.to_datetime(log_file["ts"])
 
     if ("CIC-IDS-2017" in path or "ISCX-IDS-2012" in path or
-            "CIC-IDS-2018" in path):
+            "CIC-IDS-2018" in path or "CIC-DDoS-2019" in path):
         # Convert for Canadian time
         log_file["ts"] = log_file["ts"] - datetime.timedelta(hours=5)
 
@@ -79,7 +78,6 @@ def merge_bro_log_files(experiment_path, file_name):
     if len(pd_list) > 0:
         log_file = pd.concat(pd_list, axis=0)
     return log_file
-
 
 def common_used_practice(log_file, feature, signatures):
     """Features creator indicating whether signature exists in feature.

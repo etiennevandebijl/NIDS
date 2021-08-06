@@ -27,15 +27,15 @@ models = {
     #                   "random_state": [0]}
     #         }
     # ,
-    "KNN": {"clf": KNeighborsClassifier(),
-            "param": {"n_neighbors": [1],
-                      "weights": ["uniform"],
-                      # "algorithm":["ball_tree", "kd_tree"],
-                      "n_jobs": [-1]}
-            }
-    # ,
-    # "ADA": {"clf": AdaBoostClassifier(base_estimator=DecisionTreeClassifier()),
-    #         "param": {"n_estimators": [10],
-    #                   "random_state": [0]}
+    # "KNN": {"clf": KNeighborsClassifier(),
+    #         "param": {"n_neighbors": [1],
+    #                   "weights": ["uniform"],
+    #                   # "algorithm":["ball_tree", "kd_tree"],
+    #                   "n_jobs": [-1]}
     #         }
+    # ,
+    "ADA": {"clf": AdaBoostClassifier(base_estimator=DecisionTreeClassifier()),
+            "param": {"n_estimators": [10],
+                      "random_state": [0]}
+            }
     }

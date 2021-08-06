@@ -21,7 +21,6 @@ sns.set(font_scale=1.2)
 TAGS = ["local_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
         "qclass_", "qtype_", "last_alert_", "next_protocol_", "service_"]
 
-
 def plot_bar(dataset, protocol, title, output_path):
     """Make barplot of feature."""
     output_path_p = go_or_create_folder(output_path, protocol)
