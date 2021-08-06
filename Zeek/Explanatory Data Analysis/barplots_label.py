@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Module makes figures of the class-distribution of the labels."""
 
@@ -15,7 +16,6 @@ import matplotlib.pyplot as plt
 from project_paths import get_data_folder, get_results_folder
 from Zeek.utils import read_preprocessed, print_progress
 from application import Application, tk
-
 
 def class_count_plot(dataset, output_folder, protocol):
     """Do the counting."""
