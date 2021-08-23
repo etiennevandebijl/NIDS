@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Application to select Experiments/ Versions / Protocols."""
 
@@ -23,9 +24,10 @@ if os.environ.get('DISPLAY', '') == '':
 
 
 class Application(tk.Frame):
-    """
+    """Application for selection datasets, versions and protocols.
+
     This class starts the Tkinter interface to select datasets which can be
-    found in the NID_PATH.
+    found in the PROJECT_PATH.
     """
 
     def __init__(self, master=None, v_setting=0):
@@ -39,7 +41,7 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def options_list(self, v_setting=0):
-        """This function creates the different options to choose from."""
+        """Option list to select versions instead of showing all."""
         settings = {"Experiments": os.listdir(DATA_PATH)}
         f_format = "*.csv"
 
@@ -74,11 +76,8 @@ class Application(tk.Frame):
             settings["Version"] = ["5_Graph"]
         return settings
 
-
     def create_widgets(self):
-        """
-        This function creates the widgets to be used in the tkinter interface.
-        """
+        """Widget creator."""
         col = 0
         max_row = 0
         self.variables = {}
@@ -89,38 +88,39 @@ class Application(tk.Frame):
             box = {}
             for index, opt in enumerate(list_opt):
                 box[opt] = tk.IntVar()
-                if (len(list_opt) == 1) | (title == "Files"):
-                    box[opt] = tk.IntVar(value=1)
-                tk.Checkbutton(self, text=opt, variable=box[opt]).grid(row=index+1, column=col)
+                # if (len(list_opt) == 1) | (title == "Files"):
+                #     box[opt] = tk.IntVar(value=1)
+                tk.Checkbutton(self, text=opt,
+                               variable=box[opt]).grid(row=index+1, column=col)
                 max_row = max(max_row, index+1)
             self.variables[title] = box
             col += 1
 
         # Buttons
         tk.Button(self, text="ACCEPT", fg="blue",
-                  command=self.process_input).grid(row=max_row + 1, column=0)
+                  command=self.process_input).grid(row=max_row + 1,
+                                                   column=len(self.settings)-1)
         tk.Button(self, text="QUIT", fg="red",
-                  command=self.master.destroy).grid(row=max_row + 1, column=len(self.settings)-1)
+                  command=self.master.destroy).grid(row=max_row + 1,
+                                                    column=0)
 
     def process_input(self):
-        """
-        This function processed the input by the user when the ACCEPT button
-        in the create widgets is pressed.
-        """
-        missing_selected = []
+        """Process input of the selected options."""
+        missing_input = []
         self.selected_values = {}
         for title, checkboxes in self.variables.items():
             list_items = [k for k, v in checkboxes.items() if v.get() == 1]
             if len(list_items) == 0:
-                missing_selected.append(title)
+                missing_input.append(title)
             else:
                 self.selected_values[title] = list_items
 
-        if len(missing_selected) > 0:
-            message = "No " + " + ".join(missing_selected) + " selected."
+        if len(missing_input) > 0:
+            message = "No " + " + ".join(missing_input) + " selected."
             messagebox.showerror(title="Invalid error", message=message)
         else:
-            answer = messagebox.askquestion(title="Confirmation", message="Do you confirm?")
+            answer = messagebox.askquestion(title="Confirmation",
+                                            message="Do you confirm?")
             if answer == "yes":
                 self.master.destroy()
 
