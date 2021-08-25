@@ -34,7 +34,7 @@ def plot_bar(dataset, protocol, title, output_path):
     plt.close()
 
 
-def bin_plot(experiments, version, protocols):
+def bin_plot(experiments, version, protocol):
     """
     Plot binary features.
 
@@ -53,36 +53,34 @@ def bin_plot(experiments, version, protocols):
 
     """
     output_path = PROJECT_PATH + "Results/EDA/BRO/" + version + "/"
+    
+    stats = {}
+    for exp in experiments:
+        print_progress(exp, version, protocol.upper())
+        path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
+        try:
+            dataset = read_preprocessed(path)
+            dataset = dataset[dataset["Label"] == "Benign"]
+            stats[exp] = dataset.select_dtypes(include=['bool']).mean()
+        except FileNotFoundError:
+            print("File-Not-Found")
 
-    for protocol in protocols:
-        stats = {}
-        for exp in experiments:
-            print_progress(exp, version, protocol.upper())
-            path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
-            try:
-                dataset = read_preprocessed(path)
-                dataset = dataset[dataset["Label"] == "Benign"]
-                dataset = dataset.select_dtypes(include=['bool'])
-                stats[exp] = dataset.mean()
-            except FileNotFoundError:
-                print("File-Not-Found")
+    if len(stats) > 0:
+        dataset = pd.DataFrame(stats).fillna(0) * 100
+        dataset = dataset[(dataset.T != 0).any()]
 
-        if len(stats) > 0:
-            dataset = pd.DataFrame(stats).fillna(0) * 100
-            dataset = dataset[(dataset.T != 0).any()]
-
-            for tag in TAGS:
-                df_tag = dataset.loc[dataset.index.str.contains(tag), :]
-                if df_tag.shape[0] > 0:
-                    plot_bar(df_tag, protocol, tag, output_path)
-                dataset = dataset.loc[~dataset.index.str.contains(tag)]
-            if dataset.shape[0] > 0:
-                plot_bar(dataset, protocol, "other", output_path)
+        for tag in TAGS:
+            df_tag = dataset.loc[dataset.index.str.contains(tag), :]
+            if df_tag.shape[0] > 0:
+                plot_bar(df_tag, protocol, tag, output_path)
+            dataset = dataset.loc[~dataset.index.str.contains(tag)]
+        if dataset.shape[0] > 0:
+            plot_bar(dataset, protocol, "other", output_path)
 
 
 if __name__ == "__main__":
     APP = Application(master=tk.Tk(), v_setting=1)
     APP.mainloop()
     for vers in APP.selected_values["Version"]:
-        bin_plot(APP.selected_values["Experiments"], vers,
-                 APP.selected_values["Files"])
+        for protocol in APP.selected_values["Files"]:
+            bin_plot(APP.selected_values["Experiments"], vers, protocol)
