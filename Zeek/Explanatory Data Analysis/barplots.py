@@ -24,10 +24,9 @@ TAGS = ["selected_colslocal_", "method_", "_mime_types_", "xx_code", "proto_", "
 
 def plot_bar(dataset, selected_cols, protocol, label, title, output_path):
     """Make barplot of feature."""
-    output_path_ = go_or_create_folder(output_path, protocol)
-    output_path_ = go_or_create_folder(output_path_, label)
-    
     datasets = dataset["Experiment"]
+    output_path_ = go_or_create_folder(output_path, label)
+    
     df = dataset[selected_cols].T
     df.columns = datasets
     if df.shape[0] > 0 and df.shape[1] > 0:
@@ -38,7 +37,7 @@ def plot_bar(dataset, selected_cols, protocol, label, title, output_path):
         plt.ylabel("Percentage")
         plt.tight_layout()
     
-        plt.savefig(output_path_ + '-'.join(datasets) + "-" + protocol.upper() + \
+        plt.savefig(output_path_ + '-'.join(sorted(datasets)) + "-" + protocol.upper() + \
                     "-" + label + "-" + title + ".png")
         plt.close()
 
@@ -79,14 +78,15 @@ def bin_plot(experiments, version, protocol):
 
     """
     output_path = PROJECT_PATH + "Results/EDA/BRO/" + version + "/"
+    output_path = go_or_create_folder(output_path, protocol)
+    output_path = go_or_create_folder(output_path, '-'.join(sorted(experiments)))
 
     pd_list = []
     for exp in experiments:
-        print_progress(exp, version, protocol.upper())
         path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
+        print_progress(exp, version, protocol.upper())
         try:
             dataset = read_preprocessed(path)
-            print(dataset["Label"].unique())
             for label in dataset["Label"].unique():
                 df = get_means(dataset, exp, label)
                 pd_list.append(df)
@@ -95,11 +95,12 @@ def bin_plot(experiments, version, protocol):
             pd_list.append(df)
         except FileNotFoundError:
             print("File-Not-Found")
+    
+    if len(pd_list) > 0:
+        df = pd.concat(pd_list, axis=1).T.fillna(0)
 
-    df = pd.concat(pd_list, axis=1).T.fillna(0)
-
-    for label, group in df.groupby("Label"):
-        group_features(group, label, output_path)
+        for label, group in df.groupby("Label"):
+            group_features(group, label, output_path)
 
 
 if __name__ == "__main__":
