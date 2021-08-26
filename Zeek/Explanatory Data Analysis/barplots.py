@@ -18,22 +18,48 @@ from project_paths import PROJECT_PATH, go_or_create_folder, get_data_folder
 from Zeek.utils import read_preprocessed, print_progress
 sns.set(font_scale=1.2)
 
-TAGS = ["local_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
+TAGS = ["selected_colslocal_", "method_", "_mime_types_", "xx_code", "proto_", "rcode_",
         "qclass_", "qtype_", "last_alert_", "next_protocol_", "service_"]
 
-def plot_bar(dataset, protocol, title, output_path):
+
+def plot_bar(dataset, selected_cols, protocol, label, title, output_path):
     """Make barplot of feature."""
-    output_path_p = go_or_create_folder(output_path, protocol)
-    dataset.plot(kind="bar", figsize=(10, 7))
-    plt.title(protocol.upper() + " binary features")
-    plt.xlabel("Feature")
-    plt.xticks(rotation=80)
-    plt.ylabel("Percentage")
-    plt.tight_layout()
-    plt.savefig(output_path_p + protocol + "-benign-" + title + ".png")
-    plt.close()
+    output_path_ = go_or_create_folder(output_path, protocol)
+    output_path_ = go_or_create_folder(output_path_, label)
+    
+    datasets = dataset["Experiment"]
+    df = dataset[selected_cols].T
+    df.columns = datasets
+    if df.shape[0] > 0 and df.shape[1] > 0:
+        df.plot(kind="bar", figsize=(10, 7))
+        plt.title(protocol.upper() + " " + label +  " binary features")
+        plt.xlabel("Feature")
+        plt.xticks(rotation=80)
+        plt.ylabel("Percentage")
+        plt.tight_layout()
+    
+        plt.savefig(output_path_ + '-'.join(datasets) + "-" + protocol.upper() + \
+                    "-" + label + "-" + title + ".png")
+        plt.close()
 
+def group_features(df, label, output_path):
+    df = df.loc[:, (df != 0).any(axis=0)]
 
+    for tag in TAGS:
+        select_cols = [c for c in df.columns if tag in c]
+        plot_bar(df, select_cols, protocol, label, tag, output_path)
+
+    select_cols = [c for c in df.columns if tag not in c and 
+                   c != "Experiment" and c != "Label"]
+    plot_bar(df, select_cols, protocol, label, "other", output_path)
+    
+
+def get_means(df, exp, label):
+    df = df[df["Label"] == label].select_dtypes(include=['bool']).mean() * 100
+    df["Experiment"] = exp
+    df["Label"] = label
+    return df
+    
 def bin_plot(experiments, version, protocol):
     """
     Plot binary features.
@@ -53,29 +79,27 @@ def bin_plot(experiments, version, protocol):
 
     """
     output_path = PROJECT_PATH + "Results/EDA/BRO/" + version + "/"
-    
-    stats = {}
+
+    pd_list = []
     for exp in experiments:
         print_progress(exp, version, protocol.upper())
         path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
         try:
             dataset = read_preprocessed(path)
-            dataset = dataset[dataset["Label"] == "Benign"]
-            stats[exp] = dataset.select_dtypes(include=['bool']).mean()
+            print(dataset["Label"].unique())
+            for label in dataset["Label"].unique():
+                df = get_means(dataset, exp, label)
+                pd_list.append(df)
+            dataset.loc[dataset["Label"] != "Benign", 'Label'] = "Malicious"
+            df = get_means(dataset, exp, "Malicious")
+            pd_list.append(df)
         except FileNotFoundError:
             print("File-Not-Found")
 
-    if len(stats) > 0:
-        dataset = pd.DataFrame(stats).fillna(0) * 100
-        dataset = dataset[(dataset.T != 0).any()]
+    df = pd.concat(pd_list, axis=1).T.fillna(0)
 
-        for tag in TAGS:
-            df_tag = dataset.loc[dataset.index.str.contains(tag), :]
-            if df_tag.shape[0] > 0:
-                plot_bar(df_tag, protocol, tag, output_path)
-            dataset = dataset.loc[~dataset.index.str.contains(tag)]
-        if dataset.shape[0] > 0:
-            plot_bar(dataset, protocol, "other", output_path)
+    for label, group in df.groupby("Label"):
+        group_features(group, label, output_path)
 
 
 if __name__ == "__main__":
