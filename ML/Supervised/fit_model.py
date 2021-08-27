@@ -12,9 +12,8 @@ from Zeek.utils import format_ML
 def hyper_parameter_tuning(X, y, labels, splitter, settings):
     if len(list(ParameterGrid(settings["param"]))) == 1:
         clf = settings["clf"]
-        params_dict = settings["param"]
         new_dict = {}
-        for key, value in params_dict.items():
+        for key, value in settings["param"].items():
             new_dict[key] = value[0]
         clf.set_params(**new_dict)
         return clf

@@ -10,7 +10,6 @@ from ML.utils import rename_and_select_labels
 from ML.Supervised.models import models
 
 from application import Application, tk
-#Convenience as the CIC-IDS-2017 attack is the same as the 2018
 warnings.filterwarnings("ignore")
 
 NAMES = {"DoS - Hulk": "Hulk",
@@ -58,6 +57,8 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             df_train_ = rename_and_select_labels(df_train, {"Malicious": train_case}, 
                                             ["Benign", "Malicious"], output_path_case, 
                                             "train_labels_info")
+            
+            
             results = perform_train_test_search_opt_params(df_train_, df_test, models)
             store_results(results, output_path_case)
     
