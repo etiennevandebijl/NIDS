@@ -96,7 +96,7 @@ def compute_transfer_learning(df_train, df_test, output_path):
         select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
-    RS = 0
+    RS = 3
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
                                      "Train-Test " + str(RS) +"/Paper/"
