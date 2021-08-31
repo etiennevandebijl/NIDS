@@ -9,17 +9,17 @@ models = {
     "GNB": {"clf": GaussianNB(),
             "param": {"priors": [None]}
             }
-    # ,
-    # "DT": {"clf": DecisionTreeClassifier(),
-    #         "param": {"criterion": ["gini"],
-    #                   "splitter": ["best"],
-    #                   "class_weight": [None],
-    #                   "max_features": ["auto"],
-    #                   "random_state": [0]}
-    #         }
+    ,
+    "DT": {"clf": DecisionTreeClassifier(),
+            "param": {"criterion": ["gini","entropy"],
+                      "splitter": ["best", "random"],
+                      "class_weight": [None, "balanced"],
+                      "max_features": ["auto", None, "sqrt", "log2"],
+                      "random_state": [0]}
+            }
     # ,
     # "RF": {"clf": RandomForestClassifier(),
-    #         "param": {"criterion": ["gini"],
+    #         "param": {"criterion": ["gini", "entropy"],
     #                   "class_weight": [None],
     #                   "max_features": ["auto"],
     #                   "n_estimators": [5, 10, 100],

@@ -68,10 +68,12 @@ def boxplots(experiments, version, protocol):
                 pd_list.append(dataset)
         except FileNotFoundError:
             print("File not found.")
-    df = pd.concat(pd_list).fillna(0.0)
     
-    for label, group in df.groupby("Label"):
-        plot_box(group, protocol, label, output_path)
+    if len(pd_list) > 0:
+        df = pd.concat(pd_list).fillna(0.0)
+    
+        for label, group in df.groupby("Label"):
+            plot_box(group, protocol, label, output_path)
 
 
 if __name__ == "__main__":
