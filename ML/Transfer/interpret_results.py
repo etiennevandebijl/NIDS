@@ -2,6 +2,7 @@ import os
 import glob
 import pandas as pd
 import networkx as nx
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 from project_paths import get_results_folder
@@ -9,14 +10,14 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 #%% 
-DATASET = "CIC-IDS-2017_CIC-IDS-2018"
+DATASET = "CIC-IDS-2018"
 
 results = []
-for rs in [0]:
-   # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-   #                             "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+for rs in [0,1,2,3,4,5,6,7,8]:
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "/Paper/http-tcp/"
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    #                             "Supervised") + "/Paper/http-tcp/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
         tags = file.split(os.sep)
@@ -81,6 +82,17 @@ for model, group in group_model.items():
     nx.draw_networkx(G, pos = pos, edge_color=colors, width = 5,
                      connectionstyle="arc3,rad=0.1")
     plt.title(model)
-    plt.savefig(input_path + DATASET + "-" + model + ".png")
+    #plt.savefig(input_path + DATASET + "-" + model + ".png")
     plt.show()
 
+#%% 
+
+
+for model, group in group_model.items():
+    plt.figure(figsize = (10,10))
+    dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
+    sns.heatmap(dd, annot=True, cmap = "RdYlGn")
+    plt.title(model)
+    plt.tight_layout()
+    plt.savefig(input_path + DATASET + "-" + model + "-heatmap.png")
+    plt.show()

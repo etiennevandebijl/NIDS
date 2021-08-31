@@ -4,12 +4,15 @@ from itertools import chain, combinations
 
 from project_paths import get_data_folder, get_results_folder, go_or_create_folder
 from Zeek.utils import read_preprocessed
-from ML.Supervised.fit_model import perform_train_test_search_opt_params
+from ML.Supervised.fit_model import perform_train_test_search_opt_params, \
+                                    perform_train_validation, \
+                                    perform_train_test
 from ML.Supervised.output import store_results
 from ML.utils import rename_and_select_labels
-from ML.Supervised.models import models
+from ML.Transfer.models import models
 
 from application import Application, tk
+from sklearn.model_selection import StratifiedShuffleSplit
 warnings.filterwarnings("ignore")
 
 NAMES = {"DoS - Hulk": "Hulk",
@@ -58,8 +61,18 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
                                             ["Benign", "Malicious"], output_path_case, 
                                             "train_labels_info")
             
+            # Case 1: Find optimal values at test dataset
+            # results = perform_train_test_search_opt_params(df_train_, df_test, models)
             
-            results = perform_train_test_search_opt_params(df_train_, df_test, models)
+            # Case 2: Find optimal values in train dataset
+            splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
+            results_search = perform_train_validation(df_train_, models, splitter)
+            opt_models = {}
+            for model, result in results_search.items():
+                opt_models[model] = result[0]
+            results = perform_train_test(df_train_, df_test, opt_models)
+            #EnD
+            
             store_results(results, output_path_case)
     
 
@@ -75,15 +88,15 @@ def compute_transfer_learning(df_train, df_test, output_path):
                                             ["Benign", "Malicious"], output_path_attack, 
                                             "test_labels_info")
         select_train_labels(df_train, df_test_, "all", output_path_attack)
-    # if len(attacks) > 1:
-    #     output_path_m = go_or_create_folder(output_path, "Malicious")
-    #     df_test_ = rename_and_select_labels(df_test, {"Malicious": attacks}, 
-    #                                         ["Benign", "Malicious"], output_path_m, 
-    #                                         "test_labels_info")
-    #     select_train_labels(df_train, df_test_, None, output_path_m)
+    if len(attacks) > 1:
+        output_path_m = go_or_create_folder(output_path, "Malicious")
+        df_test_ = rename_and_select_labels(df_test, {"Malicious": attacks}, 
+                                            ["Benign", "Malicious"], output_path_m, 
+                                            "test_labels_info")
+        select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
-    RS = 4
+    RS = 0
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
                                      "Train-Test " + str(RS) +"/Paper/"
