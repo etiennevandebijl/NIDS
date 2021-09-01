@@ -10,10 +10,10 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 #%% 
-DATASET = "CIC-IDS-2018"
+DATASET = "CIC-IDS-2017"
 
 results = []
-for rs in [0,1,2,3,4,5,6,7,8]:
+for rs in [0,1,2,3,4,5]:
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
                                 "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
@@ -65,6 +65,17 @@ for model, group in df_.groupby("Model"):
     group_["F1"] = group_["F1"].round(3)
     group_model[model] = group_
 
+#%% 
+
+for model, group in group_model.items():
+    plt.figure(figsize = (10,10))
+    dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
+    sns.heatmap(dd, annot=True, cmap = "RdYlGn")
+    plt.title(model)
+    plt.tight_layout()
+    #plt.savefig(input_path + DATASET + "-" + model + "-heatmap.png")
+    plt.show()
+    
 # %%
 
 cmap = plt.get_cmap('YlOrRd')
@@ -83,16 +94,4 @@ for model, group in group_model.items():
                      connectionstyle="arc3,rad=0.1")
     plt.title(model)
     #plt.savefig(input_path + DATASET + "-" + model + ".png")
-    plt.show()
-
-#%% 
-
-
-for model, group in group_model.items():
-    plt.figure(figsize = (10,10))
-    dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
-    sns.heatmap(dd, annot=True, cmap = "RdYlGn")
-    plt.title(model)
-    plt.tight_layout()
-    plt.savefig(input_path + DATASET + "-" + model + "-heatmap.png")
     plt.show()
