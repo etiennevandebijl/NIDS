@@ -21,3 +21,7 @@ experimental_setup_2:
 
 Zit dicht tegen learn-subset-test-one aan
 
+ddos_experiment:
+
+Hier trainen we gewoon simpel op een subset van aanvallen en testen op normaal vs alle aanvallen (malicious). Dus het komt er op neer dat we gewoon de train en test dataset hebben maar simpel gezegd aanvallen weglaten uit de train. 
+

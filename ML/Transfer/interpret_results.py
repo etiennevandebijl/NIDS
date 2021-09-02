@@ -6,14 +6,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from project_paths import get_results_folder
-from ML.Transfer.experimental_setup import NAMES
+from ML.Transfer.experimental_setup import NAMES, powerset, create_foldername
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 #%% 
 DATASET = "CIC-IDS-2017"
+RS = 9
 
 results = []
-for rs in [0,1,2,3,4,5]:
+for rs in range(RS):
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
                                 "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
@@ -39,10 +40,48 @@ for rs in [0,1,2,3,4,5]:
 
 df = pd.DataFrame(results, columns = ["Test", "Number of trained D(D)oS attacks",
                                       "Train", "Model", "F1", 'n', "F1 Baseline", 'RS'])
+
+# %% Determine missing results
+
+attacks = ["DDoS - Botnet", "DDoS - LOIC", "DoS - GoldenEye", "DoS - Hulk",
+           "DoS - SlowHTTPTest", "DoS - Slowloris"]
+
+missing_list = []
+for rs in range(1):
+    for test_attack in attacks + ["Malicious"]:
+        for train_attacks in powerset(attacks):
+            if len(train_attacks) == 0:
+                continue
+            for model in ["RF", "GNB", "DT"]:
+                path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+                path = path + test_attack + "/" + create_foldername(train_attacks) + "/" + model + "/"
+                if not os.path.isdir(path):
+                    missing_list.append([rs, test_attack, train_attacks, model, path])
+                    
+df_missing = pd.DataFrame(missing_list, columns = ["RS", "Test", "Train", "Model", "Path"])
+
+
+# %%
+
+def label_point(x, y, val, ax):
+    a = pd.concat({'x': x, 'y': y, 'val': val}, axis=1)
+    for i, point in a.iterrows():
+        ax.text(point['x'], point['y'], str(point['val']))    
+
+for index, group in df[df["Model"]=="DT"].groupby(["Test", "Model"]):
+    group_ = group[~group["Train"].str.contains(index[0])]
+    group_ = group_.groupby(["Test","Train", "Model", 
+                            "Number of trained D(D)oS attacks"])[["F1", "F1 Baseline"]].mean().reset_index()
+    group_.plot.scatter(x = "Number of trained D(D)oS attacks", y = "F1", figsize = (8,8))
+    plt.title("Model: " + index[1] + ", Test-Attack: " + index[0])
+    #label_point(group_["Number of trained D(D)oS attacks"] - 1, group_["F1"], group_["Train"], plt.gca())  
+    plt.show()
+
 #%%
 
 df_ = df[df["Number of trained D(D)oS attacks"] == 1]
-df_ = df_.groupby(["Test","Train", "Model"])[["F1","F1 Baseline"]].mean().reset_index()
+df_ = df_.groupby(["Test","Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
 
 # %%
 
