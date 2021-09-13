@@ -53,7 +53,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
     ps = list(powerset(attacks))
         
     for train_case in ps:
-        if len(train_case) > 1:
+        if len(train_case) > 0:
             folder_name = create_foldername(train_case)
             print(folder_name)
             output_path_case = go_or_create_folder(output_path, folder_name)
@@ -72,7 +72,6 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
                 opt_models[model] = result[0]
             results = perform_train_test(df_train_, df_test, opt_models)
             #EnD
-            
             store_results(results, output_path_case)
     
 
@@ -96,7 +95,7 @@ def compute_transfer_learning(df_train, df_test, output_path):
         select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
-    RS = 3
+    RS = 0
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
                                      "Train-Test " + str(RS) +"/Paper/"

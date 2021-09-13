@@ -32,10 +32,10 @@ def main_clf_usl(experiment, version, protocols):
             labels = dataset["Label"].unique().tolist()
             attacks = [l for l in labels if l != "Benign"]
 
-            #for attack in attacks:
-            #    if "DDoS" in attack:
-            #        compute_and_store_results(dataset, {}, ["Benign", attack], output_path,
-            #                              protocol, "Benign vs " + attack)
+            for attack in attacks:
+                # if "DDoS" in attack:
+                    compute_and_store_results(dataset, {}, ["Benign", attack], output_path,
+                                          protocol, "Benign vs " + attack)
             if len(attacks) > 1: 
                 compute_and_store_results(dataset, {}, labels, output_path, protocol,
                                           "Benign vs Malicious")

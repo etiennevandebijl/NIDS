@@ -8,7 +8,27 @@ import matplotlib.pyplot as plt
 from project_paths import get_data_folder, get_results_folder
 from ML.Transfer.experimental_setup import powerset, create_foldername
 
+EXPERIMENTS = ["CIC-IDS-2017", "UNSW-NB15", "ISCX-IDS-2012"]
+PROTOCOLS = ["dns", "ftp", "http", "ssh", "ssl", "udp", "tcp",
+             "ftp-tcp", "ssh-tcp", "ssl-tcp", "http-tcp", "dns-udp"]
+
 # %% Functions
+
+def check_os_path_isdir_dataset(experiments, version, files):
+    "This function looks if the datasets exists."
+    exists_list = []
+    missing_list = []
+    for exp in experiments:
+        for file in files:
+            path = get_data_folder(exp, "BRO", version) + file + ".csv"
+            if os.path.exists(path):
+                exists_list.append([exp, version, file, path]) 
+            else:
+                missing_list.append([exp, version, file, path])
+    COLUMNS = ["Experiment", "Version", "File", "Path"]
+    df_exists = pd.DataFrame(exists_list, columns = COLUMNS)
+    df_missing = pd.DataFrame(missing_list, columns = COLUMNS)
+    return df_exists, df_missing
 
 def analyse_check_files(files, source_path, target_path, exp, version, protocol):
     fname = pathlib.Path(source_path)
@@ -27,6 +47,7 @@ def analyse_check_files(files, source_path, target_path, exp, version, protocol)
     return exists, missing
 
 def determine_labels(file_info_path):
+    '''This function looks in the summary file or a dataset for the labels'''
     labels = []
     read_line = False
     with open(file_info_path) as f:
@@ -41,7 +62,12 @@ def determine_labels(file_info_path):
                 labels.append(line.split("    ")[0])
     return labels
 
-#%% Graph
+# %% Graph
+
+df_exists, df_missing = check_os_path_isdir_dataset(EXPERIMENTS, "4_Feature_Reduction", PROTOCOLS)
+TIMES = ["5s", "1min", "2min", "10min", "30min", "60min"]
+files = [ p + "-edges-" + t for p in PROTOCOLS for t in TIMES]
+df_exists, df_missing = check_os_path_isdir_dataset(EXPERIMENTS, "5_Graph", files)
 
 def files_graph():
     files = ['distance-metrics.csv', 'metric_comparison.csv']
@@ -55,12 +81,11 @@ def files_graph():
         files.append("Distances/"+dist+".png")
     return files
 
-    
 exists_list = []
 missing_list = []
 
-for exp in ["CIC-IDS-2017", "UNSW-NB15", "ISCX-IDS-2012"]:
-    for protocol in ["dns", "ftp", "http", "ssh", "ssl", "udp", "tcp"]:
+for exp in EXPERIMENTS:
+    for protocol in PROTOCOLS:
         for time in ["5s", "1min", "2min", "10min", "30min", "60min"]:
             source_dataset_path = get_data_folder(exp, "BRO", "5_Graph") + protocol + "-edges-" + time + ".csv"
             if not os.path.isfile(source_dataset_path):
@@ -76,11 +101,13 @@ df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Proto
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path"])
 
-plt.figure(figsize = (10,10))
-sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
-plt.show()
+# plt.figure(figsize = (10,10))
+# sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+# plt.show()
 
-#%% Unsupervised
+# %% Unsupervised
+
+df_exists, df_missing = check_os_path_isdir_dataset(EXPERIMENTS, "2_Preprocessed", PROTOCOLS)
 
 def files_unsupervised(source_dataset_path):
     files_ = ["boxplot-anomaly-score-per-label.png","class_comparison.csv",
@@ -108,10 +135,10 @@ def files_unsupervised(source_dataset_path):
     
 exists_list = []
 missing_list = []
-       
-for exp in ["CIC-IDS-2017", "ISCX-IDS-2012", "UNSW-NB15"]:
+
+for exp in EXPERIMENTS:
     for version in ["2_Preprocessed","3_Downsampled"]:
-        for protocol in ["dns","ftp","http","ssh","ssl","udp","tcp","ftp-tcp","ssh-tcp","ssl-tcp","http-tcp"]:
+        for protocol in PROTOCOLS:
             source_dataset_path = get_data_folder(exp, "BRO", version) + protocol + ".txt"
             if not os.path.isfile(source_dataset_path):
                 continue
@@ -119,20 +146,18 @@ for exp in ["CIC-IDS-2017", "ISCX-IDS-2012", "UNSW-NB15"]:
             files = files_unsupervised(source_dataset_path)
             exists, missing = analyse_check_files(files, source_dataset_path, output_path, exp, version, protocol)
             exists_list.extend(exists)
-            missing_list.extend(missing)        
-            
+            missing_list.extend(missing)
+
 df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Protocol", "File",
                                                  "Path", "Modified Time", "On Time"])
-df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
+df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol",
                                                   "File", "Path"])
 
-plt.figure(figsize = (10,10))
-sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
-plt.show()
+# plt.figure(figsize = (10,10))
+# sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+# plt.show()
 
-# TO DO: ISCX-IDS-2012 -- 2_Preprocessed -- http-tcp -- all models
-
-#%% Supervised Holdout
+# %% Supervised Holdout
 
 def files_supervised(source_dataset_path):
     subfolders = []
@@ -161,16 +186,16 @@ def files_supervised(source_dataset_path):
 exists_list = []
 missing_list = []
 
-part = "Evaluation"
-split = "0"
+part = "Selection"
+RS = 0
 
-for exp in ["CIC-IDS-2017", "ISCX-IDS-2012", "UNSW-NB15"]:
+for exp in EXPERIMENTS:
     for version in ["2_Preprocessed","3_Downsampled"]:
-        for protocol in ["dns","ftp","http","ssh","ssl","udp","tcp","http-tcp","ftp-tcp","ssh-tcp","ssl-tcp",'dns-udp']:
-            source_dataset_path = get_data_folder(exp, "BRO", version) + "Train-Test " + split + "/" + protocol + "_train.txt"
+        for protocol in PROTOCOLS:
+            source_dataset_path = get_data_folder(exp, "BRO", version) + "Train-Test " + str(RS) + "/" + protocol + "_train.txt"
             if not os.path.isfile(source_dataset_path):
                 continue
-            output_path = get_results_folder(exp, "BRO", version, "Supervised") + "Train-Test " + split +"/Holdout/" + part + "/" + protocol + "/" 
+            output_path = get_results_folder(exp, "BRO", version, "Supervised") + "Train-Test " + str(RS) +"/Holdout/" + part + "/" + protocol + "/" 
             files = files_supervised(source_dataset_path)
             exists, missing = analyse_check_files(files, source_dataset_path, output_path, exp, version, protocol)
             exists_list.extend(exists)
@@ -181,12 +206,11 @@ df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Proto
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path"])
 
-plt.figure(figsize = (10,10))
-sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
-plt.show()
+# plt.figure(figsize = (10,10))
+# sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+# plt.show()
 
-
-#%% Supervised Transfer Learning
+# %% Supervised Transfer Learning
 
 def transfer_files(source_dataset_path):
     labels = determine_labels(source_dataset_path)
@@ -215,12 +239,12 @@ def transfer_files(source_dataset_path):
             files.append(sf + model + "/feature-importance.csv")
             files.append(sf + model + "/feature-importance.png")
     return files
-    
+
 exists_list = []
 missing_list = []
 
-for exp in ["CIC-IDS-2017","ISCX-IDS-2012", "UNSW-NB15","CIC-IDS-2018"]:
-    for protocol in ["dns","ftp","http","ssh","ssl","udp","tcp","http-tcp","ftp-tcp","ssh-tcp","ssl-tcp",'dns-udp']:
+for exp in ["CIC-IDS-2017"]:
+    for protocol in ["http-tcp"]:
         source_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_DDoS") + "Train-Test 0/" + protocol + "_train.txt"
         if not os.path.isfile(source_dataset_path):
             continue
@@ -228,12 +252,12 @@ for exp in ["CIC-IDS-2017","ISCX-IDS-2012", "UNSW-NB15","CIC-IDS-2018"]:
         files = transfer_files(source_dataset_path)
         exists, missing = analyse_check_files(files, source_dataset_path, output_path, exp, "2_Preprocessed_DDoS", protocol)
         exists_list.extend(exists)
-        missing_list.extend(missing)   
-            
+        missing_list.extend(missing)
+
 df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Protocol", "File",
                                                  "Path", "Modified Time", "On Time"])
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path"])
 #df_missing = df_missing[df_missing["Path"].str.contains("CIC")]
-df_missing = df_missing[df_missing["Path"].str.contains("CIC-IDS-2018")]
-df_missing = df_missing[df_missing["Path"].str.contains("DT")]
+#df_missing = df_missing[df_missing["Path"].str.contains("CIC-IDS-2018")]
+#df_missing = df_missing[df_missing["Path"].str.contains("DT")]

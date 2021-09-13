@@ -22,7 +22,7 @@ MODELS = list(models.keys())
 COLS = ["Source", "Target", "ts", "Weight", "Label"] + MODELS
 
 # Parameters
-FREQ = "60min"
+FREQ = "1min"
 
 
 def time_iterator(dataset):

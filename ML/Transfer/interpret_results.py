@@ -9,9 +9,32 @@ from project_paths import get_results_folder
 from ML.Transfer.experimental_setup import NAMES, powerset, create_foldername
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-#%% 
 DATASET = "CIC-IDS-2017"
-RS = 9
+RS = 10
+
+# %% Determine missing results
+
+attacks = ["DDoS - Botnet", "DDoS - LOIC", "DoS - GoldenEye", "DoS - Hulk",
+           "DoS - SlowHTTPTest", "DoS - Slowloris"]
+
+missing_list = []
+for rs in range(RS):
+    for test_attack in attacks + ["Malicious"]:
+        for train_attacks in powerset(attacks):
+            if len(train_attacks) == 0:
+                continue
+            for model in ["RF", "GNB", "DT"]:
+                path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+                path = path + test_attack + "/" + create_foldername(train_attacks) + "/" + model + "/"
+                if not os.path.isdir(path):
+                    missing_list.append([rs, test_attack, train_attacks, model, path])
+                    
+df_missing = pd.DataFrame(missing_list, columns = ["RS", "Test", "Train", "Model", "Path"])
+
+df_missing[["RS","Test"]].drop_duplicates()
+
+#%% 
 
 results = []
 for rs in range(RS):
@@ -40,27 +63,6 @@ for rs in range(RS):
 
 df = pd.DataFrame(results, columns = ["Test", "Number of trained D(D)oS attacks",
                                       "Train", "Model", "F1", 'n', "F1 Baseline", 'RS'])
-
-# %% Determine missing results
-
-attacks = ["DDoS - Botnet", "DDoS - LOIC", "DoS - GoldenEye", "DoS - Hulk",
-           "DoS - SlowHTTPTest", "DoS - Slowloris"]
-
-missing_list = []
-for rs in range(1):
-    for test_attack in attacks + ["Malicious"]:
-        for train_attacks in powerset(attacks):
-            if len(train_attacks) == 0:
-                continue
-            for model in ["RF", "GNB", "DT"]:
-                path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
-                path = path + test_attack + "/" + create_foldername(train_attacks) + "/" + model + "/"
-                if not os.path.isdir(path):
-                    missing_list.append([rs, test_attack, train_attacks, model, path])
-                    
-df_missing = pd.DataFrame(missing_list, columns = ["RS", "Test", "Train", "Model", "Path"])
-
 
 # %%
 
