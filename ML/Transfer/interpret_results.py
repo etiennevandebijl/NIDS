@@ -10,7 +10,8 @@ from ML.Transfer.experimental_setup import NAMES, powerset, create_foldername
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2017"
-RS = 10
+PROTOCOL = "tcp"
+RS = 1
 
 # %% Determine missing results
 
@@ -25,7 +26,7 @@ for rs in range(RS):
                 continue
             for model in ["RF", "GNB", "DT"]:
                 path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
                 path = path + test_attack + "/" + create_foldername(train_attacks) + "/" + model + "/"
                 if not os.path.isdir(path):
                     missing_list.append([rs, test_attack, train_attacks, model, path])
@@ -39,9 +40,9 @@ df_missing[["RS","Test"]].drop_duplicates()
 results = []
 for rs in range(RS):
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/http-tcp/"
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-    #                             "Supervised") + "/Paper/http-tcp/"
+    #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
         tags = file.split(os.sep)

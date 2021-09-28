@@ -6,17 +6,17 @@ from sklearn.tree import DecisionTreeClassifier
 # Sklearn must be version 0.23.2 in stead of 0.24.2, otherwise it takes ages
 
 models = {
-    # "GNB": {"clf": GaussianNB(),
-    #         "param": {"priors": [None]}
-    #         }
-    # ,
-    "DT": {"clf": DecisionTreeClassifier(),
-            "param": {"criterion": ["gini","entropy"],
-                      "splitter": ["best", "random"],
-                      "class_weight": [None, "balanced"],
-                      "max_features": ["auto", None, "sqrt", "log2"],
-                      "random_state": [0]}
+    "GNB": {"clf": GaussianNB(),
+            "param": {"priors": [None]}
             }
+    # ,
+    # "DT": {"clf": DecisionTreeClassifier(),
+    #         "param": {"criterion": ["gini","entropy"],
+    #                   "splitter": ["best", "random"],
+    #                   "class_weight": [None, "balanced"],
+    #                   "max_features": ["auto", None, "sqrt", "log2"],
+    #                   "random_state": [0]}
+    #         }
     # ,
     # "RF": {"clf": RandomForestClassifier(),
     #         "param": {"criterion": ["gini", "entropy"],

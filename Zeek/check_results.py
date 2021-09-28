@@ -231,11 +231,11 @@ def transfer_files(source_dataset_path):
         files.append(sf + "feature_importance.csv")
         files.append(sf + "model-comp.png")
 
-        for model in ["DT","ADA","GNB","KNN","RF"]:
+        for model in ["DT","GNB","RF"]:
             files.append(sf + model + "/scores.csv")
             files.append(sf + model + "/opt_clf.joblib")
             files.append(sf + model + "/" + model + " score.png")
-        for model in ["DT","ADA","RF"]:
+        for model in ["DT","RF"]:
             files.append(sf + model + "/feature-importance.csv")
             files.append(sf + model + "/feature-importance.png")
     return files
@@ -243,8 +243,8 @@ def transfer_files(source_dataset_path):
 exists_list = []
 missing_list = []
 
-for exp in ["CIC-IDS-2017"]:
-    for protocol in ["http-tcp"]:
+for exp in EXPERIMENTS + ["CIC-IDS-2018"]:
+    for protocol in PROTOCOLS:
         source_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_DDoS") + "Train-Test 0/" + protocol + "_train.txt"
         if not os.path.isfile(source_dataset_path):
             continue
