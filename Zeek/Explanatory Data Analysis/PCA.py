@@ -1,21 +1,15 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 28 16:22:05 2021
-
-@author: etienne
-"""
+import pandas as pd
 import seaborn as sns
-
 import matplotlib.pyplot as plt
 
 from application import Application, tk
 from project_paths import get_data_folder
 from Zeek.utils import read_preprocessed, print_progress, format_ML
-import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
-from sklearn import decomposition
-from sklearn.manifold import TSNE
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.colors import ListedColormap
 
 def PCA_plot(experiments, version, protocol):
     for exp in experiments:
@@ -23,22 +17,43 @@ def PCA_plot(experiments, version, protocol):
         print_progress(exp, version, protocol.upper())
         try:
             dataset = read_preprocessed(path)
-            for label, group in dataset.groupby("Label"):
-                #dataset = dataset[dataset["Label"] != "Benign"]
-                #dataset = dataset[dataset["Label"] != "DoS - Hulk"]
-                #dataset = dataset[dataset["Label"] != "DDoS - Botnet"]            
-                X, y, _, _ = format_ML(group)
-                model = decomposition.PCA(n_components=2)
-                #model = TSNE(n_components=2, learning_rate='auto', init='random')
-                #X = np.asarray(X, dtype='float64')
-                model.fit(X)
+            dataset["Label"] =  dataset["Label"].astype("category").cat.codes
+            print(dataset["Label"].value_counts())
+            
+            X, y, _, _ = format_ML(dataset)
+            y_B = [i for i, y_i in enumerate(y) if y_i == 0]
+            y_M = [i for i, y_i in enumerate(y) if y_i != 0]
 
-                X = model.transform(X)
-                X = np.log(X)
-                print(model.explained_variance_ratio_)
-                plt.figure(figsize = (10, 10))
-                sns.scatterplot(x = X[:,0], y = X[:,1], hue = y)
-                plt.show()
+            X = StandardScaler().fit(X).transform(X)
+            print(pd.DataFrame(X).describe())
+            
+            X_B = X[y_B, :]
+            X_M = X[y_M, :] 
+                        
+            model = PCA(n_components=3)
+            model.fit(X_B)
+            #print(model.explained_variance_ratio_)
+            X = model.transform(X)
+    
+            X_B = X[y_B, :]
+            X_M = X[y_M, :] 
+            #cmap = ListedColormap(sns.color_palette("husl", 256).as_hex())
+            plt.figure(figsize = (15, 15))
+            sns.scatterplot(x = X_M[:,0], y = X_M[:,1], hue = y[y_M])
+            #plt.xlim(-0.3,0.1)
+            #plt.ylim(-1.2,0.4)
+            plt.plot()
+            #
+            # for i in [0,1,2]:
+            #     for j in [0,1,2]:
+            #         for k in [0,1,2]:
+            #             if i != j and j != k and k != i:
+            #                 fig = plt.figure(figsize = (15,15))
+            #                 ax = Axes3D(fig)
+            #                 sc = ax.scatter(X[:,i], X[:,j], X[:,k], c = y, cmap=cmap)
+            #                 plt.legend(*sc.legend_elements(), bbox_to_anchor=(1.05, 1), loc=2)
+            #                 plt.title(str(i) + " " + str(j) + " " + str(k))
+            #                 plt.show()
         except FileNotFoundError:
             print("File-Not-Found")
     

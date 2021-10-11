@@ -98,7 +98,7 @@ def main_clf_sl(experiment, version, protocols):
     RS = 0
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
-                                     "Train-Test " + str(RS) +"/Paper/"
+                                      "Train-Test " + str(RS) +"/Paper/"
     for protocol in protocols:
         for file_path in glob.glob(data_path + protocol + "_train.csv", recursive=True):
             print("---" + experiment + "--" + version + "--" + protocol.upper() + "----")
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 #     train_data_path = get_data_folder("CIC-IDS-2017", "BRO", version)
 #     test_data_path = get_data_folder("CIC-IDS-2018", "BRO", version) 
 #     output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "BRO", version, "Supervised") + \
-#                                      "Paper/"
+#                                       "Paper/"
 #     for protocol in protocols:
 #         try:
 #             df_train = read_preprocessed(train_data_path + protocol + ".csv")
