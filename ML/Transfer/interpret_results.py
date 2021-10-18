@@ -6,47 +6,21 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from project_paths import get_results_folder
-from ML.Transfer.experimental_setup import NAMES, powerset, create_foldername
+from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2017_CIC-IDS-2018"
+DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-tcp"
 RS = 1
-
-# %% Determine missing results
-
-attacks_17 = ["DDoS - Botnet", "DDoS - LOIC", "DoS - GoldenEye", "DoS - Hulk",
-           "DoS - SlowHTTPTest", "DoS - Slowloris"]
-attacks_18 = ["DDoS - Botnet", "DDoS - HOIC", "DDoS - LOIC - HTTP", 
-           "DoS - GoldenEye", "DoS - Hulk", "DoS - Slowloris"]
-
-missing_list = []
-for rs in range(RS):
-    for test_attack in attacks_18 + ["Malicious"]:
-        for train_attacks in powerset(attacks_17):
-            if len(train_attacks) != 1:
-                continue
-            for model in ["RF", "GNB", "DT", "KNN"]:
-                # path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                #                 "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
-                path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "/Paper/" + PROTOCOL + "/"
-                path = path + test_attack + "/" + create_foldername(train_attacks) + "/" + model + "/"
-                if not os.path.isdir(path):
-                    missing_list.append([rs, test_attack, train_attacks, model, path])
-                    
-df_missing = pd.DataFrame(missing_list, columns = ["RS", "Test", "Train", "Model", "Path"])
-
-#df_missing[["RS","Test"]].drop_duplicates()
 
 #%% 
 
 results = []
 for rs in range(RS):
-    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-    #                             "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "/Paper/" + PROTOCOL + "/"
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
+    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
         tags = file.split(os.sep)
@@ -76,7 +50,7 @@ def label_point(x, y, val, ax):
     for i, point in a.iterrows():
         ax.text(point['x'], point['y'], str(point['val']))    
 
-for index, group in df[df["Model"]=="KNN"].groupby(["Test", "Model"]):
+for index, group in df[df["Model"]=="DT"].groupby(["Test", "Model"]):
     group_ = group[~group["Train"].str.contains(index[0])]
     group_ = group_.groupby(["Test","Train", "Model",
                             "Number of trained D(D)oS attacks"])[["F1", "F1 Baseline"]].mean().reset_index()
