@@ -41,7 +41,7 @@ def create_foldername(train_case):
         if attack in NAMES.keys():
             attack_list.append(NAMES[attack])
         else:
-            attack_list.append(attack)    
+            attack_list.append(attack)
     folder_name = ' '.join(sorted(attack_list))
     return folder_name
     
@@ -53,7 +53,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
     ps = list(powerset(attacks))
         
     for train_case in ps:
-        if len(train_case) > 0:
+        if len(train_case) == 1:
             folder_name = create_foldername(train_case)
             print(folder_name)
             output_path_case = go_or_create_folder(output_path, folder_name)
@@ -95,7 +95,7 @@ def compute_transfer_learning(df_train, df_test, output_path):
         select_train_labels(df_train, df_test_, None, output_path_m)
 
 def main_clf_sl(experiment, version, protocols):
-    RS = 0
+    RS = 1
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
                                       "Train-Test " + str(RS) +"/Paper/"

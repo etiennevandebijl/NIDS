@@ -11,7 +11,7 @@ NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-tcp"
-RS = 1
+RS = 5
 
 #%% 
 
@@ -62,7 +62,7 @@ for index, group in df[df["Model"]=="DT"].groupby(["Test", "Model"]):
 #%%
 
 df_ = df[df["Number of trained D(D)oS attacks"] == 1]
-df_ = df_.groupby(["Test","Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
+df_ = df_.groupby(["Test", "Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
 
 # %%
 
@@ -102,7 +102,7 @@ cmap = plt.get_cmap('YlOrRd')
 pos = None
 for model, group in group_model.items():
     group_ = group[group["F1"] > 0.0] #Only show if its better than the baseline
-    plt.figure(figsize = (15,15))
+    plt.figure(figsize = (15, 15))
 
     G = nx.from_pandas_edgelist(group_, source='Train', target='Test',
                             edge_attr=True, create_using=nx.DiGraph())

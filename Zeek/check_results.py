@@ -266,17 +266,17 @@ df_missing = df_missing[df_missing["Path"].str.contains("RF")]
 
 DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-tcp"
-RS = 1
+RS = 5
 
 attacks_17 = ["DDoS - Botnet", "DDoS - LOIC", "DoS - GoldenEye", "DoS - Hulk",
            "DoS - SlowHTTPTest", "DoS - Slowloris"]
-attacks_18 = ["DDoS - Botnet", "DDoS - HOIC", "DDoS - LOIC - HTTP", 
+attacks_18 = ["DDoS - Botnet", "DDoS - HOIC", "DDoS - LOIC - HTTP",
            "DoS - GoldenEye", "DoS - Hulk", "DoS - Slowloris"]
 
 missing_list = []
 for rs in range(RS):
     for test_attack in attacks_18 + ["Malicious"]:
-        for train_attacks in powerset(attacks_17):
+        for train_attacks in powerset(attacks_18):
             if len(train_attacks) != 1:
                 continue
             for model in ["RF", "GNB", "DT", "KNN"]:

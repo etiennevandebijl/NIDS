@@ -4,11 +4,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 # Sklearn must be version 0.23.2 in stead of 0.24.2, otherwise it takes ages
-
+# TO do again, GNB results for supervised learning due to the var_smoothing
 models = {
-    # "GNB": {"clf": GaussianNB(),
-    #         "param": {"priors": [None]}
-    #         }
+    "GNB": {"clf": GaussianNB(),
+            "param": {"priors": [None],
+                      "var_smoothing":[1e-200]} #Dit is kritical
+            } 
     # ,
     # "DT": {"clf": DecisionTreeClassifier(),
     #         "param": {"criterion": ["gini"],
@@ -34,8 +35,8 @@ models = {
     #                   "n_jobs": [-1]}
     #         }
     # ,
-    "ADA": {"clf": AdaBoostClassifier(base_estimator=DecisionTreeClassifier()),
-            "param": {"n_estimators": [10],
-                      "random_state": [0]}
-            }
+    # "ADA": {"clf": AdaBoostClassifier(base_estimator=DecisionTreeClassifier()),
+    #         "param": {"n_estimators": [10],
+    #                   "random_state": [0]}
+    #         }
     }
