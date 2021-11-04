@@ -66,10 +66,12 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             
             # Case 2: Find optimal values in train dataset
             splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
+            # For 2018 we use randomly 10 procent of the data to train
             results_search = perform_train_validation(df_train_, models, splitter)
             opt_models = {}
             for model, result in results_search.items():
                 opt_models[model] = result[0]
+	    # For 2018 KNN we use 10 procent to train
             results = perform_train_test(df_train_, df_test, opt_models)
             #EnD
             store_results(results, output_path_case)

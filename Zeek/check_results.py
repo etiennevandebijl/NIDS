@@ -101,9 +101,9 @@ df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Proto
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path"])
 
-# plt.figure(figsize = (10,10))
-# sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
-# plt.show()
+plt.figure(figsize = (10,10))
+sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+plt.show()
 
 # %% Unsupervised
 
@@ -186,7 +186,7 @@ def files_supervised(source_dataset_path):
 exists_list = []
 missing_list = []
 
-part = "Selection"
+part = "Evaluation"
 RS = 0
 
 for exp in EXPERIMENTS:
@@ -206,36 +206,37 @@ df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Proto
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path"])
 
-# plt.figure(figsize = (10,10))
-# sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
-# plt.show()
+plt.figure(figsize = (10,10))
+sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+plt.show()
 
 # %% Supervised Transfer Learning
 
-def transfer_files(source_dataset_path):
-    labels = determine_labels(source_dataset_path)
-    
-    attacks = [l for l in labels if l != "Benign"]
+def transfer_files(train_dataset_path, test_dataset_path):
+    train_labels = determine_labels(train_dataset_path)
+    train_attacks = [l for l in train_labels if l != "Benign"]
+    test_labels = determine_labels(test_dataset_path)    
+    test_attacks = [l for l in test_labels if l != "Benign"]    
+    if len(test_attacks) > 1:
+        test_attacks.append("Malicious")
+
     subfolders = []
-    ps = list(powerset(attacks))
-    for train_case in ps:
-        if len(train_case) > 0:
-            folder_name = create_foldername(train_case)
-            for l in attacks:
-                subfolders.append(l + "/" + folder_name + "/")
-            if len(attacks) > 1:
-                subfolders.append("Malicious/" + folder_name + "/")
+    for test_attack in test_attacks:
+        for train_attack_ss in list(powerset(train_attacks)):
+            if len(train_attack_ss) == 1:
+                folder_name = create_foldername(train_attack_ss)
+                subfolders.append(test_attack + "/" + folder_name + "/")
 
     files = []
     for sf in subfolders:
         files.append(sf + "feature_importance.csv")
         files.append(sf + "model-comp.png")
 
-        for model in ["DT","GNB","RF", "KNN"]:
+        for model in ["DT", "GNB", "RF", "KNN"]:
             files.append(sf + model + "/scores.csv")
             files.append(sf + model + "/opt_clf.joblib")
             files.append(sf + model + "/" + model + " score.png")
-        for model in ["DT","RF"]:
+        for model in ["DT", "RF"]:
             files.append(sf + model + "/feature-importance.csv")
             files.append(sf + model + "/feature-importance.png")
     return files
@@ -243,51 +244,29 @@ def transfer_files(source_dataset_path):
 exists_list = []
 missing_list = []
 
-for exp in ["CIC-IDS-2018"]:
+EXP_RS = {"CIC-IDS-2017": 10}
+
+for exp in EXP_RS.keys():
     for protocol in ["http-tcp"]:
-        source_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_DDoS") + "Train-Test 0/" + protocol + "_train.txt"
-        if not os.path.isfile(source_dataset_path):
-            continue
-        output_path = get_results_folder(exp, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Train-Test 0/Paper/" + protocol + "/"
-        files = transfer_files(source_dataset_path)
-        exists, missing = analyse_check_files(files, source_dataset_path, output_path, exp, "2_Preprocessed_DDoS", protocol)
-        exists_list.extend(exists)
-        missing_list.extend(missing)
+        for RS in range(EXP_RS[exp]):
+            train_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_DDoS") + "Train-Test " + str(RS) + "/" + protocol + "_train.txt"
+            if not os.path.isfile(train_dataset_path):
+                continue
+            test_dataset_path = train_dataset_path.replace("train","test")
+
+            output_path = get_results_folder(exp, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Train-Test " + str(RS) + "/Paper/" + protocol + "/"
+            files = transfer_files(train_dataset_path, test_dataset_path)
+            exists, missing = analyse_check_files(files, train_dataset_path, output_path, exp, "2_Preprocessed_DDoS", protocol)
+            missing = [a + [a[4].replace(output_path,"").split("/")[0], a[4].replace(output_path,"").split("/")[1],  RS] for a in missing]
+            exists_list.extend(exists)
+            missing_list.extend(missing)
 
 df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Protocol", "File",
                                                  "Path", "Modified Time", "On Time"])
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
-                                                  "File", "Path"])
-#df_missing = df_missing[df_missing["Path"].str.contains("CIC")]
-#df_missing = df_missing[df_missing["Path"].str.contains("CIC-IDS-2018")]
-df_missing = df_missing[df_missing["Path"].str.contains("RF")]
+                                                  "File", "Path", "Train", "Test", "RS"])
 
-# %% Determine missing results
+plt.figure(figsize = (10,10))
+sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+plt.show()
 
-DATASET = "CIC-IDS-2018"
-PROTOCOL = "http-tcp"
-RS = 5
-
-attacks_17 = ["DDoS - Botnet", "DDoS - LOIC", "DoS - GoldenEye", "DoS - Hulk",
-           "DoS - SlowHTTPTest", "DoS - Slowloris"]
-attacks_18 = ["DDoS - Botnet", "DDoS - HOIC", "DDoS - LOIC - HTTP",
-           "DoS - GoldenEye", "DoS - Hulk", "DoS - Slowloris"]
-
-missing_list = []
-for rs in range(RS):
-    for test_attack in attacks_18 + ["Malicious"]:
-        for train_attacks in powerset(attacks_18):
-            if len(train_attacks) != 1:
-                continue
-            for model in ["RF", "GNB", "DT", "KNN"]:
-                path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
-                # path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                #                 "Supervised") + "/Paper/" + PROTOCOL + "/"
-                path = path + test_attack + "/" + create_foldername(train_attacks) + "/" + model + "/"
-                if not os.path.isdir(path):
-                    missing_list.append([rs, test_attack, train_attacks, model, path])
-                    
-df_missing = pd.DataFrame(missing_list, columns = ["RS", "Test", "Train", "Model", "Path"])
-
-#df_missing[["RS","Test"]].drop_duplicates()
