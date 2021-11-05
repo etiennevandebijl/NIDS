@@ -9,9 +9,9 @@ from project_paths import get_results_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2018"
+DATASET = "CIC-IDS-2017"
 PROTOCOL = "http-tcp"
-RS = 5
+RS = 10
 
 #%% 
 

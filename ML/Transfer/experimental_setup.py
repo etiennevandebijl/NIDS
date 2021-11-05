@@ -53,7 +53,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
     ps = list(powerset(attacks))
         
     for train_case in ps:
-        if len(train_case) == 1:
+        if len(train_case) > 1:
             folder_name = create_foldername(train_case)
             print(folder_name)
             output_path_case = go_or_create_folder(output_path, folder_name)
@@ -66,7 +66,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             
             # Case 2: Find optimal values in train dataset
             splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
-            # For 2018 we use randomly 10 procent of the data to train
+            # For 2018 (not GNB) we use randomly 10 procent of the data to train
             results_search = perform_train_validation(df_train_, models, splitter)
             opt_models = {}
             for model, result in results_search.items():

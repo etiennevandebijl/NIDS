@@ -223,7 +223,7 @@ def transfer_files(train_dataset_path, test_dataset_path):
     subfolders = []
     for test_attack in test_attacks:
         for train_attack_ss in list(powerset(train_attacks)):
-            if len(train_attack_ss) == 1:
+            if len(train_attack_ss) > 1:
                 folder_name = create_foldername(train_attack_ss)
                 subfolders.append(test_attack + "/" + folder_name + "/")
 
@@ -234,11 +234,11 @@ def transfer_files(train_dataset_path, test_dataset_path):
 
         for model in ["DT", "GNB", "RF", "KNN"]:
             files.append(sf + model + "/scores.csv")
-            files.append(sf + model + "/opt_clf.joblib")
-            files.append(sf + model + "/" + model + " score.png")
-        for model in ["DT", "RF"]:
-            files.append(sf + model + "/feature-importance.csv")
-            files.append(sf + model + "/feature-importance.png")
+            # files.append(sf + model + "/opt_clf.joblib")
+            # files.append(sf + model + "/" + model + " score.png")
+        # for model in ["DT", "RF"]:
+        #     files.append(sf + model + "/feature-importance.csv")
+        #     files.append(sf + model + "/feature-importance.png")
     return files
 
 exists_list = []
@@ -258,15 +258,16 @@ for exp in EXP_RS.keys():
             files = transfer_files(train_dataset_path, test_dataset_path)
             exists, missing = analyse_check_files(files, train_dataset_path, output_path, exp, "2_Preprocessed_DDoS", protocol)
             missing = [a + [a[4].replace(output_path,"").split("/")[0], a[4].replace(output_path,"").split("/")[1],  RS] for a in missing]
+            missing = [a + [a[4].replace(output_path,"").split("/")[2] if len(a[4].replace(output_path,"").split("/")) == 4 else ""] for a in  missing]
             exists_list.extend(exists)
             missing_list.extend(missing)
 
 df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Protocol", "File",
                                                  "Path", "Modified Time", "On Time"])
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
-                                                  "File", "Path", "Train", "Test", "RS"])
-
-plt.figure(figsize = (10,10))
-sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
-plt.show()
+                                                  "File", "Path", "Train", "Test", "RS", "Model"])
+df_missing = df_missing[['Experiment', 'Version', 'Protocol',  'Train', 'Test','Model','RS', 'File','Path']]
+# plt.figure(figsize = (10,10))
+# sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
+# plt.show()
 
