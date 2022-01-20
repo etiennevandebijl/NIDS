@@ -59,6 +59,17 @@ for index, group in df[df["Model"]=="DT"].groupby(["Test", "Model"]):
     #label_point(group_["Number of trained D(D)oS attacks"] - 1, group_["F1"], group_["Train"], plt.gca())
     plt.show()
 
+# %%
+for index, group in df[df["Model"]=="DT"].groupby(["Test", "Model"]):
+    group_ = group[~group["Train"].str.contains(index[0])]
+    
+    plt.figure(figsize = (20, 13))
+    sns.pointplot(x = "Number of trained D(D)oS attacks", y = "F1", hue = "Train", 
+                  dodge=True, data = group_, )
+    plt.legend([],[], frameon=False)
+    plt.title("Model: " + index[1] + ", Test-Attack: " + index[0])
+    plt.show()
+    
 #%%
 
 df_ = df[df["Number of trained D(D)oS attacks"] == 1]
@@ -91,7 +102,7 @@ for model, group in group_model.items():
     plt.figure(figsize = (10,10))
     dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
     sns.heatmap(dd, annot=True, cmap = "RdYlGn")
-    plt.title(model)
+    plt.title("F1 score for model " + model + " training one attack")
     plt.tight_layout()
     #plt.savefig(input_path + DATASET + "-" + model + "-heatmap.png")
     plt.show()

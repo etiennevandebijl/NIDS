@@ -66,14 +66,24 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             
             # Case 2: Find optimal values in train dataset
             splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
-            # For 2018 (not GNB) we use randomly 10 procent of the data to train
             results_search = perform_train_validation(df_train_, models, splitter)
             opt_models = {}
             for model, result in results_search.items():
                 opt_models[model] = result[0]
-	    # For 2018 KNN we use 10 procent to train
             results = perform_train_test(df_train_, df_test, opt_models)
-            #EnD
+
+            # For the 2018 dataset we need to sample data for the training.
+            # GNB
+            #   We did not need to sample data for this model
+            # DT + RF
+            #   In the hyperparameter tuning we sampled 10% with random_state = 0
+            #   For the train-test we did not change.
+            # KNN
+            #   For KNN we did both 1% to speed up the process for all models.
+            
+            # For 2017_2018 we can use all data. We only use train random state 0
+            # For 2018_2017 we only used for now all data for GNB
+
             store_results(results, output_path_case)
     
 
@@ -96,8 +106,7 @@ def compute_transfer_learning(df_train, df_test, output_path):
                                             "test_labels_info")
         select_train_labels(df_train, df_test_, None, output_path_m)
 
-def main_clf_sl(experiment, version, protocols):
-    RS = 1
+def main_clf_sl(experiment, version, protocols, RS):
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(RS) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised") + \
                                       "Train-Test " + str(RS) +"/Paper/"
@@ -116,7 +125,8 @@ if __name__ == "__main__":
     APP.mainloop()
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
-            main_clf_sl(exp, vers, APP.selected_values["Files"])
+            for RS in [1]:
+                main_clf_sl(exp, vers, APP.selected_values["Files"], RS)
 
 
 # =============================================================================

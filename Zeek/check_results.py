@@ -267,7 +267,23 @@ df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Proto
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path", "Train", "Test", "RS", "Model"])
 df_missing = df_missing[['Experiment', 'Version', 'Protocol',  'Train', 'Test','Model','RS', 'File','Path']]
+
 # plt.figure(figsize = (10,10))
 # sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
 # plt.show()
 
+# %%
+
+train_dataset_path = get_data_folder("CIC-IDS-2017", "BRO", "2_Preprocessed_DDoS") + "http-tcp.txt"
+test_dataset_path = get_data_folder("CIC-IDS-2018", "BRO", "2_Preprocessed_DDoS") + "http-tcp.txt"
+output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "BRO", "2_Preprocessed_DDoS", "Supervised") + "/Paper/http-tcp/"
+files = transfer_files(train_dataset_path, test_dataset_path)
+exists, missing = analyse_check_files(files, train_dataset_path, output_path, "CIC-IDS_2017_CIC-IDS-2018", "2_Preprocessed_DDoS", protocol)
+missing = [a + [a[4].replace(output_path,"").split("/")[0], a[4].replace(output_path,"").split("/")[1]] for a in missing]
+missing = [a + [a[4].replace(output_path,"").split("/")[2] if len(a[4].replace(output_path,"").split("/")) == 4 else ""] for a in missing]
+
+df_exists = pd.DataFrame(exists, columns = ["Experiment", "Version", "Protocol", "File",
+                                                 "Path", "Modified Time", "On Time"])
+df_missing = pd.DataFrame(missing, columns = ["Experiment", "Version", "Protocol", 
+                                                  "File", "Path", "Train", "Test", "Model"])
+df_missing = df_missing[['Experiment', 'Version', 'Protocol',  'Train', 'Test', 'Model',  'File','Path']]
