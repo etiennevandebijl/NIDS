@@ -20,7 +20,7 @@ IGNORE_COLS = ["uid", "ts", "ts_", "id.orig_h", "id.resp_h", "id.resp_p",
 
 def format_ML(df, binary=False):
     """Convert df to ML ready format."""
-    df = df.drop([c for c in IGNORE_COLS if c in df.columns], 1)
+    df = df.drop(columns = [c for c in IGNORE_COLS if c in df.columns], axis = 1)
 
     if "duration" in df.columns:
         df["duration"] = df["duration"] / datetime.timedelta(seconds=1)
@@ -28,7 +28,7 @@ def format_ML(df, binary=False):
     if binary:
         df["Label"] = df["Label"] != "Benign"
 
-    X = df.drop(["Label"], 1)
+    X = df.drop(columns = "Label", axis = 1)
     feature_names = X.columns.tolist()
     X = X.values * 1.0
 

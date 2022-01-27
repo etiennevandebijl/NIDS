@@ -83,7 +83,9 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             
             # For 2017_2018 we can use all data. We only use train random state 0
             # For 2018_2017 we only used for now all data for GNB
-
+            # For 2018_2017 10% for hyperparameter tuning for RF and DT
+            # 1% for both training and hyperparametertuning for KNN
+            
             store_results(results, output_path_case)
     
 
