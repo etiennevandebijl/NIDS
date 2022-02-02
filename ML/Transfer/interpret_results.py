@@ -12,7 +12,7 @@ NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-tcp"
-RS = 7
+RS = 10
 
 #%% 
 
@@ -82,7 +82,7 @@ for i in list(NAMES.keys()):
         attacks_included.append(i)
 attacks_included = sorted(attacks_included)
 
-model = "GNB"
+model = "KNN"
 for index, group in df_[df_["Model"]==model].groupby(["Test", "Model"]):
     group_ = group[~group["Train"].str.contains(index[0])]
     attacks_ = [n for n in attacks_included if n != index[0]]
@@ -141,17 +141,53 @@ for model, group in df_.groupby("Model"):
     group_["F1"] = group_["F1"].round(3)
     group_model[model] = group_
 
+# %%
+
+
+df__ = df[df["Number of trained D(D)oS attacks"] == 1]
+df__ = df__.groupby(["Test", "Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
+
+df__ = df__[df__["Test"] != "Malicious"]
+df__["Train"] = df__["Train"].map(lambda x: x.replace("['","").replace("']",""))
+
+df__ = df__.pivot_table(values = "F1", index = ["Test"], columns = ["Train","Model"])
+
+plt.figure(figsize = (12,12))
+ax = sns.heatmap(df__.T, annot=True, cmap = "RdYlGn", fmt='.3g')
+ax.axhline(4, color='white', lw=5)
+ax.axhline(8, color='white', lw=5)
+ax.axhline(12, color='white', lw=5)
+ax.axhline(16, color='white', lw=5)
+ax.axhline(20, color='white', lw=5)
+plt.xticks(rotation=90)
+pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Paper-Results/"
+pathje = go_or_create_folder(pathje, "Heatmap") 
+plt.tight_layout()
+plt.savefig(pathje + DATASET + "-heatmap-all-models.png")
+plt.show()
+
+
 #%% 
 
 for model, group in group_model.items():
+    for test, value in baselines.items():
+        new_row = {"Train": "Baseline", "Test":test, "F1": value}
+        if test != "Malicious":
+            group = group.append(new_row,  ignore_index=True)
     plt.figure(figsize = (10,10))
+    
     dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
-    sns.heatmap(dd, annot=True, cmap = "RdYlGn")
+    
+    ax = sns.heatmap(dd, annot=True, cmap = "RdYlGn", fmt='.5g')
+    ax.axhline(1, color='black', lw=5)
     plt.title("F1 score for model " + model + " training one attack")
     plt.tight_layout()
-    #plt.savefig(input_path + DATASET + "-" + model + "-heatmap.png")
+    pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + \
+                "Paper-Results/"
+    pathje = go_or_create_folder(pathje, "Heatmap") 
+  #  plt.savefig(pathje + DATASET + "-" + model + "-heatmap.png")
     plt.show()
-    
+
 # %%
 
 cmap = plt.get_cmap('YlOrRd')
