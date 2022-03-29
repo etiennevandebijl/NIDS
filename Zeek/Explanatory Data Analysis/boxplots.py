@@ -22,11 +22,13 @@ sns.set(font_scale=1.2)
 def plot_box(dataset, protocol, label, output_path):
     """Plot the boxplots for each feature."""
     datasets = dataset["Experiment"].unique()
+    dataset = dataset.loc[:, (dataset != 0).any(axis=0)] #NEW REGEL
 
     output_path_ = go_or_create_folder(output_path, label)    
     
     for feature in dataset.columns:
         if feature != "Experiment" and feature != "Label":
+
             plt.figure(figsize=(10, 6))
             sns.boxplot(x="Experiment", y=feature, data=dataset)
             plt.title(label + " comparison " + feature + " vs datasets")
@@ -34,6 +36,7 @@ def plot_box(dataset, protocol, label, output_path):
             plt.tight_layout()
             plt.savefig(output_path_ +'-'.join(sorted(datasets)) + "-" + \
                         protocol.upper() + "-" + label + "-" + feature.upper() + ".png")
+            plt.show()
             plt.close()
 
 
@@ -73,7 +76,8 @@ def boxplots(experiments, version, protocol):
         df = pd.concat(pd_list).fillna(0.0)
     
         for label, group in df.groupby("Label"):
-            plot_box(group, protocol, label, output_path)
+            if label == "Benign":
+                plot_box(group, protocol, label, output_path)
 
 
 if __name__ == "__main__":

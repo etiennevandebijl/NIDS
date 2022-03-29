@@ -272,7 +272,7 @@ df_missing = df_missing[['Experiment', 'Version', 'Protocol',  'Train', 'Test','
 # sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
 # plt.show()
 
-df_missing = df_missing[df_missing["Model"] == 'GNB']
+df_missing = df_missing[df_missing["Model"] == 'KNN']
 
 # %%
 

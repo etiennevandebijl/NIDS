@@ -143,6 +143,10 @@ for model, group in df_.groupby("Model"):
 
 # %%
 
+plt.rc('text', usetex=True)
+# Adjust font specs as desired (here: closest similarity to seaborn standard)
+plt.rc('font', **{'size': 15.0})
+plt.rc('text.latex', preamble=r'\usepackage{lmodern}')
 
 df__ = df[df["Number of trained D(D)oS attacks"] == 1]
 df__ = df__.groupby(["Test", "Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
@@ -152,8 +156,13 @@ df__["Train"] = df__["Train"].map(lambda x: x.replace("['","").replace("']",""))
 
 df__ = df__.pivot_table(values = "F1", index = ["Test"], columns = ["Train","Model"])
 
-plt.figure(figsize = (12,12))
-ax = sns.heatmap(df__.T, annot=True, cmap = "RdYlGn", fmt='.3g')
+
+plt.figure(figsize = (10,14))
+ax = sns.heatmap(df__.T, annot = np.array(["{:.3f}".format(data) 
+                            for data in df__.T.values.ravel()]).reshape(
+                                    np.shape(df__.T)),
+                  cmap = "RdYlGn", fmt='', 
+                  cbar_kws = dict(use_gridspec=True, location="top"))
 ax.axhline(4, color='white', lw=5)
 ax.axhline(8, color='white', lw=5)
 ax.axhline(12, color='white', lw=5)
@@ -163,7 +172,7 @@ plt.xticks(rotation=90)
 pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Paper-Results/"
 pathje = go_or_create_folder(pathje, "Heatmap") 
 plt.tight_layout()
-plt.savefig(pathje + DATASET + "-heatmap-all-models.png")
+plt.savefig(pathje + DATASET + "-heatmap-all-models.png", dpi = 400)
 plt.show()
 
 
