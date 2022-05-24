@@ -64,7 +64,7 @@ def network_preprocessing(log_file, experiment_name):
     """
     try:
         network_info = pd.read_csv(DATA_PATH + experiment_name +
-                                   "/Experiment setup/Network_info_scheme.csv",
+                                   "/Experiment Setup/Network_info_scheme.csv",
                                    sep=";")
     except FileNotFoundError:
         print("Network info scheme does not exist")
