@@ -45,9 +45,9 @@ def finish_dataset(log_file, df_uid_label, experiment, output_path, protocol):
     log_file = fix_col_order(log_file)
     log_file.sort_values(by=['ts', "uid"], inplace=True)
     print("-----Writing Data---------------  " + str(datetime.datetime.now()))
-    log_file.to_csv(output_path + protocol + ".csv", index=False)
+    log_file.to_csv(output_path + protocol + "-FIX.csv", index=False)
     print("-----Saving statistics----------  " + str(datetime.datetime.now()))
-    statistics_dataset(log_file, output_path, protocol)
+    statistics_dataset(log_file, output_path, protocol + "-FIX")
     print("-----" + experiment + "-" + protocol.upper() + "-Completed-  " +
           str(datetime.datetime.now()) + "\n")
 
@@ -82,7 +82,7 @@ def main(experiment, protocols_list):
         if protocol == "conn":
             tcp_log, udp_log = preprocessing_conn(log_file)
             finish_dataset(tcp_log, uid_label, experiment, output_path, "tcp")
-            finish_dataset(udp_log, uid_label, experiment, output_path, "udp")
+           # finish_dataset(udp_log, uid_label, experiment, output_path, "udp")
         else:
             log_file = FUNCTIONS[protocol](log_file)
             finish_dataset(log_file, uid_label, experiment,

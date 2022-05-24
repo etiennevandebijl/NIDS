@@ -153,8 +153,13 @@ df__ = df__.groupby(["Test", "Train", "Model"])[["F1", "F1 Baseline"]].mean().re
 
 df__ = df__[df__["Test"] != "Malicious"]
 df__["Train"] = df__["Train"].map(lambda x: x.replace("['","").replace("']",""))
+df__["Train"] = df__["Train"].str.replace("DDoS - ","").str.replace("DoS - ","")
+df__["Train"] = df__["Train"].str.replace("- HTTP","")
+df__["Test"] = df__["Test"].str.replace("DDoS - ","").str.replace("DoS - ","")
+df__["Test"] = df__["Test"].str.replace("- HTTP","")
 
 df__ = df__.pivot_table(values = "F1", index = ["Test"], columns = ["Train","Model"])
+
 
 
 plt.figure(figsize = (10,14))

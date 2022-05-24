@@ -127,7 +127,7 @@ if __name__ == "__main__":
     APP.mainloop()
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
-            for RS in [1]:
+            for RS in [5]:
                 main_clf_sl(exp, vers, APP.selected_values["Files"], RS)
 
 

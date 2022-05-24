@@ -205,7 +205,8 @@ def _tcp_state_features(tcp_log):
     for flag in ["r", "R", "f", "F"]:
         tcp_log[flag] = tcp_log["history"].str.contains(flag)
 
-    for flag in ['d', 'D', "T", "t", "g", "G", "w", "W"]:
+    for flag in ['d', 'D', "T", "t", "c", "C", "g",
+                 "G", "w", "W", "i", "I", "q", "Q"]:
         tcp_log[flag] = tcp_log["history"].str.count(flag)
 
     tcp_log["OPEN"] = (~tcp_log[["r", "R", "f", "F"]].any(axis='columns') &
@@ -233,5 +234,5 @@ def _tcp_state_features(tcp_log):
 # from project_paths import DATA_PATH
 # from Zeek.Preprocessing.utils import zeek_reader
 # zeek_conn_log = zeek_reader(DATA_PATH + "CIC-IDS-2017/BRO/1_Raw" +
-#                             "/Monday-WorkingHours/conn.log")
+#                             "/Tuesday-WorkingHours/conn.log")
 # df_TCP, df_UDP = preprocessing_conn(zeek_conn_log)

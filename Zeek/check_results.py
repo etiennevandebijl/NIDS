@@ -223,7 +223,7 @@ def transfer_files(train_dataset_path, test_dataset_path):
     subfolders = []
     for test_attack in test_attacks:
         for train_attack_ss in list(powerset(train_attacks)):
-            if len(train_attack_ss) > 1:
+            if len(train_attack_ss) > 0:
                 folder_name = create_foldername(train_attack_ss)
                 subfolders.append(test_attack + "/" + folder_name + "/")
 
@@ -244,10 +244,10 @@ def transfer_files(train_dataset_path, test_dataset_path):
 exists_list = []
 missing_list = []
 
-EXP_RS = {"CIC-IDS-2018": 10}
+EXP_RS = {"CIC-IDS-2017": 20}
 
 for exp in EXP_RS.keys():
-    for protocol in ["http-tcp"]:
+    for protocol in ["http-FIX-tcp-FIX"]:
         for RS in range(EXP_RS[exp]):
             train_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_DDoS") + "Train-Test " + str(RS) + "/" + protocol + "_train.txt"
             if not os.path.isfile(train_dataset_path):

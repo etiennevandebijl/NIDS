@@ -47,7 +47,10 @@ def zeek_reader(path):
         log_file["ts"] = log_file["ts"] - datetime.timedelta(hours=9)
 
     if "duration" in log_file.columns:
-        log_file["duration"] = pd.to_timedelta(log_file["duration"])
+        # Dit is veranderd doordat er ineens "-" in zit, super vaag?
+        log_file.loc[log_file["duration"] == "-", "duration"] = 0 
+        log_file["duration"] = pd.to_timedelta(log_file["duration"], errors = "coerce")
+        
     return log_file
 
 

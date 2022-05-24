@@ -22,7 +22,7 @@ COMMON_MIME_TYPES = ["application", "audio", "example", "font",
                      "image", "model", "text", "video"]
 
 # Params only gives 0 so could have been removed.
-COMPONENTS = {1: "netloc", 2: "path",  4: "query", 5: "fragment"}  # 3: "params",
+COMPONENTS = {1: "netloc", 2: "path", 3: "params", 4: "query", 5: "fragment"} 
 RESERVED_CHARACTERS = [r"\#", r"\?", r"\&", r"\;", r"\/", r"\+", r"\=", r"\."]
 
 IGNORED_VARS = ["password", "username", "user_agent", "proxied", "tags",
@@ -48,7 +48,6 @@ def preprocessing_http(http_log):
     """
     http_log['missing_values'] = (http_log == "-").sum(axis=1)
     http_log = http_log.drop(IGNORED_VARS, 1)
-    http_log["host"] = "http://" + http_log["host"]
     # HTTP host is now at params, but could have been set as netloc
     http_log["uri"] = np.where(http_log["uri"].str[:2] == "//",
                                http_log["uri"].str[1:], http_log["uri"])
@@ -98,15 +97,7 @@ def _count_info_uri_http(http_log, feature):
 
     """
     # host: only netloc; uri: path, query and fragment.
-    comp = COMPONENTS
-    if feature == "host":
-        comp = {1: "netloc"}
-    if feature == "uri":
-        comp = {2: "path",  4: "query", 5: "fragment"}
-    if feature == "referrer":
-        comp = {1: "netloc", 2: "path",  4: "query"}
-        
-    for index, value in comp.items():
+    for index, value in COMPONENTS.items():
         name = feature + "_" + value
         http_log[name] = http_log[feature].apply(lambda x:
                                                  uri_component(x, index))
@@ -134,5 +125,5 @@ def uri_component(url, index):
 # from project_paths import DATA_PATH
 # from Zeek.Preprocessing.utils import zeek_reader
 # zeek_http_log = zeek_reader(DATA_PATH + "CIC-IDS-2017/BRO/1_Raw/" +
-#                             "Monday-WorkingHours/http.log")
+#                             "Friday-WorkingHours/http.log")
 # df_HTTP = preprocessing_http(zeek_http_log)
