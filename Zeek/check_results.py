@@ -244,7 +244,7 @@ def transfer_files(train_dataset_path, test_dataset_path):
 exists_list = []
 missing_list = []
 
-EXP_RS = {"CIC-IDS-2017": 20}
+EXP_RS = {"CIC-IDS-2018": 10}
 
 for exp in EXP_RS.keys():
     for protocol in ["http-FIX-tcp-FIX"]:
@@ -272,7 +272,7 @@ df_missing = df_missing[['Experiment', 'Version', 'Protocol',  'Train', 'Test','
 # sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
 # plt.show()
 
-df_missing = df_missing[df_missing["Model"] == 'KNN']
+df_missing = df_missing[df_missing["Model"] == 'RF']
 
 # %%
 
