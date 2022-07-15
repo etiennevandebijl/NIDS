@@ -19,20 +19,20 @@ models = {
     #                   "random_state": [0]}
     #         }
     # ,
-    "RF": {"clf": RandomForestClassifier(),
-            "param": {"criterion": ["gini", "entropy"],
-                      "class_weight": [None, "balanced"],
-                      "max_features": ["auto"],
-                      "n_estimators": [10, 50, 100, 250],
-                      "n_jobs": [-1],
-                      "random_state": [0]}
-            }
-    # ,
-    # "KNN": {"clf": KNeighborsClassifier(),
-    #         "param": {"n_neighbors": [5],
-    #                   "weights": ["uniform"],
-    #                   "algorithm":["ball_tree", "kd_tree"],
-    #                   "leaf_size":[30],
-    #                   "n_jobs": [-1]}
+    # "RF": {"clf": RandomForestClassifier(),
+    #         "param": {"criterion": ["gini", "entropy"],
+    #                   "class_weight": [None, "balanced"],
+    #                   "max_features": ["auto"],
+    #                   "n_estimators": [10, 50, 100, 250],
+    #                   "n_jobs": [-1],
+    #                   "random_state": [0]}
     #         }
+    # ,
+    "KNN": {"clf": KNeighborsClassifier(),
+            "param": {"n_neighbors": [5],
+                      "weights": ["uniform"],
+                      "algorithm":["ball_tree", "kd_tree"],
+                      "leaf_size":[30],
+                      "n_jobs": [-1]}
+            }
     }

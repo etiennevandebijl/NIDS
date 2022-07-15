@@ -266,13 +266,13 @@ df_exists = pd.DataFrame(exists_list, columns = ["Experiment", "Version", "Proto
                                                  "Path", "Modified Time", "On Time"])
 df_missing = pd.DataFrame(missing_list, columns = ["Experiment", "Version", "Protocol", 
                                                   "File", "Path", "Train", "Test", "RS", "Model"])
-df_missing = df_missing[['Experiment', 'Version', 'Protocol',  'Train', 'Test','Model','RS', 'File','Path']]
+df_missing = df_missing[['Experiment', 'Version', 'Protocol', 'Train', 'Test', 'Model', 'RS', 'File', 'Path']]
 
 # plt.figure(figsize = (10,10))
 # sns.scatterplot(data = df_exists, x = "Modified Time", y = "Experiment")
 # plt.show()
 
-df_missing = df_missing[df_missing["Model"] == 'RF']
+#df_missing = df_missing[df_missing["Model"] == 'RF']
 
 # %%
 

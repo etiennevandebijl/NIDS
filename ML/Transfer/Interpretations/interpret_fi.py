@@ -83,21 +83,6 @@ table = df_.groupby(["Test"]).mean().T
 ignore_vars = list(table[table.max(axis = 1)<0.05].index)
 
 
-
-
-
-
-
-    
-    
-    
-
-
-
-
-
-
-
 table = table.drop(table[table.max(axis = 1)<0.05].index)
 distances = squareform(pdist(table.T))
 distances = pd.DataFrame(distances, columns = table.columns, index = table.columns)

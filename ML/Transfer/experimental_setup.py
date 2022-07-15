@@ -53,7 +53,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
     ps = list(powerset(attacks))
         
     for train_case in ps:
-        if len(train_case) == 1:
+        if len(train_case) > 0:
             folder_name = create_foldername(train_case)
             print(folder_name)
             output_path_case = go_or_create_folder(output_path, folder_name)
@@ -66,11 +66,11 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             
             # Case 2: Find optimal values in train dataset
             splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
-            results_search = perform_train_validation(df_train.sample(frac = 0.1, random_state=0), models, splitter)
+            results_search = perform_train_validation(df_train_.sample(frac = 0.01, random_state=0), models, splitter)
             opt_models = {}
             for model, result in results_search.items():
                 opt_models[model] = result[0]
-            results = perform_train_test(df_train_, df_test, opt_models)
+            results = perform_train_test(df_train_.sample(frac = 0.01, random_state=0), df_test, opt_models)
 
             # For the 2018 dataset we need to sample data for the training.
             # GNB
@@ -92,7 +92,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
 def compute_transfer_learning(df_train, df_test, output_path):
     labels = df_test["Label"].unique()
     attacks = [l for l in labels if l != "Benign"]
-    # attacks = [l for l in attacks if not "Slow" in l]
+    # attacks = [l for l in attacks if "Eye" in l]
     
     for attack in attacks:
         print("Attack " + attack)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
     APP.mainloop()
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
-            for RS in [1]:
+            for RS in [0]:
                 main_clf_sl(exp, vers, APP.selected_values["Files"], RS)
 
 

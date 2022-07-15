@@ -7,9 +7,9 @@ from project_paths import get_results_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2017"
+DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 20
+RS = 10
 
 MODELS = ['GNB', "DT", "RF", "KNN"]
 
@@ -55,7 +55,7 @@ df_["Test"] = df_["Test"].str.replace("DDoS - ","").str.replace("DoS - ","")
 df__m = df_.groupby(["Test", "Model"])[["f1"]].agg(['mean', 'std']).reset_index()
 df__m.columns = ["Test", "Model", "Mean", "Std"]
 
-df__m["Std"] = (df__m["Std"] * 10).round(3)
+df__m["Std"] = (df__m["Std"]).round(4)
 df__m["Mean"] = df__m["Mean"].round(4)
 df__m = df__m.pivot_table(values = ["Mean", "Std"], index = ["Test"], columns = ["Model"])
 df__m = df__m.swaplevel(0, 1, 1).sort_index(1)

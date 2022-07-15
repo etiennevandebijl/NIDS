@@ -10,9 +10,9 @@ from project_paths import get_results_folder, go_or_create_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2017"
+DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 20
+RS = 10
 
 #%% 
 
@@ -44,30 +44,6 @@ for rs in range(RS):
 df = pd.DataFrame(results, columns = ["Test", "Number of trained D(D)oS attacks",
                                       "Train", "Model", "F1", 'n', "F1 Baseline", 'RS'])
 
-#%% 
-df_ = df[df["Number of trained D(D)oS attacks"] == 1]
-df_ = df_.groupby(["Test", "Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
-
-# %%
-
-group_test = {}
-baselines = {}
-for test, group in df_.groupby("Test"):
-    group_test[test] = pd.pivot_table(group, values = "F1", columns="Model",
-                                           index = ["Train"])
-    baselines[test] = group[["Test","F1 Baseline"]].drop_duplicates().values[0][1]
-
-# %%
-
-group_model = {}
-for model, group in df_.groupby("Model"):
-    group_ = group[["Train","Test","F1"]]
-    group_ = group_[group_["Test"] != "Malicious"]
-    group_["Train"] = group_["Train"].map(lambda x: x.replace("['",
-                                                              "").replace("']",
-                                                                          ""))
-    group_["F1"] = group_["F1"].round(3)
-    group_model[model] = group_
 
 # %%
 
@@ -87,8 +63,6 @@ df__["Test"] = df__["Test"].str.replace("DDoS - ","").str.replace("DoS - ","")
 df__["Test"] = df__["Test"].str.replace("- HTTP","")
 
 df__ = df__.pivot_table(values = "F1", index = ["Test"], columns = ["Train","Model"])
-
-
 
 plt.figure(figsize = (10,14))
 ax = sns.heatmap(df__.T, annot = np.array(["{:.3f}".format(data) 
@@ -110,42 +84,68 @@ plt.show()
 
 
 #%% 
-
-for model, group in group_model.items():
-    for test, value in baselines.items():
-        new_row = {"Train": "Baseline", "Test":test, "F1": value}
-        if test != "Malicious":
-            group = group.append(new_row,  ignore_index=True)
-    plt.figure(figsize = (10,10))
-    
-    dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
-    
-    ax = sns.heatmap(dd, annot=True, cmap = "RdYlGn", fmt='.5g')
-    ax.axhline(1, color='black', lw=5)
-    plt.title("F1 score for model " + model + " training one attack")
-    plt.tight_layout()
-    pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + \
-                "Paper-Results/"
-    pathje = go_or_create_folder(pathje, "Heatmap") 
-  #  plt.savefig(pathje + DATASET + "-" + model + "-heatmap.png")
-    plt.show()
+# df_ = df[df["Number of trained D(D)oS attacks"] == 1]
+# df_ = df_.groupby(["Test", "Train", "Model"])[["F1", "F1 Baseline"]].mean().reset_index()
 
 # %%
 
-cmap = plt.get_cmap('YlOrRd')
-pos = None
-for model, group in group_model.items():
-    group_ = group[group["F1"] > 0.0] #Only show if its better than the baseline
-    plt.figure(figsize = (15, 15))
+# group_test = {}
+# baselines = {}
+# for test, group in df_.groupby("Test"):
+#     group_test[test] = pd.pivot_table(group, values = "F1", columns="Model",
+#                                            index = ["Train"])
+#     baselines[test] = group[["Test","F1 Baseline"]].drop_duplicates().values[0][1]
 
-    G = nx.from_pandas_edgelist(group_, source='Train', target='Test',
-                            edge_attr=True, create_using=nx.DiGraph())
+# # %%
 
-    pos=nx.circular_layout(G)
-    colors = [cmap(G[u][v]['F1']) for u,v in G.edges()]
+# group_model = {}
+# for model, group in df_.groupby("Model"):
+#     group_ = group[["Train","Test","F1"]]
+#     group_ = group_[group_["Test"] != "Malicious"]
+#     group_["Train"] = group_["Train"].map(lambda x: x.replace("['",
+#                                                               "").replace("']",
+#                                                                           ""))
+#     group_["F1"] = group_["F1"].round(3)
+#     group_model[model] = group_
 
-    nx.draw_networkx(G, pos = pos, edge_color=colors, width = 5,
-                     connectionstyle="arc3,rad=0.1")
-    plt.title(model)
-    #plt.savefig(input_path + DATASET + "-" + model + ".png")
-    plt.show()
+
+#%% 
+
+# for model, group in group_model.items():
+#     for test, value in baselines.items():
+#         new_row = {"Train": "Baseline", "Test":test, "F1": value}
+#         if test != "Malicious":
+#             group = group.append(new_row,  ignore_index=True)
+#     plt.figure(figsize = (10,10))
+    
+#     dd = pd.pivot_table(group, index = "Train", columns = "Test", values = "F1")
+    
+#     ax = sns.heatmap(dd, annot=True, cmap = "RdYlGn", fmt='.5g')
+#     ax.axhline(1, color='black', lw=5)
+#     plt.title("F1 score for model " + model + " training one attack")
+#     plt.tight_layout()
+#     pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + \
+#                 "Paper-Results/"
+#     pathje = go_or_create_folder(pathje, "Heatmap") 
+#   #  plt.savefig(pathje + DATASET + "-" + model + "-heatmap.png")
+#     plt.show()
+
+# # %%
+
+# cmap = plt.get_cmap('YlOrRd')
+# pos = None
+# for model, group in group_model.items():
+#     group_ = group[group["F1"] > 0.0] #Only show if its better than the baseline
+#     plt.figure(figsize = (15, 15))
+
+#     G = nx.from_pandas_edgelist(group_, source='Train', target='Test',
+#                             edge_attr=True, create_using=nx.DiGraph())
+
+#     pos=nx.circular_layout(G)
+#     colors = [cmap(G[u][v]['F1']) for u,v in G.edges()]
+
+#     nx.draw_networkx(G, pos = pos, edge_color=colors, width = 5,
+#                      connectionstyle="arc3,rad=0.1")
+#     plt.title(model)
+#     #plt.savefig(input_path + DATASET + "-" + model + ".png")
+#     plt.show()
