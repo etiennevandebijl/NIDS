@@ -61,16 +61,14 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
                                             ["Benign", "Malicious"], output_path_case, 
                                             "train_labels_info")
             
-            # Case 1: Find optimal values at test dataset
-            # results = perform_train_test_search_opt_params(df_train_, df_test, models)
-            
-            # Case 2: Find optimal values in train dataset
             splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
-            results_search = perform_train_validation(df_train_.sample(frac = 0.01, random_state=0), models, splitter)
+            results_search = perform_train_validation(df_train_, models, splitter)
+            # results_search = perform_train_validation(df_train_.sample(frac = 0.01, random_state=0), models, splitter)
             opt_models = {}
             for model, result in results_search.items():
                 opt_models[model] = result[0]
-            results = perform_train_test(df_train_.sample(frac = 0.01, random_state=0), df_test, opt_models)
+            results = perform_train_test(df_train_, df_test, opt_models)
+            # results = perform_train_test(df_train_.sample(frac = 0.01, random_state=0), df_test, opt_models)
 
             # For the 2018 dataset we need to sample data for the training.
             # GNB
@@ -92,8 +90,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
 def compute_transfer_learning(df_train, df_test, output_path):
     labels = df_test["Label"].unique()
     attacks = [l for l in labels if l != "Benign"]
-    # attacks = [l for l in attacks if "Eye" in l]
-    
+
     for attack in attacks:
         print("Attack " + attack)
         output_path_attack = go_or_create_folder(output_path, attack)
@@ -127,7 +124,7 @@ if __name__ == "__main__":
     APP.mainloop()
     for exp in APP.selected_values["Experiments"]:
         for vers in APP.selected_values["Version"]:
-            for RS in [0]:
+            for RS in range(10):
                 main_clf_sl(exp, vers, APP.selected_values["Files"], RS)
 
 
