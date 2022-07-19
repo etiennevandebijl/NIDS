@@ -12,12 +12,9 @@ __status__ = "Production"
 import os
 import pandas as pd
 
-if os.path.isdir('C:/Users/Etienne/'):
-    OS_PATH = "C:/Users/Etienne/Dropbox/Internship Business Analytics/"
-else:
-    OS_PATH = "/home/etienne/Dropbox/Internship Business Analytics/"
-PROJECT_PATH = OS_PATH + "Project Graph-Based Intrusion Detection/"
-DATA_PATH = PROJECT_PATH + "Intrusion Detection Datasets/"
+OS_PATH = "/home/etienne/Dropbox/Projects/"
+PROJECT_PATH = OS_PATH + "Detecting Novel Variants of Application Layer DDoS Attacks using Supervised Learning/"
+DATA_PATH = PROJECT_PATH + "Data/"
 
 
 def get_data_folder(experiment_name, analyser, version):
