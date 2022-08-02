@@ -78,6 +78,8 @@ ax.axhline(20, color='white', lw=5)
 plt.xticks(rotation=90)
 pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Paper-Results/"
 pathje = go_or_create_folder(pathje, "Heatmap") 
+plt.ylabel("Class (Training) - Model")
+plt.xlabel("Class (Testing)")
 plt.tight_layout()
 plt.savefig(pathje + DATASET + "-heatmap-all-models.png", dpi = 400)
 plt.show()

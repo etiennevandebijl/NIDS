@@ -13,3 +13,4 @@ Workflow:
 5) Go to ML -> Transfer -> experimental_setup.py to gather results
 6) Analyze results with the interpretation folder
 
+This work is done in anaconda.
