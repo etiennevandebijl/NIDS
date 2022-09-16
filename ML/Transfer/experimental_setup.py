@@ -23,7 +23,10 @@ NAMES = {"DoS - Hulk": "Hulk",
          "DoS - SlowHTTPTest": "Test",
          "DoS - GoldenEye": "Eye",
          "DDoS - Botnet": "Bot",
-         "DoS - Slowloris": "Slow"}
+         "DoS - Slowloris": "Slow",
+         "Web Attack - Brute Force": "BF",
+         "Web Attack - XSS": "XSS",
+         "Web Attack - SQL Injection": "SQL"}
 
 def powerset(iterable):
     s = list(iterable)

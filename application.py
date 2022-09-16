@@ -50,7 +50,7 @@ class Application(tk.Frame):
             settings["Version"] = ["1_Raw"]
         elif v_setting == 1:
             settings["Version"] = ["2_Preprocessed", "2_Preprocessed_DDoS",
-                                   "3_Downsampled"]
+                                   "2_Preprocessed_Web", "3_Downsampled"]
         elif v_setting == 2:
             settings["Version"] = ["4_Feature_Reduction"]
         elif v_setting == 3:

@@ -14,7 +14,7 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2017"
-PROTOCOL = "http-tcp"
+PROTOCOL = "http-FIX-tcp-FIX"
 RS = 20
 
 #%% 
@@ -47,7 +47,7 @@ col_names = ["Test", "Number of trained D(D)oS attacks",
 df = pd.DataFrame(results, columns = col_names)
 
 #%%
-MODEL = "DT"
+MODEL = "RF"
 df_ = df[df["Number of trained D(D)oS attacks"]==1]
 df_ = df_[df_["Model"]==MODEL]
 df_ = df_[[x in y for x, y in df_[['Test','Train']].values]]
@@ -66,7 +66,7 @@ for attack, group in df_.groupby(["Test"]):
     group_.columns = ["Feature","RS","Feature importance"]
 
     plt.figure(figsize = (10, 10))
-    if True:
+    if False:
         sns.swarmplot(x = "Feature importance", y = "Feature", hue = "RS" ,data = group_ )
         plt.title("Detecting " + attack + " swarmplot with " + MODEL)
     else:
@@ -80,10 +80,10 @@ ignore_features = group.T[group.T.max(axis = 1) < 0.01].index
 
 table = df_.groupby(["Test"]).mean().T
 
-ignore_vars = list(table[table.max(axis = 1)<0.05].index)
+ignore_vars = list(table[table.max(axis = 1) < 0.05].index)
 
 
-table = table.drop(table[table.max(axis = 1)<0.05].index)
+table = table.drop(table[table.max(axis = 1) < 0.05].index)
 distances = squareform(pdist(table.T))
 distances = pd.DataFrame(distances, columns = table.columns, index = table.columns)
 plt.figure()
