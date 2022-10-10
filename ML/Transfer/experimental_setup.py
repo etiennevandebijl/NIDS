@@ -31,7 +31,7 @@ NAMES = {"DoS - Hulk": "Hulk",
 # %% Settings
 
 RS = range(10)
-EXPERIMENT = "Trial"
+EXPERIMENT = "Paper"
 BALANCING = False
 if BALANCING:
     EXPERIMENT = "Experiment"
@@ -85,7 +85,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
 
     if RESTRICT_TRAIN_LEN:
             pow_s = [a for a in pow_s if len(a) == TRAIN_VAR_LEN]
-
+    print(pow_s)
     for train_case in pow_s:
         folder_name = create_foldername(train_case)
         print(folder_name)
