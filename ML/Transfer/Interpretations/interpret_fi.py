@@ -15,7 +15,7 @@ NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2017"
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 20
+RS = 10
 
 #%% 
 
@@ -48,8 +48,8 @@ df = pd.DataFrame(results, columns = col_names)
 
 #%%
 MODEL = "RF"
-df_ = df[df["Number of trained D(D)oS attacks"]==1]
-df_ = df_[df_["Model"]==MODEL]
+df_ = df[df["Number of trained D(D)oS attacks"] == 1]
+df_ = df_[df_["Model"] == MODEL]
 df_ = df_[[x in y for x, y in df_[['Test','Train']].values]]
 df_.drop(columns = ["Number of trained D(D)oS attacks", "Model", "Train"], axis = 1, inplace = True)
 
@@ -90,15 +90,15 @@ plt.figure()
 table.plot.barh(figsize = (20,20), title= "RF feature importance averages")
 plt.show()
 
-# %%
+# %% PCA over most interesting features
 
 table = df_.groupby(["Test"]).mean().T
 
-ignore_vars = table[table.max(axis = 1)<0.03].index
+ignore_vars = table[table.max(axis = 1)<0.01].index
 
 data_path = get_data_folder(DATASET, "BRO", "2_Preprocessed_DDoS")
     
-dataset = read_preprocessed(data_path + "http-tcp.csv")
+dataset = read_preprocessed(data_path + "http-FIX-tcp-FIX.csv")
 dataset = dataset.drop(columns = ignore_vars, axis = 1)
 
 X, y, _, labels = format_ML(dataset)
@@ -127,6 +127,6 @@ sns.scatterplot(x = X[index_M,0], y = X[index_M,1], hue =y[index_M], ax=ax, pale
 
 plt.xlabel("Principal Component 1")
 plt.ylabel("Principal Component 2")
-plt.xlim(-1,0.5)
-plt.ylim(-1.5,1)
+plt.xlim(-1.5,0.2)
+plt.ylim(-3,3)
 plt.plot()

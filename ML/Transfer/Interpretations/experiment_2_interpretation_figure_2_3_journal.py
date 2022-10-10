@@ -10,17 +10,20 @@ from project_paths import get_results_folder, go_or_create_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2017"
+DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-FIX-tcp-FIX"
 RS = 10
+VARIANT = "DDoS"
+EXPERIMENT = ""
 
 #%% 
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_Web",
+    print(RS)
+    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
                                 "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
-    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
     #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
@@ -33,7 +36,6 @@ for rs in range(RS):
         number_of_attacks = len(train_attacks)
 
         df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
-
         f1 = df.loc["Malicious", "F1 Score"]
         n = df[["Benign", "Malicious"]].sum().sum()
         f1_b = df.loc["Malicious", "F1 Baseline"]
@@ -88,12 +90,12 @@ ax.axhline(13, color='white', lw=5)
 ax.axhline(17, color='white', lw=5)
 ax.axhline(21, color='white', lw=5)
 plt.xticks(rotation=90)
-pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Paper-Results/"
+pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + "Paper-Results/"
 pathje = go_or_create_folder(pathje, "Heatmap") 
 plt.ylabel("Class (Training) - Model")
 plt.xlabel("Class (Testing)")
 plt.tight_layout()
-#plt.savefig(pathje + DATASET + "-heatmap-all-models.png", dpi = 400)
+plt.savefig(pathje + DATASET + "-heatmap-all-models-and-DD.png", dpi = 400)
 plt.show()
 
 
@@ -138,7 +140,7 @@ plt.show()
 #     ax.axhline(1, color='black', lw=5)
 #     plt.title("F1 score for model " + model + " training one attack")
 #     plt.tight_layout()
-#     pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + \
+#     pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + \
 #                 "Paper-Results/"
 #     pathje = go_or_create_folder(pathje, "Heatmap") 
 #   #  plt.savefig(pathje + DATASET + "-" + model + "-heatmap.png")

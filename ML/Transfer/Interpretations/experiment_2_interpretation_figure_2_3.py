@@ -10,16 +10,16 @@ from project_paths import get_results_folder, go_or_create_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2018"
+DATASET = "CIC-IDS-2017"
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 10
+RS = 20
 
 #%% 
 
 results = []
 for rs in range(RS):
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
+                                "Supervised") + "Train-Test " + str(rs) + "/Experiment/" + PROTOCOL + "/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
     #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
 
@@ -81,7 +81,7 @@ pathje = go_or_create_folder(pathje, "Heatmap")
 plt.ylabel("Class (Training) - Model")
 plt.xlabel("Class (Testing)")
 plt.tight_layout()
-plt.savefig(pathje + DATASET + "-heatmap-all-models.png", dpi = 400)
+#plt.savefig(pathje + DATASET + "-heatmap-all-models.png", dpi = 400)
 plt.show()
 
 

@@ -95,14 +95,14 @@ EXP_RS = {"CIC-IDS-2018": 10}
 for exp in EXP_RS.keys():
     for protocol in ["http-FIX-tcp-FIX"]:
         for RS in range(EXP_RS[exp]):
-            train_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_DDoS") + "Train-Test " + str(RS) + "/" + protocol + "_train.txt"
+            train_dataset_path = get_data_folder(exp, "BRO", "2_Preprocessed_Web") + "Train-Test " + str(RS) + "/" + protocol + "_train.txt"
             if not os.path.isfile(train_dataset_path):
                 continue
             test_dataset_path = train_dataset_path.replace("train","test")
 
-            output_path = get_results_folder(exp, "BRO", "2_Preprocessed_DDoS", "Supervised") + "Train-Test " + str(RS) + "/Paper/" + protocol + "/"
+            output_path = get_results_folder(exp, "BRO", "2_Preprocessed_Web", "Supervised") + "Train-Test " + str(RS) + "/Paper/" + protocol + "/"
             files = transfer_files(train_dataset_path, test_dataset_path)
-            exists, missing = analyse_check_files(files, train_dataset_path, output_path, exp, "2_Preprocessed_DDoS", protocol)
+            exists, missing = analyse_check_files(files, train_dataset_path, output_path, exp, "2_Preprocessed_Web", protocol)
             missing = [a + [a[4].replace(output_path,"").split("/")[0], a[4].replace(output_path,"").split("/")[1],  RS] for a in missing]
             missing = [a + [a[4].replace(output_path,"").split("/")[2] if len(a[4].replace(output_path,"").split("/")) == 4 else ""] for a in  missing]
             exists_list.extend(exists)
