@@ -7,8 +7,8 @@ from project_paths import get_results_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2017"
-VARIANT = "DDoS"
+DATASET = "CIC-IDS-2018"
+VARIANT = "Web"
 EXPERIMENT = "Paper"
 
 PROTOCOL = "http-FIX-tcp-FIX"

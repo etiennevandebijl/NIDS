@@ -35,13 +35,14 @@ EXPERIMENT = "Paper"
 BALANCING = False
 if BALANCING:
     EXPERIMENT = "Experiment"
-RESTRICT_TRAIN_LEN = False
-TRAIN_VAR_LEN = 1
 DOWN_SAMPLE_TRAIN = False
-DOWN_SAMPLE_TRAIN_PERC = 0.1
+DOWN_SAMPLE_TRAIN_PERC = 0.01
 DOWN_SAMPLE_TEST = False
-DOWN_SAMPLE_TEST_PERC = 0.1
+DOWN_SAMPLE_TEST_PERC = 0.01
 
+
+RESTRICT_TRAIN_LEN = True
+TRAIN_VAR_LEN = 1
 '''
 For the 2018 dataset we need to sample data for the training.
 GNB: nothing
@@ -85,7 +86,7 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
 
     if RESTRICT_TRAIN_LEN:
             pow_s = [a for a in pow_s if len(a) == TRAIN_VAR_LEN]
-    print(pow_s)
+
     for train_case in pow_s:
         folder_name = create_foldername(train_case)
         print(folder_name)
@@ -104,12 +105,19 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
                 df_B = df_train_[df_train_["Label"] == "Benign"].sample(n=P, random_state=0)
                 df_train_ = pd.concat([df_M, df_B], ignore_index = True)
 
-
         splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
             
         if DOWN_SAMPLE_TRAIN:
-            df_train_d = df_train_.sample(frac = DOWN_SAMPLE_TRAIN_PERC, 
-                                          random_state=0)
+            # We use randomly X% training data, but not stratified.
+            state = 0
+            two_class_condition = False
+            while not two_class_condition:
+                df_train_d = df_train_.sample(frac = DOWN_SAMPLE_TRAIN_PERC, 
+                                              random_state=state)
+                if len(df_train_d["Label"].unique()) == 2:
+                    if df_train_d["Label"].value_counts().min() > 1:
+                        two_class_condition = True
+                state = state + 1
             results_search = perform_train_validation(df_train_d, models, splitter)
         else:
             results_search = perform_train_validation(df_train_, models, splitter)
@@ -119,8 +127,16 @@ def select_train_labels(df_train, df_test, test_attack, output_path):
             opt_models[model] = result[0]
     
         if DOWN_SAMPLE_TEST:
-            df_train_d = df_train_.sample(frac = DOWN_SAMPLE_TEST_PERC, 
-                                             random_state=0)
+            # We use randomly X% training data, but not stratified.
+            state = 0
+            two_class_condition = False
+            while not two_class_condition:
+                df_train_d = df_train_.sample(frac = DOWN_SAMPLE_TRAIN_PERC, 
+                                              random_state=state)
+                if len(df_train_d["Label"].unique()) == 2:
+                    if df_train_d["Label"].value_counts().min() > 1:
+                        two_class_condition = True
+                state = state + 1
             results = perform_train_test(df_train_d, df_test, opt_models)  
         else:
             results = perform_train_test(df_train_, df_test, opt_models)  
@@ -146,6 +162,8 @@ def compute_transfer_learning(df_train, df_test, output_path):
                                             "test_labels_info")
         select_train_labels(df_train, df_test_, None, output_path_m)
 
+# %% Experiment 1
+
 def main_clf_sl(experiment, version, protocols, rs):
     data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(rs) +"/"
     output_path = get_results_folder(experiment, "BRO", version, "Supervised")
@@ -170,27 +188,27 @@ if __name__ == "__main__":
             for rs in RS:
                 main_clf_sl(exp, vers, APP.selected_values["Files"], rs)
 
+# %% Experiment 2
 
-# =============================================================================
-# Experiment 2
-# =============================================================================
-# def main_clf_sl_(version, protocols):
-#     train_data_path = get_data_folder("CIC-IDS-2017", "BRO", version)
-#     test_data_path = get_data_folder("CIC-IDS-2018", "BRO", version)
-#     output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "BRO", version,
-#                                       "Supervised") + "Paper/"
-#     for protocol in protocols:
-#         try:
-#             df_train = read_preprocessed(train_data_path + protocol + ".csv")
-#             df_test = read_preprocessed(test_data_path + protocol + ".csv")
-#         except:
-#             continue
-#         output_path_protocol = go_or_create_folder(output_path, protocol)
-#         compute_transfer_learning(df_train, df_test, output_path_protocol)
+def main_clf_sl_(version, protocols):
+    train_data_path = get_data_folder("CIC-IDS-2017", "BRO", version)
+    test_data_path = get_data_folder("CIC-IDS-2018", "BRO", version)
+    output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "BRO", version,
+                                      "Supervised") 
+    output_path = go_or_create_folder(output_path, EXPERIMENT)
+    
+    for protocol in protocols:
+        try:
+            df_train = read_preprocessed(train_data_path + protocol + ".csv")
+            df_test = read_preprocessed(test_data_path + protocol + ".csv")
+        except:
+            continue
+        output_path_protocol = go_or_create_folder(output_path, protocol)
+        compute_transfer_learning(df_train, df_test, output_path_protocol)
 
 
-# if __name__ == "__main__":
-#     APP = Application(master=tk.Tk(), v_setting=1)
-#     APP.mainloop()
-#     for vers in APP.selected_values["Version"]:
-#         main_clf_sl_(vers, APP.selected_values["Files"])
+if __name__ == "__main__":
+    APP = Application(master=tk.Tk(), v_setting=1)
+    APP.mainloop()
+    for vers in APP.selected_values["Version"]:
+        main_clf_sl_(vers, APP.selected_values["Files"])

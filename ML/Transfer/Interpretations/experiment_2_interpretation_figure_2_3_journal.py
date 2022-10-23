@@ -11,20 +11,23 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2018"
-PROTOCOL = "http-FIX-tcp-FIX"
-RS = 10
 VARIANT = "DDoS"
-EXPERIMENT = ""
+EXPERIMENT = "Paper"
+
+PROTOCOL = "http-FIX-tcp-FIX"
+RS = 20
+if DATASET == "CIC-IDS-2018":
+    RS = 10
 
 #%% 
 
 results = []
 for rs in range(RS):
-    print(RS)
     input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
+                                "Supervised") + "Train-Test " + str(rs) + \
+                                "/" + EXPERIMENT + "/" + PROTOCOL + "/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
-    #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
+    #                             "Supervised") + "/" + EXPERIMENT + "/"  + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
         tags = file.split(os.sep)
@@ -36,6 +39,7 @@ for rs in range(RS):
         number_of_attacks = len(train_attacks)
 
         df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
+
         f1 = df.loc["Malicious", "F1 Score"]
         n = df[["Benign", "Malicious"]].sum().sum()
         f1_b = df.loc["Malicious", "F1 Baseline"]
@@ -62,8 +66,11 @@ df__ = df__[df__["Test"] != "Malicious"]
 df__["Train"] = df__["Train"].map(lambda x: x.replace("['","").replace("']",""))
 df__["Train"] = df__["Train"].str.replace("DDoS - ","").str.replace("DoS - ","")
 df__["Train"] = df__["Train"].str.replace("- HTTP","")
+df__["Train"] = df__["Train"].str.replace("Web Attack - ","")
 df__["Test"] = df__["Test"].str.replace("DDoS - ","").str.replace("DoS - ","")
 df__["Test"] = df__["Test"].str.replace("- HTTP","")
+df__["Test"] = df__["Test"].str.replace("Web Attack - ","")
+
 
 df__["Train - Model"] = df__["Train"] + np.where(df__["Model"].isin(["DT","RF"]),  " -  ", " - ") + df__["Model"]
 
@@ -77,11 +84,14 @@ for bl in baselines.items():
 
 df__ = df__.pivot_table(values = "F1", index = ["Test"], columns = ["Train - Model"]).T
 
-plt.figure(figsize = (10,14))
-ax = sns.heatmap(df__, annot = np.array(["{:.3f}".format(data) 
+if EXPERIMENT == "WEB":
+    plt.figure(figsize = (7,8))
+else:
+    plt.figure(figsize = (9,13))
+ax = sns.heatmap(df__, annot = np.array(["{:.3f}".format(data)
                             for data in df__.values.ravel()]).reshape(
                                     np.shape(df__)),
-                  cmap = "RdYlGn", fmt='', 
+                  cmap = "RdYlGn", fmt='',
                   cbar_kws = dict(use_gridspec=True, location="top"))
 ax.axhline(1, color='white', lw=5)
 ax.axhline(5, color='white', lw=5)
@@ -91,13 +101,12 @@ ax.axhline(17, color='white', lw=5)
 ax.axhline(21, color='white', lw=5)
 plt.xticks(rotation=90)
 pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + "Paper-Results/"
-pathje = go_or_create_folder(pathje, "Heatmap") 
+pathje = go_or_create_folder(pathje, "Heatmap")
 plt.ylabel("Class (Training) - Model")
 plt.xlabel("Class (Testing)")
 plt.tight_layout()
-plt.savefig(pathje + DATASET + "-heatmap-all-models-and-DD.png", dpi = 400)
+plt.savefig(pathje + "Results Experiment 2 " + DATASET + " " + VARIANT + ".png", dpi = 400)
 plt.show()
-
 
 #%% 
 # df_ = df[df["Number of trained D(D)oS attacks"] == 1]

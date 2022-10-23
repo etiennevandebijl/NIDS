@@ -10,16 +10,16 @@ from project_paths import get_results_folder, go_or_create_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2017"
+DATASET = "CIC-IDS-2018"
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 20
+RS = 10
 
 #%% 
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Experiment/" + PROTOCOL + "/"
+    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_Web",
+                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
     #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
 
@@ -31,7 +31,7 @@ for rs in range(RS):
 
         train_attacks = [NAMES_[l] for l in train_attacks]
         number_of_attacks = len(train_attacks)
-
+        print(file)
         df = pd.read_csv(file, sep=";", decimal=",", index_col=0).fillna(0)
 
         f1 = df.loc["Malicious", "F1 Score"]

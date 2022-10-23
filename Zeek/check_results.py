@@ -72,12 +72,16 @@ def transfer_files(train_dataset_path, test_dataset_path):
     return files
 
 #%% 
-EXPERIMENT = "Experiment"
-VARIANT = "DDoS"
-DATASET = "CIC-IDS-2017"
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 20
 PLOT = False
+
+EXPERIMENT = "Experiment"
+VARIANT = "Web"
+DATASET = "CIC-IDS-2018"
+
+RS = 20
+if DATASET == "CIC-IDS-2018":
+    RS = 10
 
 def check_results():
     exists_list = []

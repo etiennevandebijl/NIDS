@@ -8,15 +8,21 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2018"
+VARIANT = "Web"
+EXPERIMENT = "Paper"
+
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 10
+RS = 20
+if DATASET == "CIC-IDS-2018":
+    RS = 10
 
 #%% 
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
-                                "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
+    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
+                                "Supervised") + "Train-Test " + str(rs) + \
+                                "/" + EXPERIMENT + "/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
         tags = file.split(os.sep)

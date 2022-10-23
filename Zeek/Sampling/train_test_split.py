@@ -17,7 +17,7 @@ from application import Application, tk
 
 TRAIN_RATIO = 0.8
 MINIMUM_ROWS = 1000
-RS = 4
+RS = 9
 
 
 def store_df(dataset, protocol, output_path):
