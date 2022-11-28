@@ -10,12 +10,12 @@ from project_paths import get_results_folder, go_or_create_folder
 from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
-DATASET = "CIC-IDS-2018"
-VARIANT = "DDoS"
+DATASET = "CIC-IDS-2017_CIC-IDS-2018"
+VARIANT = "Web"
 EXPERIMENT = "Paper"
 
 PROTOCOL = "http-FIX-tcp-FIX"
-RS = 20
+RS = 1
 if DATASET == "CIC-IDS-2018":
     RS = 10
 
@@ -23,11 +23,11 @@ if DATASET == "CIC-IDS-2018":
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
-                                "Supervised") + "Train-Test " + str(rs) + \
-                                "/" + EXPERIMENT + "/" + PROTOCOL + "/"
     # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
-    #                             "Supervised") + "/" + EXPERIMENT + "/"  + PROTOCOL + "/"
+    #                             "Supervised") + "Train-Test " + str(rs) + \
+    #                             "/" + EXPERIMENT + "/" + PROTOCOL + "/"
+    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
+                                "Supervised") + "/" + EXPERIMENT + "/"  + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
         tags = file.split(os.sep)
@@ -105,7 +105,7 @@ pathje = go_or_create_folder(pathje, "Heatmap")
 plt.ylabel("Class (Training) - Model")
 plt.xlabel("Class (Testing)")
 plt.tight_layout()
-plt.savefig(pathje + "Results Experiment 2 " + DATASET + " " + VARIANT + ".png", dpi = 400)
+#plt.savefig(pathje + "Results Experiment 2 " + DATASET + " " + VARIANT + ".png", dpi = 400)
 plt.show()
 
 #%% 

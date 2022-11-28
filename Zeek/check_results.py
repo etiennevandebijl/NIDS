@@ -73,11 +73,11 @@ def transfer_files(train_dataset_path, test_dataset_path):
 
 #%% 
 PROTOCOL = "http-FIX-tcp-FIX"
-PLOT = False
+PLOT = True
 
-EXPERIMENT = "Experiment"
-VARIANT = "Web"
-DATASET = "CIC-IDS-2018"
+EXPERIMENT = "Paper"
+VARIANT = "DDoS"
+DATASET = "CIC-IDS-2017"
 
 RS = 20
 if DATASET == "CIC-IDS-2018":
@@ -124,11 +124,19 @@ df_exists, df_missing = check_results()
 
 # %%
 
-train_dataset_path = get_data_folder("CIC-IDS-2017", "BRO", "2_Preprocessed_DDoS") + "http-tcp.txt"
-test_dataset_path = get_data_folder("CIC-IDS-2018", "BRO", "2_Preprocessed_DDoS") + "http-tcp.txt"
-output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "BRO", "2_Preprocessed_DDoS", "Supervised") + "/Paper/http-tcp/"
+PROTOCOL = "http-FIX-tcp-FIX"
+EXPERIMENT = "Paper"
+VARIANT = "DDoS"
+TRAIN_DATASET = "CIC-IDS-2018"
+TEST_DATASET = "CIC-IDS-2017"
+
+train_dataset_path = get_data_folder(TRAIN_DATASET, "BRO", "2_Preprocessed_" + VARIANT) + PROTOCOL + ".txt"
+test_dataset_path = get_data_folder(TEST_DATASET, "BRO", "2_Preprocessed_" + VARIANT) + PROTOCOL +".txt"
+output_path = get_results_folder(TRAIN_DATASET + "_" + TEST_DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + EXPERIMENT + "/" + PROTOCOL + "/"
+
 files = transfer_files(train_dataset_path, test_dataset_path)
-exists, missing = analyse_check_files(files, train_dataset_path, output_path, "CIC-IDS_2017_CIC-IDS-2018", "2_Preprocessed_DDoS", protocol)
+exists, missing = analyse_check_files(files, train_dataset_path, output_path, TRAIN_DATASET + "_" + TEST_DATASET, "2_Preprocessed_" + VARIANT, PROTOCOL)
+
 missing = [a + [a[4].replace(output_path,"").split("/")[0], a[4].replace(output_path,"").split("/")[1]] for a in missing]
 missing = [a + [a[4].replace(output_path,"").split("/")[2] if len(a[4].replace(output_path,"").split("/")) == 4 else ""] for a in missing]
 
