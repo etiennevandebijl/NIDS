@@ -18,7 +18,7 @@ from brothon import bro_log_reader
 def zeek_reader(path):
     """Zeek log file reader.
 
-    This function reads a log file of the bro reader. Also adjusts the
+    This function reads a log file of the Zeek reader. Also adjusts the
     time-zones of the different datasets. Makes "ts" and "duration" in
     right format.
 
@@ -54,7 +54,7 @@ def zeek_reader(path):
     return log_file
 
 
-def merge_bro_log_files(experiment_path, file_name):
+def merge_zeek_log_files(experiment_path, file_name):
     """Creater of a single csv for a certain protocol.
 
     This function combines the different log files of a certain file_name.

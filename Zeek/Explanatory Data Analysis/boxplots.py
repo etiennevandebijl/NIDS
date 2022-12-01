@@ -54,7 +54,7 @@ def boxplots(experiments, version, protocol):
     protocols : list of strings
         protocols
     """
-    output_path = PROJECT_PATH + "Results/EDA/BRO/" + version + "/"
+    output_path = PROJECT_PATH + "Results/EDA/Zeek/" + version + "/"
     output_path = go_or_create_folder(output_path, protocol)
     output_path = go_or_create_folder(output_path, '-'.join(sorted(experiments)))
     
@@ -62,7 +62,7 @@ def boxplots(experiments, version, protocol):
     for exp in experiments:
         try:
             print_progress(exp, version, protocol.upper())
-            path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
+            path = get_data_folder(exp, "Zeek", version) + protocol + ".csv"
             dataset = read_preprocessed(path)
             for label, group in dataset.groupby("Label"):
                 dataset = group.select_dtypes(include=['int','float'])

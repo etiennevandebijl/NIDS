@@ -50,7 +50,7 @@ def train_test_split_ml(experiment, version, protocols):
     protocols : string
 
     """
-    data_path = get_data_folder(experiment, "BRO", version)
+    data_path = get_data_folder(experiment, "Zeek", version)
     output_path = go_or_create_folder(data_path, 'Train-Test ' + str(RS))
 
     for protocol in protocols:

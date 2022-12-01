@@ -104,8 +104,8 @@ def _combine_ftp(ftp_log):
     ftp_log_new = ftp_compressed_f.merge(uid_interval, how="left", on="uid")
     return ftp_log_new
 
-# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from Zeek.Preprocessing.utils import merge_zeek_log_files
 # from project_paths import get_data_folder
-# zeek_ftp_log = merge_bro_log_files(get_data_folder("ISCX-IDS-2012",
-#                                                    "BRO", "1_Raw"), "ftp")
+# zeek_ftp_log = merge_zeek_log_files(get_data_folder("ISCX-IDS-2012",
+#                                                    "Zeek", "1_Raw"), "ftp")
 # df_FTP = preprocessing_ftp(zeek_ftp_log)

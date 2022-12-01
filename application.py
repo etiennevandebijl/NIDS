@@ -67,7 +67,7 @@ class Application(tk.Frame):
         files = []
         for exp in os.listdir(DATA_PATH):
             for vers in settings["Version"]:
-                path = get_data_folder(exp, "BRO", vers)
+                path = get_data_folder(exp, "Zeek", vers)
                 for file_path in glob.glob(path + f_format, recursive=False):
                     base = Path(file_path).stem
                     files.append(base)

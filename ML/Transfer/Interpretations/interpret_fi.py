@@ -22,7 +22,7 @@ RS = 10
 results = []
 feature_names = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_DDoS",
                                 "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/feature_importance.csv', recursive=True):
@@ -96,7 +96,7 @@ table = df_.groupby(["Test"]).mean().T
 
 ignore_vars = table[table.max(axis = 1)<0.01].index
 
-data_path = get_data_folder(DATASET, "BRO", "2_Preprocessed_DDoS")
+data_path = get_data_folder(DATASET, "Zeek", "2_Preprocessed_DDoS")
     
 dataset = read_preprocessed(data_path + "http-FIX-tcp-FIX.csv")
 dataset = dataset.drop(columns = ignore_vars, axis = 1)

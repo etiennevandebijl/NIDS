@@ -16,8 +16,8 @@ def make_autopct(values):
     return my_autopct
 
 def circle_diagram(experiment, version, protocols):
-    data_path = get_data_folder(experiment, "BRO", version)
-    output_folder = get_results_folder(experiment, "BRO",
+    data_path = get_data_folder(experiment, "Zeek", version)
+    output_folder = get_results_folder(experiment, "Zeek",
                                        version, "EDA")+"Pie-Chart/"
     for protocol in protocols:
         print_progress(experiment, version, protocol.upper())

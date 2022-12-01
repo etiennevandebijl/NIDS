@@ -24,7 +24,7 @@ def preprocessing_ssl(ssl_log):
     Parameters
     ----------
     ssl_log : pandas dataframe
-        A converted bro file of the ssl.log.
+        A converted Zeek file of the ssl.log.
 
     Returns
     -------
@@ -51,8 +51,8 @@ def preprocessing_ssl(ssl_log):
 
     return ssl_log
 
-# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from Zeek.Preprocessing.utils import merge_zeek_log_files
 # from project_paths import get_data_folder
-# zeek_ssl_log = merge_bro_log_files(get_data_folder("CIC-IDS-2017",
-#                                                    "BRO", "1_Raw"), "ssl")
+# zeek_ssl_log = merge_zeek_log_files(get_data_folder("CIC-IDS-2017",
+#                                                    "Zeek", "1_Raw"), "ssl")
 # df_SSL = preprocessing_ssl(zeek_ssl_log)

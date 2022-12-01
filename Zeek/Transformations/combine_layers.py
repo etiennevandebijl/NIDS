@@ -30,8 +30,8 @@ def process_merge(df_n, df_a, protocol_name, output_path):
 
 def combine_layers(experiment):
     """Iterate through protocols to combine layers."""
-    input_path = get_data_folder(experiment, 'BRO', "2_Preprocessed")
-    output_path = get_data_folder(experiment, 'BRO', "2_Preprocessed")
+    input_path = get_data_folder(experiment, 'Zeek', "2_Preprocessed")
+    output_path = get_data_folder(experiment, 'Zeek', "2_Preprocessed")
 
     combinations = {"tcp": ["http", "ssh", "ssl", "ftp"], "udp": ["dns"]}
 

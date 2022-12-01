@@ -25,9 +25,9 @@ def equalize_ddos(dataset, ddos):
     Parameters
     ----------
     dataset : pandas dataframe
-        log file of bro.
+        log file of Zeek.
     ddos : list of strings
-        list of the attacks in the bro file.
+        list of the attacks in the Zeek file.
 
     Returns
     -------
@@ -65,8 +65,8 @@ def select_ddos(experiment, version, protocols, equalize=True):
     None.
 
     """
-    data_path = get_data_folder(experiment, "BRO", version)
-    output_path = get_data_folder(experiment, "BRO", "2_Preprocessed_DDoS")
+    data_path = get_data_folder(experiment, "Zeek", version)
+    output_path = get_data_folder(experiment, "Zeek", "2_Preprocessed_DDoS")
 
     for protocol in protocols:
         for file_path in glob.glob(data_path + "/" + protocol + ".csv",

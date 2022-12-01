@@ -34,7 +34,7 @@ def preprocessing_dns(dns_log):
     Parameters
     ----------
     dns_log : pandas dataframe
-        dns log bro.
+        dns log Zeek.
 
     Returns
     -------
@@ -102,6 +102,6 @@ def _ttls(ttls):
 
 # from project_paths import DATA_PATH
 # from Zeek.Preprocessing.utils import zeek_reader
-# zeek_dns_log = zeek_reader(DATA_PATH + "CIC-IDS-2017/BRO/1_Raw" +
+# zeek_dns_log = zeek_reader(DATA_PATH + "CIC-IDS-2017/Zeek/1_Raw" +
 #                            "/Friday-WorkingHours/dns.log")
 # df_DNS = preprocessing_dns(zeek_dns_log)

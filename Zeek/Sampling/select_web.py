@@ -33,8 +33,8 @@ def select_webattack(experiment, version, protocols):
     None.
 
     """
-    data_path = get_data_folder(experiment, "BRO", version)
-    output_path = get_data_folder(experiment, "BRO", "2_Preprocessed_Web")
+    data_path = get_data_folder(experiment, "Zeek", version)
+    output_path = get_data_folder(experiment, "Zeek", "2_Preprocessed_Web")
 
     for protocol in protocols:
         for file_path in glob.glob(data_path + "/" + protocol + ".csv",

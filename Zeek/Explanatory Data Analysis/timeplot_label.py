@@ -70,8 +70,8 @@ def timeplot(experiment, version, protocols):
     None.
 
     """
-    data_path = get_data_folder(experiment, "BRO", version)
-    output_folder = get_results_folder(experiment, "BRO",
+    data_path = get_data_folder(experiment, "Zeek", version)
+    output_folder = get_results_folder(experiment, "Zeek",
                                        version, "EDA") + "class-time/"
 
     for protocol in protocols:

@@ -22,7 +22,7 @@ MODELS = ['DD', 'GNB', "DT", "RF", "KNN"]
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
+    input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + VARIANT,
                                 "Supervised") + "Train-Test " + str(rs) + \
                                 "/" + EXPERIMENT + "/" + PROTOCOL + "/"
 

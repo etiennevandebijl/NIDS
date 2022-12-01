@@ -16,7 +16,7 @@ RS = 20
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_DDoS",
                                 "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/opt_clf.joblib', recursive=True):

@@ -28,7 +28,7 @@ def identify_attack(log_file, attack, vise_versa=False):
     Parameters
     ----------
     log_file : pandas dataframe
-        The BRO conn.log converted file.
+        The Zeek conn.log converted file.
 
     attack : pandas row
         Row of a pandas dataframe describing meta data about an attack.
@@ -64,12 +64,12 @@ def identify_attack(log_file, attack, vise_versa=False):
 def apply_labeling_scheme(log_file, experiment_name):
     """
 
-    Labelling a BRO log file.
+    Labelling a Zeek log file.
 
     Parameters
     ----------
     log_file : pandas dataframe
-        A BRO converted log file.
+        A Zeek converted log file.
 
     experiment_name : string
         The name of the experiment.
@@ -103,7 +103,7 @@ def label_conn_log(experiment_name):
     experiment_name : string
         The name of the experiment.
     """
-    data_path = get_data_folder(experiment_name, "BRO", "1_Raw")
+    data_path = get_data_folder(experiment_name, "Zeek", "1_Raw")
 
     pd_list = []
     for file_path in glob.glob(data_path + "**/conn.log", recursive=True):

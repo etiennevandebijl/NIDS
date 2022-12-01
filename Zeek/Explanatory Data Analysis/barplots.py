@@ -77,13 +77,13 @@ def bin_plot(experiments, version, protocol):
     None.
 
     """
-    output_path = PROJECT_PATH + "Results/EDA/BRO/" + version + "/"
+    output_path = PROJECT_PATH + "Results/EDA/Zeek/" + version + "/"
     output_path = go_or_create_folder(output_path, protocol)
     output_path = go_or_create_folder(output_path, '-'.join(sorted(experiments)))
 
     pd_list = []
     for exp in experiments:
-        path = get_data_folder(exp, "BRO", version) + protocol + ".csv"
+        path = get_data_folder(exp, "Zeek", version) + protocol + ".csv"
         print_progress(exp, version, protocol.upper())
         try:
             dataset = read_preprocessed(path)

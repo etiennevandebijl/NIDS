@@ -23,10 +23,10 @@ if DATASET == "CIC-IDS-2018":
 
 results = []
 for rs in range(RS):
-    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
+    # input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + VARIANT,
     #                             "Supervised") + "Train-Test " + str(rs) + \
     #                             "/" + EXPERIMENT + "/" + PROTOCOL + "/"
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT,
+    input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + VARIANT,
                                 "Supervised") + "/" + EXPERIMENT + "/"  + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
@@ -100,7 +100,7 @@ ax.axhline(13, color='white', lw=5)
 ax.axhline(17, color='white', lw=5)
 ax.axhline(21, color='white', lw=5)
 plt.xticks(rotation=90)
-pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + "Paper-Results/"
+pathje = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + VARIANT, "Supervised") + "Paper-Results/"
 pathje = go_or_create_folder(pathje, "Heatmap")
 plt.ylabel("Class (Training) - Model")
 plt.xlabel("Class (Testing)")
@@ -149,7 +149,7 @@ plt.show()
 #     ax.axhline(1, color='black', lw=5)
 #     plt.title("F1 score for model " + model + " training one attack")
 #     plt.tight_layout()
-#     pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + \
+#     pathje = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + VARIANT, "Supervised") + \
 #                 "Paper-Results/"
 #     pathje = go_or_create_folder(pathje, "Heatmap") 
 #   #  plt.savefig(pathje + DATASET + "-" + model + "-heatmap.png")

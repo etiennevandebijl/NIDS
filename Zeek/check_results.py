@@ -88,14 +88,14 @@ def check_results():
     missing_list = []
     
     for rs in range(RS):
-        train_dataset_path = get_data_folder(DATASET, "BRO", "2_Preprocessed_" + \
+        train_dataset_path = get_data_folder(DATASET, "Zeek", "2_Preprocessed_" + \
                                              VARIANT) + "Train-Test " + str(rs) + \
                                             "/" + PROTOCOL + "_train.txt"
         if not os.path.isfile(train_dataset_path):
             continue
         test_dataset_path = train_dataset_path.replace("train","test")
 
-        output_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_" + \
+        output_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + \
                                          VARIANT, "Supervised") + "Train-Test " + \
                                          str(rs) + "/" + EXPERIMENT + "/" + PROTOCOL + "/"
         files = transfer_files(train_dataset_path, test_dataset_path)
@@ -130,9 +130,9 @@ VARIANT = "DDoS"
 TRAIN_DATASET = "CIC-IDS-2018"
 TEST_DATASET = "CIC-IDS-2017"
 
-train_dataset_path = get_data_folder(TRAIN_DATASET, "BRO", "2_Preprocessed_" + VARIANT) + PROTOCOL + ".txt"
-test_dataset_path = get_data_folder(TEST_DATASET, "BRO", "2_Preprocessed_" + VARIANT) + PROTOCOL +".txt"
-output_path = get_results_folder(TRAIN_DATASET + "_" + TEST_DATASET, "BRO", "2_Preprocessed_" + VARIANT, "Supervised") + EXPERIMENT + "/" + PROTOCOL + "/"
+train_dataset_path = get_data_folder(TRAIN_DATASET, "Zeek", "2_Preprocessed_" + VARIANT) + PROTOCOL + ".txt"
+test_dataset_path = get_data_folder(TEST_DATASET, "Zeek", "2_Preprocessed_" + VARIANT) + PROTOCOL +".txt"
+output_path = get_results_folder(TRAIN_DATASET + "_" + TEST_DATASET, "Zeek", "2_Preprocessed_" + VARIANT, "Supervised") + EXPERIMENT + "/" + PROTOCOL + "/"
 
 files = transfer_files(train_dataset_path, test_dataset_path)
 exists, missing = analyse_check_files(files, train_dataset_path, output_path, TRAIN_DATASET + "_" + TEST_DATASET, "2_Preprocessed_" + VARIANT, PROTOCOL)

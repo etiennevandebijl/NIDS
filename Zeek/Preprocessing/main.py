@@ -15,7 +15,7 @@ import pandas as pd
 
 from project_paths import get_data_folder
 from Zeek.utils import fix_col_order, statistics_dataset
-from Zeek.Preprocessing.utils import merge_bro_log_files
+from Zeek.Preprocessing.utils import merge_zeek_log_files
 from Zeek.Preprocessing.network import network_preprocessing
 from Zeek.Preprocessing.conn import preprocessing_conn
 from Zeek.Preprocessing.ftp import preprocessing_ftp
@@ -68,13 +68,13 @@ def main(experiment, protocols_list):
     protocols_list: list of strings
         List of the protocols of interest for this job
     """
-    data_path = get_data_folder(experiment, "BRO", "1_Raw")
-    output_path = get_data_folder(experiment, "BRO", "2_Preprocessed")
+    data_path = get_data_folder(experiment, "Zeek", "1_Raw")
+    output_path = get_data_folder(experiment, "Zeek", "2_Preprocessed")
     uid_label = pd.read_csv(data_path.replace("1_Raw/", "labelling.csv"),
                             sep=";")
 
     for protocol in protocols_list:
-        log_file = merge_bro_log_files(data_path, protocol)
+        log_file = merge_zeek_log_files(data_path, protocol)
 
         if log_file.empty:
             continue

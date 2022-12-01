@@ -165,8 +165,8 @@ def compute_transfer_learning(df_train, df_test, output_path):
 # %% Experiment 1
 
 def main_clf_sl(experiment, version, protocols, rs):
-    data_path = get_data_folder(experiment, "BRO", version) + "Train-Test " + str(rs) +"/"
-    output_path = get_results_folder(experiment, "BRO", version, "Supervised")
+    data_path = get_data_folder(experiment, "Zeek", version) + "Train-Test " + str(rs) +"/"
+    output_path = get_results_folder(experiment, "Zeek", version, "Supervised")
     output_path = go_or_create_folder(output_path, "Train-Test " + str(rs))
     output_path = go_or_create_folder(output_path, EXPERIMENT)
 
@@ -191,9 +191,9 @@ if __name__ == "__main__":
 # %% Experiment 2
 
 def main_clf_sl_(version, protocols):
-    train_data_path = get_data_folder("CIC-IDS-2017", "BRO", version)
-    test_data_path = get_data_folder("CIC-IDS-2018", "BRO", version)
-    output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "BRO", version,
+    train_data_path = get_data_folder("CIC-IDS-2017", "Zeek", version)
+    test_data_path = get_data_folder("CIC-IDS-2018", "Zeek", version)
+    output_path = get_results_folder("CIC-IDS-2017_CIC-IDS-2018", "Zeek", version,
                                       "Supervised") 
     output_path = go_or_create_folder(output_path, EXPERIMENT)
     

@@ -17,9 +17,9 @@ RS = 10
 
 results = []
 for rs in range(RS):
-    input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_DDoS",
                                 "Supervised") + "Train-Test " + str(rs) + "/Paper/" + PROTOCOL + "/"
-    # input_path = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS",
+    # input_path = get_results_folder(DATASET, "Zeek", "2_Preprocessed_DDoS",
     #                             "Supervised") + "/Paper/" + PROTOCOL + "/"
 
     for file in glob.glob(input_path + '**/scores.csv', recursive=True):
@@ -92,7 +92,7 @@ for index, group in df_[df_["Model"]==model].groupby(["Test", "Model"]):
     handles, labels = plt.gca().get_legend_handles_labels()
     labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
     plt.legend(handles, labels)
-    pathje = get_results_folder(DATASET, "BRO", "2_Preprocessed_DDoS", "Supervised") + \
+    pathje = get_results_folder(DATASET, "Zeek", "2_Preprocessed_DDoS", "Supervised") + \
                 "Paper-Results/"
     pathje = go_or_create_folder(pathje, "Subsetlearning")
     pathje = go_or_create_folder(pathje, index[0])    

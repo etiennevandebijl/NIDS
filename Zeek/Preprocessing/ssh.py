@@ -39,8 +39,8 @@ def preprocessing_ssh(ssh_log):
     ssh_log["version"] = ssh_log["version"].astype(int)
     return ssh_log
 
-# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from Zeek.Preprocessing.utils import merge_zeek_log_files
 # from project_paths import get_data_folder
-# zeek_ssh_log = merge_bro_log_files(get_data_folder("ISCX-IDS-2012", "BRO",
+# zeek_ssh_log = merge_zeek_log_files(get_data_folder("ISCX-IDS-2012", "Zeek",
 #                                               "1_Raw"), "ssh")
 # df_SSH = preprocessing_ssh(zeek_ssh_log)

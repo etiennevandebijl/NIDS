@@ -62,8 +62,8 @@ def plot_heatmap(dataset, vmap, vc, cols, protocol, output_folder):
             
 
 def barplot(experiment, version, protocols):
-    data_path = get_data_folder(experiment, "BRO", version)
-    output_folder = get_results_folder(experiment, "BRO",
+    data_path = get_data_folder(experiment, "Zeek", version)
+    output_folder = get_results_folder(experiment, "Zeek",
                                        version, "EDA")+"Train-Test Plots/"
 
     for protocol in protocols:

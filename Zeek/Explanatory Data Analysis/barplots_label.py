@@ -43,8 +43,8 @@ def class_count_plot(dataset, output_folder, protocol):
 
 def class_count(experiment, version, protocols):
     """Count frequency of labels."""
-    data_path = get_data_folder(experiment, "BRO", version)
-    output_folder = get_results_folder(experiment, "BRO", version, "EDA") + \
+    data_path = get_data_folder(experiment, "Zeek", version)
+    output_folder = get_results_folder(experiment, "Zeek", version, "EDA") + \
         "class-distribution/"
 
     for protocol in protocols:

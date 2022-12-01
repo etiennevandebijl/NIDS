@@ -83,8 +83,8 @@ def network_preprocessing(log_file, experiment_name):
             log_file.loc[log_file[feature] == public_ip, feature] = private_ip
     return log_file
 
-# from Zeek.Preprocessing.utils import merge_bro_log_files
+# from Zeek.Preprocessing.utils import merge_zeek_log_files
 # from project_paths import get_data_folder
-# zeek_conn_log = merge_bro_log_files(get_data_folder("CIC-IDS-2017",
-#                                                "BRO", "1_Raw"), "conn")
+# zeek_conn_log = merge_zeek_log_files(get_data_folder("CIC-IDS-2017",
+#                                                "Zeek", "1_Raw"), "conn")
 # zeek_conn_log = network_preprocessing(zeek_conn_log, "CIC-IDS-2017")
