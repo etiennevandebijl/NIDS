@@ -11,7 +11,7 @@ DATASET = "CIC-IDS-2018"
 VARIANT = "DDoS"
 EXPERIMENT = "Paper"
 
-PROTOCOL = "http-FIX-tcp-FIX"
+PROTOCOL = "http-tcp"
 RS = 20
 if DATASET == "CIC-IDS-2018":
     RS = 10

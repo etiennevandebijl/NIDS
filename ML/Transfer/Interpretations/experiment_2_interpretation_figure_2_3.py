@@ -11,7 +11,7 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2018"
-PROTOCOL = "http-FIX-tcp-FIX"
+PROTOCOL = "http-tcp"
 RS = 10
 
 #%% 

@@ -14,7 +14,7 @@ from ML.Transfer.experimental_setup import NAMES
 NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2017"
-PROTOCOL = "http-FIX-tcp-FIX"
+PROTOCOL = "http-tcp"
 RS = 10
 
 #%% 
@@ -98,7 +98,7 @@ ignore_vars = table[table.max(axis = 1)<0.01].index
 
 data_path = get_data_folder(DATASET, "Zeek", "2_Preprocessed_DDoS")
     
-dataset = read_preprocessed(data_path + "http-FIX-tcp-FIX.csv")
+dataset = read_preprocessed(data_path + "http-tcp.csv")
 dataset = dataset.drop(columns = ignore_vars, axis = 1)
 
 X, y, _, labels = format_ML(dataset)

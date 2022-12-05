@@ -72,7 +72,7 @@ def transfer_files(train_dataset_path, test_dataset_path):
     return files
 
 #%% 
-PROTOCOL = "http-FIX-tcp-FIX"
+PROTOCOL = "http-tcp"
 PLOT = True
 
 EXPERIMENT = "Paper"
@@ -124,7 +124,7 @@ df_exists, df_missing = check_results()
 
 # %%
 
-PROTOCOL = "http-FIX-tcp-FIX"
+PROTOCOL = "http-tcp"
 EXPERIMENT = "Paper"
 VARIANT = "DDoS"
 TRAIN_DATASET = "CIC-IDS-2018"

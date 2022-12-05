@@ -45,9 +45,9 @@ def finish_dataset(log_file, df_uid_label, experiment, output_path, protocol):
     log_file = fix_col_order(log_file)
     log_file.sort_values(by=['ts', "uid"], inplace=True)
     print("-----Writing Data---------------  " + str(datetime.datetime.now()))
-    log_file.to_csv(output_path + protocol + "-FIX.csv", index=False)
+    log_file.to_csv(output_path + protocol + ".csv", index=False)
     print("-----Saving statistics----------  " + str(datetime.datetime.now()))
-    statistics_dataset(log_file, output_path, protocol + "-FIX")
+    statistics_dataset(log_file, output_path, protocol)
     print("-----" + experiment + "-" + protocol.upper() + "-Completed-  " +
           str(datetime.datetime.now()) + "\n")
 
