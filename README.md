@@ -51,4 +51,4 @@ The code provides a workflow for detecting novel (D)DoS and Web attacks at the a
 ## Citation
 If you use this code in your research, please cite:
 
-E.P. van de Bijl, J.G. Klein, J. Pries, R.D. van der Mei, and S. Bhulai, **"Detecting novel application layer cybervariants using supervised learning"**, International Journal on Advances in Security, volume 15, number 3 & 4, pages 75-85, 2022.
+    E.P. van de Bijl, J.G. Klein, J. Pries, R.D. van der Mei, and S. Bhulai, **"Detecting novel application layer cybervariants using supervised learning"**, International Journal on Advances in Security, volume 15, number 3 & 4, pages 75-85, 2022.
