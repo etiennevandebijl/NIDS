@@ -10,7 +10,6 @@ The code provides a workflow for detecting novel (D)DoS and Web attacks at the a
 
 1. **Extract Log Files**  
    - Use the scripts in the `Zeek/Zeek` folder to extract logs from raw PCAP files.  
-   - Additional datasets can be created using the processing scripts in `Zeek/other`.  
 
 2. **Preprocessing**  
    - Run `main.py` in `Zeek\Preprocessing\` to preprocess the extracted logs.  
@@ -52,4 +51,4 @@ The code provides a workflow for detecting novel (D)DoS and Web attacks at the a
 ## Citation
 If you use this code in your research, please cite:
 
-van de Bijl et al., 2022. "Detecting Novel Application Layer Cybervariants Using Supervised Learning."
+E.P. van de Bijl, J.G. Klein, J. Pries, R.D. van der Mei, and S. Bhulai, **"Detecting novel application layer cybervariants using supervised learning"**, International Journal on Advances in Security, volume 15, number 3 & 4, pages 75-85, 2022.
