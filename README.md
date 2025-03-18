@@ -1,16 +1,55 @@
-# NIDS
+# NIDS  
 
-This github contains the code of the article ``Detecting Novel Variants of Application Layer (D)DoS Attacks using Supervised Learning" by Van de Bijl et al. 2022.
+This repository contains the code for the article **"Detecting Novel Application Layer Cybervariants Using Supervised Learning"** by van de Bijl et al. (2022).  
 
-The workflow starts in the Zeek folder with the extraction of log files by Zeek. 
-After extracting from the raw pcap files, other datasets can be created using the files in the other folder in Zeek.
+## Overview  
 
-Workflow:
-1) Preprocessing with main.py
-2) Sampling (D)DoS attacks and Benign 
-3) Combine Layers (HTTP- TCP)
-4) Train-Test Split with different splits
-5) Go to ML -> Transfer -> experimental_setup.py to gather results
-6) Analyze results with the interpretation folder
+The code provides a workflow for detecting novel (D)DoS and Web attacks at the application layer using supervised learning techniques. The process starts with extracting log files from raw PCAP data using **Zeek** and continues through preprocessing, sampling, feature extraction, and machine learning experiments.  
 
-This work is done in anaconda.
+## Workflow  
+
+1. **Extract Log Files**  
+   - Use the scripts in the `Zeek/Zeek` folder to extract logs from raw PCAP files.  
+   - Additional datasets can be created using the processing scripts in `Zeek/other`.  
+
+2. **Preprocessing**  
+   - Run `main.py` in `Zeek\Preprocessing\` to preprocess the extracted logs.  
+
+3. **Sampling**  
+   - Sample different categories: (D)DoS attacks, web attacks, and benign traffic.  
+
+4. **Feature Engineering**  
+   - Combine different layers (e.g., HTTP and TCP) for richer feature representation.  
+
+5. **Train-Test Split**  
+   - Apply different train-test split strategies.  
+
+6. **Model Training & Evaluation**  
+   - Navigate to `ML/Transfer/experimental_setup.py` to run experiments and gather results.  
+
+7. **Interpretation & Analysis**  
+   - Use the scripts in the `interpretation` folder to analyze results.  
+
+## Environment  
+
+- The code is designed to run in an **Anaconda** environment.  
+- Ensure all dependencies are installed before running the scripts.  
+
+## Getting Started  
+
+1. Clone this repository:  
+   ```bash
+   git clone https://github.com/etiennevandebijl/NIDS.git  
+   cd NIDS  
+
+2. Set up your Anaconda environment (if not already configured):
+    ```bash
+    conda env create -f environment-NIDS.yml   
+    conda activate NIDS  
+    ```
+3. Follow the workflow steps above.
+
+## Citation
+If you use this code in your research, please cite:
+
+van de Bijl et al., 2022. "Detecting Novel Application Layer Cybervariants Using Supervised Learning."

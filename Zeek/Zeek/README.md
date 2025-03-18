@@ -1,6 +1,6 @@
 # Zeek PCAP Processing  
 
-This README explains how to extract network traffic from raw PCAP files using **Zeek**.  
+This README explains how to extract network traffic features from raw PCAP files using **Zeek**.  
 It covers:  
 - Selected datasets used in this research  
 - Installing Zeek on **Linux** and **Windows (WSL2)**  
@@ -10,14 +10,12 @@ It covers:
 
 The following datasets were used in this research:  
 
-```
 | Dataset       | URL                                                                                                    		|  
-|--------------|----------------------------------------------------------------------------------------------------------------|  
+|---------------|---------------------------------------------------------------------------------------------------------------|  
 | ISCX-IDS-2012 | [Link](http://205.174.165.80/CICDataset/ISCX-IDS-2012/Dataset/)                                               |  
 | CIC-IDS-2017  | [Link](http://205.174.165.80/CICDataset/CIC-IDS-2017/Dataset/PCAPs/)                                          |  
 | UNSW-NB15     | [Link](https://cloudstor.aarnet.edu.au/plus/index.php/s/2DhnLGDdEECo4ys?path=%2FUNSW-NB15%20-%20pcap%20files) |  
 | CIC-IDS-2018  | [Link](https://www.unb.ca/cic/datasets/ids-2018.html)   														|
-```
 
 ### Notes on CIC-IDS-2018  
 - The dataset requires **AWS** for downloading (~500GB).  
@@ -28,8 +26,7 @@ The following datasets were used in this research:
 
 ## 2. Install Zeek  
 
-Zeek is primarily designed for **UNIX-based** systems.  
-For **Windows**, install **WSL2** with Ubuntu 20.04 LTS. 
+Zeek is primarily designed for **UNIX-based** systems. For **Windows**, install **WSL2** with Ubuntu 20.04 LTS. 
 
 ### Windows (WSL2 Setup)  
 
@@ -42,18 +39,19 @@ For **Windows**, install **WSL2** with Ubuntu 20.04 LTS.
 Update system packages:  
 
 ```shell
-	sudo apt-get update -y  
-	sudo apt-get upgrade -y  
+sudo apt-get update -y  
+sudo apt-get upgrade -y  
 ```
+
 Install dependencies:
 
 ```shell
-	sudo apt-get install cmake make gcc g++ flex bison libpcap-dev libssl-dev python3 python3-dev swig zlib1g-dev -y  
+sudo apt-get install cmake make gcc g++ flex bison libpcap-dev libssl-dev python3 python3-dev swig zlib1g-dev -y  
 ```
 
 ### Install Zeek
 
-Follow the official installation steps  (https://software.opensuse.org/download.html?project=security%3Azeek&package=zeek-lts) or use the following:
+Follow the official installation steps [guide](https://software.opensuse.org/download.html?project=security%3Azeek&package=zeek-lts) or use the following code:
 
 ```shell
 $ echo 'deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/security:zeek.list
@@ -66,6 +64,7 @@ The version used in this research: Zeek 4.0.0.
 
 ### Configure Environment
 
+Add Zeek to the system path:
 ```shell
 $ export PATH="$PATH:/opt/zeek/bin"
 $ source ~/.bashrc
@@ -120,15 +119,16 @@ $ sudo bash script-zeek.sh
 ```
 
 The script:
-	Processes multiple PCAP files at once
-	Fixes corrupted PCAP files
-	Extracts log files using Zeek
+- Processes multiple PCAP files at once,
+- Fixes corrupted PCAP files,
+- Extracts log files using Zeek.
 For more customization, edit disable_streams.zeek to exclude logs not required for your analysis.
 
 ## 5. Summary
-	Download datasets and organize them in the correct structure.
-	Install Zeek using the provided steps for Linux/Windows (WSL2).
-	Run script-zeek.sh to process PCAP files efficiently.
+
+- Download datasets and organize them in the correct structure.
+- Install Zeek using the provided steps for Linux/Windows (WSL2).
+- Run script-zeek.sh to process PCAP files efficiently.
 This setup allows batch processing of network traffic data for further analysis.
 
 
