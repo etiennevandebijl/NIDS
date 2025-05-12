@@ -12,7 +12,7 @@ NAMES_ = {y: x for x, y in NAMES.items()}
 
 DATASET = "CIC-IDS-2017_CIC-IDS-2018"
 #DATASET = "CIC-IDS-2018"
-VARIANT = "DDoS"
+VARIANT = "Web"
 EXPERIMENT = "Paper"
 
 PROTOCOL = "http-tcp"
@@ -107,6 +107,7 @@ plt.xlabel("Testing attack")
 
 pathje = get_results_folder(DATASET, "Zeek", "2_Preprocessed_" + VARIANT, "Supervised") + "Paper-Results/"
 pathje = go_or_create_folder(pathje, "Heatmap")
-plt.tight_layout()
-plt.savefig(pathje + "Results Experiment 2 " + DATASET + " " + VARIANT + "-dissertation.png", dpi = 400)
+#plt.tight_layout()
+#plt.savefig("/home/etienne/Dropbox/Projects/Proefschrift/Figures/Cyberattacks/Results_Experiment_2_" + DATASET + "_" + VARIANT + "-dissertation.png", dpi = 400)
+plt.savefig("/home/etienne/Dropbox/Projects/Proefschrift/Figures/Cyberattacks/Results_Experiment_2_" + DATASET + "_" + VARIANT + "-dissertation.eps", format='eps', bbox_inches="tight")
 plt.show()
